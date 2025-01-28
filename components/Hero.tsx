@@ -28,7 +28,7 @@ const Hero = () => {
             <h1 className="text-7xl xl:text-[80px] font-bold bg-gradient-to-r  dark:from-white dark:to-slate-300 from-black to-gray-700 bg-clip-text white:text-transparent tracking-tighter">
               All notes in one place.
             </h1>
-            <h2 className="text-xl xl:text-2xl sm:max-w-md sm:text-center text-neutral-900/80 dark:text-neutral-50/50 dark:sm:text-white/80 dark:bg-black ">
+            <h2 className="text-xl xl:text-2xl sm:max-w-md sm:text-center text-neutral-900/80 dark:text-neutral-50/50 dark:sm:text-white/80 light:bg-white dark:bg-black ">
               <Cover className="select-none">Boost Your Marks</Cover> by using
               the right Resources at the right time!
             </h2>
