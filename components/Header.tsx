@@ -21,7 +21,7 @@ const navLink = [
 const Header = () => {
   return (
     <nav className="fixed top-0 w-full px-5 z-50">
-      <div className="backdrop-blur-xl grid grid-cols-2 md:grid-cols-3 mt-5 sm:mt-7 max-w-6xl mx-auto justify-end items-center pl-3 pr-2 sm:pl-5 sm:pr-3 py-2 border border-[#B4B4B4]/50 rounded-xl">
+      <div className="backdrop-blur-lg grid grid-cols-2 md:grid-cols-3 mt-5 sm:mt-7 max-w-6xl mx-auto justify-end items-center pl-3 pr-2 sm:pl-5 sm:pr-3 py-2 border border-[#B4B4B4]/50 rounded-xl">
         <div className="flex items-center gap-7">
           <Link href="/" className="inline-block">
             <Image

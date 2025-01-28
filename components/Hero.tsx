@@ -24,7 +24,7 @@ const Hero = () => {
             </AnimatedShinyText>
           </div>
           <div className="flex flex-col items-center justify-center gap-5 xl:gap-7">
-            <h1 className="text-7xl xl:text-[80px] font-bold bg-gradient-to-r from-black to-gray-700 bg-clip-text text-transparent tracking-tighter">
+            <h1 className="text-7xl xl:text-[80px] font-bold bg-gradient-to-r dark:from-white dark:to-slate-300 from-black to-gray-700 bg-clip-text text-transparent tracking-tighter">
               All notes in one place.
             </h1>
             <h2 className="text-xl xl:text-2xl sm:max-w-md sm:text-center text-neutral-900/80 dark:text-neutral-50">
