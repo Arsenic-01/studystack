@@ -8,7 +8,7 @@ import { DotPattern } from "./ui/dot-pattern";
 const Hero = () => {
   return (
     <div
-      className="my-36 md:my-44 lg:my-56 2xl:my-0 2xl:h-screen flex items-center justify-center"
+      className="my-36 md:my-44 lg:my-56 2xl:my-0 2xl:h-screen flex items-center justify-center relative"
       id="hero"
     >
       <div className="flex flex-col items-center justify-center gap-20 px-5 z-10">
@@ -24,7 +24,7 @@ const Hero = () => {
             </AnimatedShinyText>
           </div>
           <div className="flex flex-col items-center justify-center gap-5 xl:gap-7">
-            <h1 className="text-7xl xl:text-[80px] font-bold bg-gradient-to-r dark:from-white dark:to-slate-300 from-black to-gray-700 bg-clip-text text-transparent tracking-tighter">
+            <h1 className="text-7xl xl:text-[80px] font-bold bg-gradient-to-r dark:from-white dark:to-slate-300 from-black to-gray-700 bg-clip-text white:text-transparent tracking-tighter">
               All notes in one place.
             </h1>
             <h2 className="text-xl xl:text-2xl sm:max-w-md sm:text-center text-neutral-900/80 dark:text-neutral-50">

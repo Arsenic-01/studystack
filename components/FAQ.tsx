@@ -7,7 +7,7 @@ const FAQ = () => {
       className="mt-10 mb-32 flex flex-col justify-center items-center gap-20 max-w-6xl w-full mx-auto"
       id="faq"
     >
-      <h1 className="text-7xl font-bold bg-gradient-to-r from-black to-gray-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+      <h1 className="text-7xl font-bold bg-gradient-to-r from-black to-gray-700 dark:from-white dark:to-slate-300 bg-clip-text white:text-transparent">
         FAQs
       </h1>
       <div className="w-full max-w-4xl  px-5">
