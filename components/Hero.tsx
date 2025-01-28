@@ -4,6 +4,7 @@ import { AnimatedShinyText } from "./ui/animated-shiny-text";
 import { ArrowRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DotPattern } from "./ui/dot-pattern";
+import { Cover } from "./ui/cover";
 
 const Hero = () => {
   return (
@@ -23,12 +24,13 @@ const Hero = () => {
               <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
             </AnimatedShinyText>
           </div>
-          <div className="flex flex-col items-center justify-center gap-5 xl:gap-7">
-            <h1 className="text-7xl xl:text-[80px] font-bold bg-gradient-to-r dark:from-white dark:to-slate-300 from-black to-gray-700 bg-clip-text white:text-transparent tracking-tighter">
+          <div className="flex flex-col items-center justify-center gap-5 xl:gap-7 bg-inherit">
+            <h1 className="text-7xl xl:text-[80px] font-bold bg-gradient-to-r  dark:from-white dark:to-slate-300 from-black to-gray-700 bg-clip-text white:text-transparent tracking-tighter">
               All notes in one place.
             </h1>
-            <h2 className="text-xl xl:text-2xl sm:max-w-md sm:text-center text-neutral-900/80 dark:text-neutral-50">
-              Boost Your Marks by using the right Resources at the right time!
+            <h2 className="text-xl xl:text-2xl sm:max-w-md sm:text-center text-neutral-900/80 dark:text-neutral-50/50 dark:sm:text-white/80 dark:bg-black ">
+              <Cover className="select-none">Boost Your Marks</Cover> by using
+              the right Resources at the right time!
             </h2>
           </div>
         </div>

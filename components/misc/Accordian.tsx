@@ -12,7 +12,7 @@ const Accordian = () => {
           value={item.title}
           aria-label={item.title}
           title={item.title}
-          className="border border-neutral-200 mt-3"
+          className="light:border light:border-neutral-200 mt-3"
         >
           <p className="text-base py-3">{item.content}</p>
         </AccordionItem>

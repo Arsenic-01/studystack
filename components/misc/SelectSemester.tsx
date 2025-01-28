@@ -5,7 +5,7 @@ import React from "react";
 
 const SelectSem = () => {
   return (
-    <Select className="max-w-xs" label="Select a semester" color="primary">
+    <Select className="max-w-xs" label="Select a semester" color="default">
       {semester.map((sems) => (
         <SelectItem key={sems.key}>{sems.label}</SelectItem>
       ))}

@@ -7,7 +7,7 @@ import { footerIcons } from "../data/index";
 const Footer = () => {
   return (
     <div>
-      <div className="flex flex-col justify-center items-center gap-16 mt-48 pt-20 pb-10 border-t-1 border-[#B4B4B4]/50">
+      <div className="flex flex-col justify-center items-center gap-16 mt-48 pt-20 pb-10 border-t-1 light:border-[#B4B4B4]/50 dark:border-white/20">
         <div className="flex flex-col md:flex-row justify-center items-center gap-10 md:gap-20 lg:gap-32  w-full mx-auto px-5">
           <div className="flex items-center">
             <Link href="/" className="inline-block">
@@ -16,7 +16,7 @@ const Footer = () => {
                 alt="Study Stack Logo"
                 width={140}
                 height={38}
-                className="select-none pointer-events-none"
+                className="select-none pointer-events-none dark:invert"
               />
             </Link>
           </div>
@@ -25,7 +25,7 @@ const Footer = () => {
               <Link
                 key={_}
                 href={item.href}
-                className="text-lg text-neutral-900/80 hover:text-neutral-900"
+                className="text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200"
               >
                 {item.title}
               </Link>
@@ -35,7 +35,7 @@ const Footer = () => {
             {footerIcons.map((item, _) => (
               <Link
                 href={item.href}
-                className="text-lg text-neutral-900/80 hover:text-neutral-900"
+                className="text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200"
                 key={_}
               >
                 <Image
@@ -43,14 +43,14 @@ const Footer = () => {
                   alt={item.name}
                   width={25}
                   height={25}
-                  className="opacity-80"
+                  className="opacity-80 dark:invert hover:opacity-100 transition-all ease-in-out duration-300"
                 />
               </Link>
             ))}
           </div>
         </div>
         <div>
-          <p className="font-normal text-black/60">
+          <p className="font-normal text-sm text-black/60 dark:text-white/60 text-center">
             {" "}
             &copy; {new Date().getFullYear()} Study Stack. All rights reserved.
           </p>
