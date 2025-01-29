@@ -6,11 +6,11 @@ import { ThemeToggle } from "./ThemeSwitcher";
 
 const navLink = [
   {
-    name: "Home",
-    href: "#home",
+    name: "About",
+    href: "#",
   },
   {
-    name: "About",
+    name: "Contact",
     href: "#",
   },
   {

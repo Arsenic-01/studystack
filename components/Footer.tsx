@@ -7,7 +7,7 @@ import { footerIcons } from "../data/index";
 const Footer = () => {
   return (
     <div>
-      <div className="flex flex-col justify-center items-center gap-16 mt-48 pt-20 pb-10 border-t-1 light:border-[#B4B4B4]/50 dark:border-white/20">
+      <div className="flex flex-col justify-center items-center gap-16  pt-20 pb-10 border-t-1 light:border-[#B4B4B4]/50 dark:border-white/20">
         <div className="flex flex-col md:flex-row justify-center items-center gap-10 md:gap-20 lg:gap-32  w-full mx-auto px-5">
           <div className="flex items-center">
             <Link href="/" className="inline-block">

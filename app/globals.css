@@ -7,21 +7,6 @@
   width: 5px;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #ffffff;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #a8a8a8;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #767676;
-}
-
 html {
   scroll-behavior: smooth;
 }

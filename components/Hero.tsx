@@ -9,7 +9,7 @@ import { Cover } from "./ui/cover";
 const Hero = () => {
   return (
     <div
-      className="my-36 md:my-44 lg:my-56 2xl:my-0 2xl:h-screen flex items-center justify-center relative"
+      className="my-40 2xl:my-0 2xl:h-screen flex items-center justify-center relative"
       id="hero"
     >
       <div className="flex flex-col items-center justify-center gap-20 px-5 z-10">
@@ -25,9 +25,11 @@ const Hero = () => {
             </AnimatedShinyText>
           </div>
           <div className="flex flex-col items-center justify-center gap-5 xl:gap-7 bg-inherit">
-            <h1 className="text-7xl xl:text-[80px] font-bold bg-gradient-to-r  dark:from-white dark:to-slate-300 from-black to-gray-700 bg-clip-text white:text-transparent tracking-tighter">
-              All notes in one place.
-            </h1>
+            <div className="dark:sm:bg-black white:bg-white">
+              <h1 className="text-6xl sm:text-7xl xl:text-[80px] font-bold bg-gradient-to-r dark:text-transparent  dark:from-white dark:to-neutral-400 light:from-black light:to-gray-700 bg-clip-text white:text-transparent tracking-tighter">
+                All notes in one place.
+              </h1>
+            </div>
             <h2 className="text-xl xl:text-2xl sm:max-w-md sm:text-center text-neutral-900/80 dark:text-neutral-50/50 dark:sm:text-white/80 light:bg-white dark:bg-black ">
               <Cover className="select-none">Boost Your Marks</Cover> by using
               the right Resources at the right time!
