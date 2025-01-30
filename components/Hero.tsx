@@ -26,7 +26,7 @@ const Hero = () => {
           </div>
           <div className="flex flex-col items-center justify-center gap-5 xl:gap-7 bg-inherit">
             <div className="dark:sm:bg-black white:bg-white">
-              <h1 className="text-6xl sm:text-7xl xl:text-[80px] font-bold bg-gradient-to-r dark:text-transparent  dark:from-white dark:to-neutral-400 light:from-black light:to-gray-700 bg-clip-text white:text-transparent tracking-tighter">
+              <h1 className="text-left sm:text-center text-6xl sm:text-7xl xl:text-[80px] font-bold bg-gradient-to-r dark:text-transparent  dark:from-white dark:to-neutral-400 light:from-black light:to-gray-700 bg-clip-text white:text-transparent tracking-tighter">
                 All notes in one place.
               </h1>
             </div>
