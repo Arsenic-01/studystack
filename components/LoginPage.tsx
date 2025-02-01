@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { RainbowButton } from "./ui/rainbow-button";
-import { useRouter } from "next/navigation";
+import { RainbowButton } from "@/components/ui/rainbow-button";
+import { toast } from "sonner";
+import type React from "react"; // Added import for React
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,32 +15,46 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ParamError = searchParams.get("error");
+
+  useEffect(() => {
+    if (ParamError) {
+      const errorMessages: { [key: string]: string } = {
+        session_expired: "Session expired. Please login again.",
+        user_not_found: "User not found. Please login again.",
+        unauthorized_admin: "You are not authorized to access this page.",
+        unauthorized_teacher: "You are not authorized to access this page.",
+        server_error: "An internal server error occurred. Please try again.",
+      };
+      setError(errorMessages[ParamError] || "An unknown error occurred.");
+      router.replace("/login", { scroll: false });
+    }
+  }, [ParamError, router]);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
-      const response = await fetch("/api/login", {
+      const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prnNo, password }),
-        credentials: "include", // Ensure cookies are included
+        credentials: "include",
       });
 
-      const data = await response.json();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
 
-      if (!response.ok) throw new Error(data.message || "Login failed");
+      toast.success("Login Successful 🎉");
 
-      console.log("Login successful:", data);
+      console.log(data);
 
-      // Redirect to dashboard
-      router.push("/student/dashboard");
+      router.push(`/${data?.role}/${data?.userId}`);
     } catch (err) {
-      setError(
+      toast.error(
         err instanceof Error ? err.message : "An unexpected error occurred"
       );
     } finally {
@@ -47,7 +63,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 rounded-xl px-4 sm:px-6 py-8 sm:py-10 shadow-lg bg-gray-50 dark:bg-zinc-900">
+    <div className="w-full max-w-md space-y-8 rounded-xl px-4 sm:px-6 py-8 sm:py-10 shadow-lg bg-gray-50 dark:bg-zinc-950">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
           Login
@@ -95,7 +111,7 @@ export default function LoginPage() {
           </div>
         </div>
         {error && (
-          <p className="text-white text-center w-full bg-red-500/60 py-2 rounded-xl">
+          <p className="text-white text-center w-full bg-red-500 dark:bg-red-500/70 py-2 text-sm rounded-lg">
             {error}
           </p>
         )}

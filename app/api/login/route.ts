@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { db, Query, USER_COLLECTION_ID, DATABASE_ID } from "@/lib/appwrite";
+import { cookies } from "next/headers";
+import { db, USER_COLLECTION_ID, DATABASE_ID } from "@/lib/appwrite";
+import { Query } from "node-appwrite";
 import bcrypt from "bcryptjs";
-import { cookies } from "next/headers"; // For secure cookie handling
-import crypto from "crypto"; // To generate a secure session token
+import { randomUUID } from "crypto"; // Generate a secure session token
 
 export async function POST(req: Request) {
   try {
@@ -35,29 +36,23 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate a session token (e.g., using a secure random string or JWT)
-    const sessionToken = crypto.randomBytes(64).toString("hex"); // A secure random token
+    // Generate a new session token
+    const sessionToken = randomUUID();
 
-    // Update the user's sessionToken field in the database
-    await db.updateDocument(
-      DATABASE_ID!,
-      USER_COLLECTION_ID!,
-      user.$id, // User document ID
-      {
-        sessionToken: sessionToken.toString(), // Set the session token
-        lastLogin: new Date().toISOString(), // Update last login time
-      }
-    );
-
-    // Set the session token in the httpOnly cookie for better security
-    (await cookies()).set("sessionToken", sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      path: "/", // Path should be set to root for universal access
-      maxAge: 60 * 60 * 24 * 7, // Set the cookie expiration (7 days)
+    // Update the user's sessionToken in the database
+    await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, user.$id, {
+      sessionToken,
+      lastLogin: new Date().toISOString(),
     });
 
-    // Return a successful response
+    // Set session token in a secure cookie
+    (await cookies()).set("sessionToken", sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
     return NextResponse.json({
       message: "Login successful",
       userId: user.$id,
