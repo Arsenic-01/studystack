@@ -4,7 +4,6 @@ import { fetchSubjects } from "@/lib/actions/Student.actions";
 import { Subject } from "@/lib/appwrite_types";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-// import { ComboboxDemo } from "@/components/ComboBox";
 import { Input } from "@/components/ui/input";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 
@@ -39,7 +38,6 @@ export default async function Page({
             </span>
           </div>
           <Input placeholder="Search for subject" className="max-w-sm" />
-          {/* <ComboboxDemo /> */}
         </div>
         {res.map((subject: Subject) => (
           <SubjectCard key={subject.subjectId} subject={subject} />
