@@ -7,13 +7,12 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: { userId: string };
+type PageProps = {
+  params: { userId: string }; // Typing params correctly as a plain object, not a promise
   searchParams: { page?: string };
-}) {
+};
+
+export default async function Page({ params, searchParams }: PageProps) {
   const { page } = searchParams;
   const currentPage = Number(page) || 1; // Get current page from query params
   const limit = 5; // Number of items per page
