@@ -28,6 +28,8 @@ export default {
       animation: {
         rainbow: "rainbow var(--speed, 2s) infinite linear",
         "shiny-text": "shiny-text 8s infinite",
+        scroll:
+          "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
       },
       keyframes: {
         rainbow: {
@@ -36,6 +38,11 @@ export default {
           },
           "100%": {
             "background-position": "200%",
+          },
+        },
+        scroll: {
+          to: {
+            transform: "translate(calc(-50% - 0.5rem))",
           },
         },
         "shiny-text": {
