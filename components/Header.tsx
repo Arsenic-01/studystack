@@ -1,27 +1,64 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LoginButton from "./misc/Button";
 import { ThemeToggle } from "./ThemeSwitcher";
 import { twMerge } from "tailwind-merge";
 import { AnimatePresence, motion } from "framer-motion";
+import { UserContext } from "@/context/UserContext";
+import { Profile } from "@/lib/appwrite_types";
+import { getLoggedInUser } from "@/lib/getUserDetails";
+import ProfileCard from "./ProfileCard";
+
 const navLink = [
   {
     name: "About",
-    href: "#",
+    href: "/",
   },
   {
     name: "Contact",
-    href: "#",
+    href: "/",
   },
   {
     name: "FAQs",
-    href: "#faq",
+    href: "/#faq",
   },
 ];
 
 const Header = () => {
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    throw new Error(
+      "NavbarComponent must be used within a UserContextProvider"
+    );
+  }
+  const [user, setUser] = useState<Profile | null>(null);
+  const { isLoggedIn, setIsLoggedIn } = userContext;
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const result = await getLoggedInUser();
+        if (!result) {
+          setIsLoggedIn(false);
+          return;
+        } else {
+          setUser(result);
+          setIsLoggedIn(true);
+          console.log(result);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setUser(null);
+        setIsLoggedIn(false);
+      }
+    };
+
+    fetchUser();
+  }, [isLoggedIn, setIsLoggedIn]);
+
   const [isOpen, setIsOpen] = useState(false);
   return (
     <nav className="fixed top-0 w-full px-5 z-50">
@@ -52,7 +89,7 @@ const Header = () => {
           <div className="flex items-center gap-2 sm:gap-3 justify-end">
             <div className="sm:hidden flex items-center gap-2 sm:gap-3 justify-end">
               <ThemeToggle />
-
+              {isLoggedIn && user && <ProfileCard user={user} />}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -97,7 +134,8 @@ const Header = () => {
             </div>
             <div className="hidden sm:flex items-center gap-2 sm:gap-3 justify-end">
               <ThemeToggle />
-              <LoginButton text="Login" />
+              {!isLoggedIn && <LoginButton text="Login" />}
+              {isLoggedIn && user && <ProfileCard user={user} />}
             </div>
           </div>
         </div>
@@ -119,7 +157,7 @@ const Header = () => {
                     {item.name}
                   </Link>
                 ))}
-                <LoginButton className="w-full" text="Login" />
+                {!isLoggedIn && <LoginButton text="Login" className="w-full" />}
               </div>
             </motion.div>
           )}

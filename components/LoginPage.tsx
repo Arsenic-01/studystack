@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { toast } from "sonner";
 import type React from "react"; // Added import for React
+import { UserContext } from "@/context/UserContext";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,6 +32,13 @@ export default function LoginPage() {
       router.replace("/login", { scroll: false });
     }
   }, [ParamError, router]);
+  const userContext = useContext(UserContext);
+  if (!userContext) {
+    throw new Error(
+      "NavbarComponent must be used within a UserContextProvider"
+    );
+  }
+  const { setIsLoggedIn } = userContext;
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,10 +56,11 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
-      toast.success("Login Successful 🎉");
+      const toastMessage =
+        `Logged in as ${data.name} 🎉` || "Login successful!🎉";
+      toast.success(toastMessage);
 
-      console.log(data);
-
+      setIsLoggedIn(true);
       router.push(`/${data?.role}/${data?.userId}`);
     } catch (err) {
       toast.error(

@@ -48,6 +48,13 @@ export interface Admin extends User {
   lastLogin?: Date | null;
 }
 
+export interface Profile {
+  name: string;
+  prnNo: string;
+  role: "admin" | "student" | "teacher";
+  email: string;
+}
+
 export interface updateUserData {
   id: string;
   prnNo?: string;

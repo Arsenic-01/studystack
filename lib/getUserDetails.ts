@@ -1,4 +1,7 @@
-import { db, USER_COLLECTION_ID, DATABASE_ID } from "@/lib/appwrite";
+"use server";
+
+import { db, USER_COLLECTION_ID, DATABASE_ID, Query } from "@/lib/appwrite";
+import { cookies } from "next/headers";
 
 export async function getUserDetails(userId: string) {
   try {
@@ -23,5 +26,52 @@ export async function getUserDetails(userId: string) {
   } catch (error) {
     console.error("Error fetching user details:", error);
     throw new Error("Failed to fetch user details");
+  }
+}
+export async function getUserForProfile(sessionToken: string) {
+  try {
+    // Fetch user using session token or userId
+    const user = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
+      Query.equal("sessionToken", sessionToken),
+    ]);
+    if (user.total > 0) {
+      const userDetails = user.documents[0];
+      return {
+        name: userDetails.name,
+        prnNo: userDetails.prnNo,
+        role: userDetails.role,
+        email: userDetails.email,
+        lastLogin: userDetails.lastLogin,
+      };
+    }
+    throw new Error("User not found");
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    throw new Error("Failed to fetch user details");
+  }
+}
+
+export async function getLoggedInUser() {
+  try {
+    const cookieStore = cookies();
+    const sessionToken = (await cookieStore).get("sessionToken")?.value;
+    if (!sessionToken) {
+      return null;
+    }
+    // Fetch user using session token
+    const user = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
+      Query.equal("sessionToken", sessionToken),
+    ]);
+    if (user.total > 0) {
+      return {
+        name: user.documents[0].name,
+        prnNo: user.documents[0].prnNo,
+        role: user.documents[0].role,
+        email: user.documents[0].email,
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching user details:", error);
   }
 }

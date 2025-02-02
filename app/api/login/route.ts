@@ -57,6 +57,7 @@ export async function POST(req: Request) {
       message: "Login successful",
       userId: user.$id,
       role: user.role,
+      name: user.name,
     });
   } catch (error) {
     console.error("Login error:", error);

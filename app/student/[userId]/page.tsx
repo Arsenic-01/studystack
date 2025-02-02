@@ -13,7 +13,7 @@ type PageProps = {
 };
 
 export default async function Page({ params, searchParams }: PageProps) {
-  const { page } = searchParams;
+  const { page } = await searchParams;
   const currentPage = Number(page) || 1; // Get current page from query params
   const limit = 5; // Number of items per page
   const offset = (currentPage - 1) * limit; // Calculate offset
@@ -22,7 +22,7 @@ export default async function Page({ params, searchParams }: PageProps) {
   const res = await fetchSubjects(limit, offset);
 
   // Extract userId from params and fetch current user
-  const { userId } = params;
+  const { userId } = await params;
   const user = await getCurrentUser({ userId });
 
   if (!res) {
@@ -31,14 +31,9 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   return (
     <div className="flex flex-col gap-16 items-center justify-center w-full py-20 md:py-36 px-3">
-      <div className="flex flex-col gap-4 items-start justify-center w-full max-w-6xl  py-12 px-3 md:px-8">
+      <div className="flex flex-col gap-4 items-start justify-center w-full max-w-5xl  py-12 px-3 md:px-8">
         <div className="flex flex-col md:flex-row gap-6 justify-between w-full items-start mb-10 md:mb-16">
-          <div className="flex flex-col gap-4">
-            <h1 className="text-3xl font-bold">Hello, {user?.name}</h1>
-            <span className="text-lg text-neutral-600 dark:text-neutral-400">
-              Logged In as {user?.prnNo}, {user?.email}
-            </span>
-          </div>
+          <h1 className="text-3xl font-bold">Hello, {user?.name}</h1>
           <Input placeholder="Search for subject" className="max-w-sm" />
         </div>
         {res.map((subject: Subject) => (

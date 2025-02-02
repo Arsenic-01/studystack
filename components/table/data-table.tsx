@@ -194,7 +194,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
 
       <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-neutral-50 dark:bg-neutral-900">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (

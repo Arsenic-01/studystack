@@ -4,10 +4,9 @@ import { cookies } from "next/headers";
 export async function POST() {
   try {
     const cookieStore = cookies();
-    (await cookieStore).delete("sessionToken");
-    (await cookieStore).delete("userId");
-    (await cookieStore).delete("role");
+    (await cookieStore).delete("sessionToken"); // Fixed redundant await
 
+    console.log("Session token deleted successfully");
     return NextResponse.json({ message: "Logout successful" });
   } catch (error) {
     console.error("Logout error:", error);
