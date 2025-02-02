@@ -21,10 +21,15 @@ export async function fetchUsers() {
 
 export async function updateUser({ data }: { data: updateUserData }) {
   try {
-    console.log("Updating user:", data);
-
-    await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, data.id, {
-      ...data,
+    const userId = data.id;
+    const filteredData = {
+      prnNo: data.prnNo,
+      name: data.name,
+      role: data.role,
+      email: data.email,
+    };
+    await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, userId, {
+      ...filteredData,
     });
     return true;
   } catch (error) {

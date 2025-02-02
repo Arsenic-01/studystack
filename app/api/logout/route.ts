@@ -6,7 +6,6 @@ export async function POST() {
     const cookieStore = cookies();
     (await cookieStore).delete("sessionToken"); // Fixed redundant await
 
-    console.log("Session token deleted successfully");
     return NextResponse.json({ message: "Logout successful" });
   } catch (error) {
     console.error("Logout error:", error);
