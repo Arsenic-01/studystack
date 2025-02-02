@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Select, SelectItem } from "@heroui/select";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { toast } from "sonner";
+import { SharedSelection } from "@heroui/react";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -25,9 +26,9 @@ export default function RegisterPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const handleRoleChange = (selectedKeys: any) => {
-    const selectedRole = Array.from(selectedKeys).join(", ");
-    setForm({ ...form, role: selectedRole });
+  const handleRoleChange = (selection: SharedSelection) => {
+    const selectedRole = selection.currentKey || ""; // Get the selected role from currentKey
+    setForm((prevForm) => ({ ...prevForm, role: selectedRole }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -1,145 +1,297 @@
-// "use client";
+"use client";
 
-// import {
-//   ColumnDef,
-//   flexRender,
-//   getCoreRowModel,
-//   useReactTable,
-// } from "@tanstack/react-table";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
-// import { useState } from "react";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  getSortedRowModel,
+  type SortingState,
+  type ColumnFiltersState,
+  getFilteredRowModel,
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { deleteUser, fetchUsers } from "@/lib/actions/Admin.actions";
+import { UpdateUserDialog } from "../update-user-dialog";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Dialog, DialogClose, DialogContent, DialogTitle } from "../ui/dialog";
 
-// interface DataTableProps<TData, TValue> {
-//   columns: ColumnDef<TData, TValue>[];
-//   data: TData[];
-//   handleDelete: (userId: string) => void;
-//   handleSave: (userId: string, updatedData: TData) => void; // Callback to save changes
-// }
+type User = {
+  id: string;
+  prnNo: string;
+  role: "admin" | "teacher" | "student";
+  email: string;
+  name: string;
+};
 
-// export function DataTable<TData extends { id: string }, TValue>({
-//   columns,
-//   data,
-//   handleDelete,
-//   handleSave,
-// }: DataTableProps<TData, TValue>) {
-//   const [editingRowId, setEditingRowId] = useState<string | null>(null);
-//   const [editedData, setEditedData] = useState<TData | null>(null);
+interface UsersTableProps {
+  initialData: User[];
+}
 
-//   const table = useReactTable({
-//     data,
-//     columns,
-//     getCoreRowModel: getCoreRowModel(),
-//   });
+export function UsersTable({ initialData }: UsersTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [updateUserData, setUpdateUserData] = useState<User | null>(null);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
-//   const handleEdit = (row: TData) => {
-//     setEditingRowId(row.id);
-//     setEditedData(row);
-//   };
+  const { data: users = initialData } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: fetchUsers,
+    initialData,
+  });
 
-//   const handleChange = (
-//     e: React.ChangeEvent<HTMLInputElement>,
-//     column: string
-//   ) => {
-//     if (editedData) {
-//       setEditedData({
-//         ...editedData,
-//         [column]: e.target.value,
-//       });
-//     }
-//   };
+  const deleteMutation = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User deleted successfully");
+    },
+  });
 
-//   const handleSaveChanges = () => {
-//     if (editedData) {
-//       handleSave(editedData.id, editedData); // Save the updated data
-//       setEditingRowId(null);
-//       setEditedData(null);
-//     }
-//   };
+  const columns: ColumnDef<User>[] = [
+    {
+      accessorKey: "prnNo",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          PRN No
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const prnNo = row.getValue("prnNo") as string;
+        return <span className="font-medium ml-4">{prnNo}</span>;
+      },
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => {
+        const role = row.getValue("role") as string;
+        return (
+          <span
+            className={`capitalize px-4 py-1 rounded-full font-medium
+              ${
+                role === "admin"
+                  ? "bg-red-900/20 text-red-700 dark:bg-red-900/40 dark:text-red-400"
+                  : ""
+              }
+              ${
+                role === "teacher"
+                  ? "bg-green-900/20 text-green-700 dark:bg-green-900/60 dark:text-green-500"
+                  : ""
+              }
+              ${
+                role === "student"
+                  ? "bg-blue-900/20 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400"
+                  : ""
+              }`}
+          >
+            {role}
+          </span>
+        );
+      },
+    },
+    { accessorKey: "email", header: "Email" },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => {
+        const name = row.getValue("name") as string;
+        return (
+          <span className="font-medium whitespace-nowrap md:whitespace-normal">
+            {name}
+          </span>
+        );
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => setUpdateUserData(user)}>
+                Update user
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setDeleteUserId(user.id)}>
+                Delete user
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
 
-//   return (
-//     <div className="rounded-md border overflow-x-auto">
-//       <Table>
-//         <TableHeader>
-//           {table.getHeaderGroups().map((headerGroup) => (
-//             <TableRow key={headerGroup.id}>
-//               {headerGroup.headers.map((header) => (
-//                 <TableHead key={header.id}>
-//                   {header.isPlaceholder
-//                     ? null
-//                     : flexRender(
-//                         header.column.columnDef.header,
-//                         header.getContext()
-//                       )}
-//                 </TableHead>
-//               ))}
-//             </TableRow>
-//           ))}
-//         </TableHeader>
-//         <TableBody>
-//           {table.getRowModel().rows.length ? (
-//             table.getRowModel().rows.map((row) => (
-//               <TableRow key={row.id}>
-//                 {row.getVisibleCells().map((cell) => (
-//                   <TableCell key={cell.id}>
-//                     {editingRowId === row.id ? (
-//                       <input
-//                         type="text"
-//                         value={
-//                           editedData
-//                             ? (editedData[cell.column.id] as string)
-//                             : ""
-//                         }
-//                         onChange={(e) => handleChange(e, cell.column.id)}
-//                         className="p-1 border border-gray-300 rounded"
-//                       />
-//                     ) : (
-//                       flexRender(cell.column.columnDef.cell, cell.getContext())
-//                     )}
-//                   </TableCell>
-//                 ))}
-//                 <TableCell>
-//                   {editingRowId === row.id ? (
-//                     <button
-//                       onClick={handleSaveChanges}
-//                       className="text-green-600"
-//                     >
-//                       Save
-//                     </button>
-//                   ) : (
-//                     <button
-//                       onClick={() => handleEdit(row.original)}
-//                       className="text-blue-600"
-//                     >
-//                       Edit
-//                     </button>
-//                   )}
-//                 </TableCell>
-//                 <TableCell>
-//                   <button
-//                     onClick={() => handleDelete(row.original.id)}
-//                     className="text-red-600"
-//                   >
-//                     Delete
-//                   </button>
-//                 </TableCell>
-//               </TableRow>
-//             ))
-//           ) : (
-//             <TableRow>
-//               <TableCell colSpan={columns.length} className="h-24 text-center">
-//                 No results.
-//               </TableCell>
-//             </TableRow>
-//           )}
-//         </TableBody>
-//       </Table>
-//     </div>
-//   );
-// }
+  const table = useReactTable({
+    data: users,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+    },
+  });
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between py-4">
+        <Input
+          placeholder="Search user by name"
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(e) =>
+            table.getColumn("name")?.setFilterValue(e.target.value)
+          }
+          className="w-full sm:max-w-sm"
+        />
+        <Button
+          variant="default"
+          className="sm:ml-auto w-full sm:w-auto"
+          onClick={() => router.push("/admin/register")}
+        >
+          Register new user
+        </Button>
+      </div>
+
+      <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
+
+      {updateUserData && (
+        <UpdateUserDialog
+          user={updateUserData}
+          onClose={() => setUpdateUserData(null)}
+          onUpdate={() => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            setUpdateUserData(null);
+            toast.success("User updated successfully");
+          }}
+        />
+      )}
+
+      <Dialog open={!!deleteUserId} onOpenChange={() => setDeleteUserId(null)}>
+        <DialogContent>
+          <DialogTitle>Confirm Deletion</DialogTitle>
+          <p>Are you sure you want to delete this user?</p>
+          <div className="flex justify-end gap-2 mt-4">
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (deleteUserId) deleteMutation.mutate(deleteUserId);
+                setDeleteUserId(null);
+              }}
+            >
+              Confirm Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

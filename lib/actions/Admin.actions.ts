@@ -7,7 +7,7 @@ export async function fetchUsers() {
   try {
     const response = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!);
     return response.documents.map((doc) => ({
-      userid: doc.$id,
+      id: doc.$id,
       prnNo: doc.prnNo,
       name: doc.name,
       role: doc.role as "admin" | "student" | "teacher",
@@ -19,20 +19,46 @@ export async function fetchUsers() {
   }
 }
 
-export async function updateUser({
-  userId,
-  data,
-}: {
-  userId: string;
-  data: updateUserData;
-}) {
+export async function updateUser({ data }: { data: updateUserData }) {
   try {
-    await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, userId, {
+    console.log("Updating user:", data);
+
+    await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, data.id, {
       ...data,
     });
     return true;
   } catch (error) {
+    console.log("Error updating user:", error);
+    return false;
+  }
+}
+
+export async function deleteUser(userId: string) {
+  try {
+    await db.deleteDocument(DATABASE_ID!, USER_COLLECTION_ID!, userId);
+    return true;
+  } catch (error) {
     console.log("Error deleting user:", error);
     return false;
+  }
+}
+
+export async function getCurrentUser({ userId }: { userId: string }) {
+  try {
+    const response = await db.getDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      userId
+    );
+    return {
+      userId: response.$id,
+      prnNo: response.prnNo,
+      name: response.name,
+      role: response.role as "admin" | "student" | "teacher",
+      email: response.email,
+    };
+  } catch (error) {
+    console.log("Error fetching user:", error);
+    return null;
   }
 }

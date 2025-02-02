@@ -49,6 +49,7 @@ export interface Admin extends User {
 }
 
 export interface updateUserData {
+  id: string;
   prnNo?: string;
   name?: string;
   email?: string;
@@ -69,6 +70,6 @@ export interface Subject {
   name: string;
   courseId: string;
   semester: number;
-  teachers: Teacher[];
-  notes: Note[];
+  acronym: string;
+  notes?: Note[];
 }
