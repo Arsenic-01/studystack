@@ -14,13 +14,16 @@ export default async function Page({
   params: { userId: string };
   searchParams: { page?: string };
 }) {
-  const { page } = await searchParams;
+  const { page } = searchParams;
   const currentPage = Number(page) || 1; // Get current page from query params
   const limit = 5; // Number of items per page
   const offset = (currentPage - 1) * limit; // Calculate offset
 
-  const res = await fetchSubjects(limit, offset); // Fetch paginated data
-  const { userId } = await params;
+  // Fetch subjects with pagination
+  const res = await fetchSubjects(limit, offset);
+
+  // Extract userId from params and fetch current user
+  const { userId } = params;
   const user = await getCurrentUser({ userId });
 
   if (!res) {
