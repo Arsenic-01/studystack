@@ -47,12 +47,13 @@ export interface Admin extends User {
   sessionToken?: string | null;
   lastLogin?: Date | null;
 }
-
-export interface Profile {
+interface UserProps {
+  userId: string;
   name: string;
-  prnNo: string;
-  role: "admin" | "student" | "teacher";
   email: string;
+  prnNo: string;
+  role: string;
+  lastLogin: string;
 }
 
 export interface updateUserData {

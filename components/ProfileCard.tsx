@@ -1,5 +1,5 @@
 // ProfileCard.tsx
-import { Profile } from "@/lib/appwrite_types";
+import { UserProps } from "@/lib/appwrite_types";
 import {
   Avatar,
   Dropdown,
@@ -7,30 +7,14 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@heroui/react";
-import React, { useContext } from "react";
-import { UserContext } from "@/context/UserContext";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
-const ProfileCard = ({ user }: { user: Profile }) => {
-  const { setIsLoggedIn } = useContext(UserContext)!;
-  const router = useRouter();
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      setIsLoggedIn(false);
-      toast.success("Logout Successful 🎉");
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
+const ProfileCard = ({
+  user,
+  handleLogout,
+}: {
+  user: UserProps;
+  handleLogout: () => void;
+}) => {
   return (
     <div>
       <Dropdown placement="bottom-end">

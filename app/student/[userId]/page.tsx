@@ -30,41 +30,54 @@ export default async function Page({ params, searchParams }: PageProps) {
   }
 
   return (
-    <div className="flex flex-col gap-16 items-center justify-center w-full py-20 md:py-36 px-3">
-      <div className="flex flex-col gap-4 items-start justify-center w-full max-w-5xl  py-12 px-3 md:px-8">
-        <div className="flex flex-col md:flex-row gap-6 justify-between w-full items-start mb-10 md:mb-16">
-          <h1 className="text-3xl font-bold">Hello, {user?.name}</h1>
-          <Input placeholder="Search for subject" className="max-w-sm" />
-        </div>
-        {res.map((subject: Subject) => (
-          <SubjectCard key={subject.subjectId} subject={subject} />
-        ))}
-        <div className="flex justify-between w-full mt-8">
-          {currentPage === 1 ? (
-            <Button variant="outline" disabled>
-              <ArrowLeftIcon className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button variant="outline" asChild>
-              <Link href={`?page=${currentPage - 1}`}>
-                <ArrowLeftIcon className="h-4 w-4" />
-              </Link>
-            </Button>
-          )}
+    <>
+      {user && (
+        <div className="flex flex-col gap-16 items-center justify-center w-full py-20 md:py-36 px-3">
+          <div className="flex flex-col gap-4 items-start justify-center w-full max-w-5xl  py-12 px-3 md:px-8">
+            <div className="flex flex-col md:flex-row gap-6 justify-between w-full items-start mb-10 md:mb-16">
+              <h1 className="text-3xl font-bold">Hello, {user?.name}</h1>
+              <Input placeholder="Search for subject" className="max-w-sm" />
+            </div>
+            {res.map((subject: Subject) => (
+              <SubjectCard key={subject.subjectId} subject={subject} />
+            ))}
+            <div className="flex justify-between w-full mt-8">
+              {currentPage === 1 ? (
+                <Button variant="outline" disabled>
+                  <ArrowLeftIcon className="h-4 w-4" />
+                </Button>
+              ) : (
+                <Button variant="outline" asChild>
+                  <Link href={`?page=${currentPage - 1}`}>
+                    <ArrowLeftIcon className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
 
-          {res.length < limit ? (
-            <Button variant="outline" disabled>
-              <ArrowRightIcon className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button variant="outline" asChild>
-              <Link href={`?page=${currentPage + 1}`}>
-                <ArrowRightIcon className="h-4 w-4" />
-              </Link>
-            </Button>
-          )}
+              {res.length < limit ? (
+                <Button variant="outline" disabled>
+                  <ArrowRightIcon className="h-4 w-4" />
+                </Button>
+              ) : (
+                <Button variant="outline" asChild>
+                  <Link href={`?page=${currentPage + 1}`}>
+                    <ArrowRightIcon className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+      {!user && (
+        <div className="flex flex-col gap-4 items-start justify-center w-full max-w-5xl  py-12 px-3 md:px-8">
+          <h1 className="text-3xl font-bold">You are not logged in</h1>
+          <p className="text-lg">Please login to view your subjects.</p>
+          <Button asChild>
+            <Link href="/login">Login</Link>
+          </Button>
+        </div>
+      )}
+    </>
   );
 }

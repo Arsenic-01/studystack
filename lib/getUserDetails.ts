@@ -2,6 +2,7 @@
 
 import { db, USER_COLLECTION_ID, DATABASE_ID, Query } from "@/lib/appwrite";
 import { cookies } from "next/headers";
+import { UserProps } from "./appwrite_types";
 
 export async function getUserDetails(userId: string) {
   try {
@@ -51,27 +52,29 @@ export async function getUserForProfile(sessionToken: string) {
   }
 }
 
-export async function getLoggedInUser() {
+export async function getLoggedInUser(): Promise<UserProps | null> {
   try {
     const cookieStore = cookies();
     const sessionToken = (await cookieStore).get("sessionToken")?.value;
     if (!sessionToken) {
       return null;
     }
-    // Fetch user using session token
     const user = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
       Query.equal("sessionToken", sessionToken),
     ]);
     if (user.total > 0) {
       return {
+        userId: user.documents[0].$id,
         name: user.documents[0].name,
         prnNo: user.documents[0].prnNo,
         role: user.documents[0].role,
         email: user.documents[0].email,
+        lastLogin: user.documents[0].lastLogin,
       };
     }
     return null;
   } catch (error) {
     console.error("Error fetching user details:", error);
+    return null;
   }
 }
