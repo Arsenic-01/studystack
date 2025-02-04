@@ -30,13 +30,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { MoreHorizontal, ArrowUpDown, PlusCircle } from "lucide-react";
 import { deleteUser, fetchUsers } from "@/lib/actions/Admin.actions";
 import { UpdateUserDialog } from "../update-user-dialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "../ui/dialog";
 import { UserContext } from "@/context/UserContext";
+import Link from "next/link";
 type Role = "admin" | "teacher" | "student";
 
 type User = {
@@ -175,135 +176,145 @@ export function UsersTable({ initialData }: UsersTableProps) {
     <div>
       {isLoggedIn ? (
         <>
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between py-4">
-            <Input
-              placeholder="Search user by name"
-              value={
-                (table.getColumn("name")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(e) =>
-                table.getColumn("name")?.setFilterValue(e.target.value)
-              }
-              className="w-full sm:max-w-sm"
-            />
-            <Button
-              onClick={() => router.push("/admin/register")}
-              className="w-full sm:w-auto"
-            >
-              Register new user
-            </Button>
-          </div>
+          <div className="container mx-auto py-36 xl:py-40 md:max-w-6xl px-5">
+            <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
-          <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
-            <Table>
-              <TableHeader className="bg-neutral-50 dark:bg-neutral-950">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between py-4">
+              <Input
+                placeholder="Search user by name"
+                value={
+                  (table.getColumn("name")?.getFilterValue() as string) ?? ""
+                }
+                onChange={(e) =>
+                  table.getColumn("name")?.setFilterValue(e.target.value)
+                }
+                className="w-full sm:max-w-sm"
+              />
+              <Button
+                onClick={() => router.push("/admin/register")}
+                className="w-full sm:w-auto inline-flex justify-center items-center gap-2"
+              >
+                Register new user{" "}
+                <PlusCircle className="h-6 w-6 text-green-600" />
+              </Button>
+            </div>
+
+            <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
+              <Table>
+                <TableHeader className="bg-neutral-50 dark:bg-neutral-950">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <TableHead key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
                       ))}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
 
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Next
+              </Button>
+            </div>
+
+            {updateUserData && (
+              <UpdateUserDialog
+                user={updateUserData}
+                onClose={() => setUpdateUserData(null)}
+                onUpdate={() => {
+                  queryClient.invalidateQueries({ queryKey: ["users"] });
+                  setUpdateUserData(null);
+                  toast.success("User updated successfully");
+                }}
+              />
+            )}
+
+            <Dialog
+              open={!!deleteUserId}
+              onOpenChange={() => setDeleteUserId(null)}
             >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
+              <DialogContent>
+                <DialogTitle>Confirm Deletion</DialogTitle>
+                <p>Are you sure you want to delete this user?</p>
+                <div className="flex justify-end gap-2 mt-4">
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      if (deleteUserId) deleteMutation.mutate(deleteUserId);
+                      setDeleteUserId(null);
+                    }}
+                  >
+                    Confirm Delete
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
-
-          {updateUserData && (
-            <UpdateUserDialog
-              user={updateUserData}
-              onClose={() => setUpdateUserData(null)}
-              onUpdate={() => {
-                queryClient.invalidateQueries({ queryKey: ["users"] });
-                setUpdateUserData(null);
-                toast.success("User updated successfully");
-              }}
-            />
-          )}
-
-          <Dialog
-            open={!!deleteUserId}
-            onOpenChange={() => setDeleteUserId(null)}
-          >
-            <DialogContent>
-              <DialogTitle>Confirm Deletion</DialogTitle>
-              <p>Are you sure you want to delete this user?</p>
-              <div className="flex justify-end gap-2 mt-4">
-                <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DialogClose>
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    if (deleteUserId) deleteMutation.mutate(deleteUserId);
-                    setDeleteUserId(null);
-                  }}
-                >
-                  Confirm Delete
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </>
       ) : (
-        <div className="flex flex-col gap-4 items-center justify-center w-full py-20 md:py-36 px-3">
-          <h1 className="text-3xl font-bold">
-            You need to be logged in to see this page
-          </h1>
-          <Button onClick={() => router.push("/login")}>Login</Button>
+        <div className="flex flex-col items-center justify-center w-full min-h-screen">
+          <div className="flex flex-col gap-4 items-center justify-center w-full max-w-5xl  py-12 px-3 md:px-8">
+            <h1 className="text-3xl font-bold">
+              You are not logged in or put invalid URL
+            </h1>
+            <p className="text-lg">Please login to view your subjects.</p>
+            <Button asChild>
+              <Link href="/">Login</Link>
+            </Button>
+          </div>
         </div>
       )}
     </div>

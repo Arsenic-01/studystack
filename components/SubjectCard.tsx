@@ -1,7 +1,8 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { LucideArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Subject } from "@/lib/appwrite_types";
+import UploadNotesButton from "./misc/UploadNotesButton";
 
 const SubjectCard = ({ subject }: { subject: Subject }) => {
   return (
@@ -17,10 +18,14 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
           Course Code : {subject.courseId}
         </h3>
       </div>
-      <div className="inline-flex justify-end pt-5  w-full">
-        <Button className="rounded-full px-5 py-2 items-self-end">
-          View Notes <LucideArrowRight />
-        </Button>
+      <div className="flex flex-col sm:inline-flex gap-3 justify-end pt-5  w-full">
+        <div className="flex flex-col md:flex-row justify-end w-full gap-2">
+          <UploadNotesButton />
+
+          <Button className="rounded-full px-5 py-2 items-self-end w-full sm:w-auto">
+            View Notes <ArrowUpRight />
+          </Button>
+        </div>
       </div>
     </div>
   );

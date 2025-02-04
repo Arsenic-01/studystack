@@ -48,7 +48,7 @@ export default function RegisterPage() {
 
       toast.success("Registration successful!🎉 Please login.");
       // Redirect to login page after successful registration
-      router.push("/login");
+      router.push("/");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred"
@@ -63,7 +63,7 @@ export default function RegisterPage() {
       suppressHydrationWarning
       className="flex min-h-screen flex-col items-center justify-center py-24 xl:py-36 px-5"
     >
-      <div className="w-full max-w-md space-y-8 rounded-xl px-4 sm:px-6 py-8 sm:py-10 shadow-lg bg-gray-50 dark:bg-zinc-950">
+      <div className="w-full max-w-md space-y-8 rounded-xl px-4 sm:px-6 py-8 sm:py-10 shadow-lg bg-gray-50 dark:bg-neutral-900">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
             Register

@@ -1,15 +1,14 @@
-import FAQ from "@/components/FAQ";
-import Hero from "@/components/Hero";
-import { InfiniteMovingCardsDemo } from "@/components/InfiniteMovingCardsDemo";
-import { CardHoverEffectDemo } from "@/components/CardHoverEffectDemo";
-
-export default function Home() {
+import LoginPage from "@/components/LoginPage";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
+const page = () => {
   return (
-    <div>
-      <Hero />
-      <CardHoverEffectDemo />
-      <InfiniteMovingCardsDemo />
-      <FAQ />
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center py-24 px-5">
+      <Suspense fallback={<Skeleton className="w-fit h-[400px]" />}>
+        <LoginPage />
+      </Suspense>
+    </main>
   );
-}
+};
+
+export default page;

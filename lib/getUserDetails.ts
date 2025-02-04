@@ -38,6 +38,7 @@ export async function getUserForProfile(sessionToken: string) {
     if (user.total > 0) {
       const userDetails = user.documents[0];
       return {
+        userId: userDetails.$id,
         name: userDetails.name,
         prnNo: userDetails.prnNo,
         role: userDetails.role,

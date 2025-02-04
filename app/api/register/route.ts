@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     const user = await db.createDocument(
       DATABASE_ID!,
       USER_COLLECTION_ID!,
-      ID.unique(),
+      userId,
       {
         userId,
         name,

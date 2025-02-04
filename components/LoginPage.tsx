@@ -6,22 +6,26 @@ import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { toast } from "sonner";
-import type React from "react"; // Added import for React
+import type React from "react";
 import { UserContext } from "@/context/UserContext";
 
 export default function LoginPage() {
   const router = useRouter();
-
   const userContext = useContext(UserContext);
+
   if (!userContext) {
-    throw new Error(
-      "NavbarComponent must be used within a UserContextProvider"
-    );
+    throw new Error("LoginPage must be used within a UserContextProvider");
   }
-  const { setIsLoggedIn, isLoggedIn, user } = userContext;
+
+  const { setIsLoggedIn, isLoggedIn, user, setUser } = userContext;
+
   useEffect(() => {
     if (isLoggedIn && user) {
-      router.push(`/${user?.role}/${user?.userId}`);
+      if (user.role === "admin") {
+        router.push(`/admin/${user.userId}`);
+      } else {
+        router.push("/home");
+      }
     }
   }, [isLoggedIn, user, router]);
 
@@ -31,6 +35,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -45,12 +50,17 @@ export default function LoginPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      setIsLoggedIn(true);
-      const toastMessage =
-        `Logged in as ${data.name} 🎉` || "Login successful!🎉";
-      toast.success(toastMessage);
+      console.log("Login response:", data);
 
-      router.push(`/${data?.role}/${data?.userId}`);
+      setIsLoggedIn(true);
+      setUser(data); // Setting user data here
+
+      toast.success(`Logged in as ${data.name} 🎉`);
+      if (data.role === "admin") {
+        router.push(`/admin/${data.userId}`);
+      } else {
+        router.push("/home");
+      }
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "An unexpected error occurred"
@@ -61,7 +71,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 rounded-xl px-4 sm:px-6 py-8 sm:py-10 shadow-lg bg-gray-50 dark:bg-zinc-950">
+    <div className="w-full max-w-md space-y-8 rounded-xl px-4 sm:px-6 py-8 sm:py-10 shadow-lg bg-gray-100 dark:bg-neutral-900">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
           Login

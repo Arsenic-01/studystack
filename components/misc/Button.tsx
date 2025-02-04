@@ -12,7 +12,7 @@ const LoginButton = ({
   const router = useRouter();
 
   return (
-    <RainbowButton className={className} onClick={() => router.push("/login")}>
+    <RainbowButton className={className} onClick={() => router.push("/")}>
       {text}
     </RainbowButton>
   );

@@ -1,26 +1,26 @@
 export const semester = [
   {
-    key: "semester1",
+    key: "1",
     label: "Semester 1",
   },
   {
-    key: "semester2",
+    key: "2",
     label: "Semester 2",
   },
   {
-    key: "semester3",
+    key: "3",
     label: "Semester 3",
   },
   {
-    key: "semester4",
+    key: "4",
     label: "Semester 4",
   },
   {
-    key: "semester5",
+    key: "5",
     label: "Semester 5",
   },
   {
-    key: "semester6",
+    key: "6",
     label: "Semester 6",
   },
 ];

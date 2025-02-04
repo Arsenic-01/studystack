@@ -7,8 +7,7 @@ export default async function DashboardPage() {
   const users = await fetchUsers();
 
   return (
-    <div className="container mx-auto py-36 xl:py-40 md:max-w-6xl px-5">
-      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+    <div className="">
       <Suspense fallback={<Skeleton className="w-full h-[400px]" />}>
         <UsersTable initialData={users} />
       </Suspense>
