@@ -63,6 +63,7 @@ export interface updateUserData {
   email?: string;
   role: "admin" | "student" | "teacher";
   teacherSem?: number;
+  password?: string;
 }
 
 export interface Note {

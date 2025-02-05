@@ -46,6 +46,7 @@ type User = {
   role: Role;
   email: string;
   name: string;
+  password: string;
 };
 
 interface UsersTableProps {
@@ -201,7 +202,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
 
             <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
               <Table>
-                <TableHeader className="bg-neutral-50 dark:bg-neutral-950">
+                <TableHeader className="">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (

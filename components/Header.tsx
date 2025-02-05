@@ -12,7 +12,7 @@ import { twMerge } from "tailwind-merge";
 const ProfileCard = dynamic(() => import("./ProfileCard"), { ssr: false });
 
 const navLink = [
-  { name: "About", href: "/" },
+  { name: "About", href: "/about" },
   { name: "Contact", href: "/" },
   { name: "FAQs", href: "/#faq" },
 ];
@@ -143,7 +143,10 @@ const Header = () => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
+                    className={twMerge(
+                      !isLoggedIn && item.name === "FAQs" && "hidden",
+                      "text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
+                    )}
                   >
                     {item.name}
                   </Link>

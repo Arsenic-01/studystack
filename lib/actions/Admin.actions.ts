@@ -12,6 +12,7 @@ export async function fetchUsers() {
       name: doc.name,
       role: doc.role as "admin" | "student" | "teacher",
       email: doc.email,
+      password: doc.password,
     }));
   } catch (error) {
     console.log("Error fetching users:", error);
@@ -27,6 +28,7 @@ export async function updateUser({ data }: { data: updateUserData }) {
       name: data.name,
       role: data.role,
       email: data.email,
+      password: data.password,
     };
     await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, userId, {
       ...filteredData,
