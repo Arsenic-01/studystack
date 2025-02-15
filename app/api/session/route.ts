@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { db, USER_COLLECTION_ID, DATABASE_ID, Query } from "@/lib/appwrite";
 
 export async function GET() {
+  console.log("GET /api/session im here");
+
   const sessionToken = (await cookies()).get("sessionToken")?.value;
 
   if (!sessionToken) {
