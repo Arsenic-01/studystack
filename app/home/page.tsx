@@ -1,4 +1,3 @@
-import { CardHoverEffectDemo } from "@/components/CardHoverEffectDemo";
 import FAQ from "@/components/FAQ";
 import Hero from "@/components/Hero";
 import { HeroVideoDialogDemoTopInBottomOut } from "@/components/HeroVideoDialogDemo";
@@ -10,9 +9,7 @@ const page = () => {
     <div>
       <Hero />
       {/* <CardHoverEffectDemo /> */}
-      <div className="p-40">
       <HeroVideoDialogDemoTopInBottomOut />
-      </div>
       <InfiniteMovingCardsDemo />
       <FAQ />
     </div>

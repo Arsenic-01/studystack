@@ -9,7 +9,7 @@ import { Cover } from "./ui/cover";
 const Hero = () => {
   return (
     <div
-      className="my-40 2xl:my-0 2xl:h-screen flex items-center justify-center relative"
+      className="pt-48 mb-20 flex items-center justify-center relative"
       id="hero"
     >
       <div className="flex flex-col items-start sm:items-center justify-center gap-20 px-5 z-10">
