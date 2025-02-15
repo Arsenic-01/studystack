@@ -93,3 +93,82 @@ export const footerIcons = [
     icon: "/globe.svg",
   },
 ];
+
+export const tsc = [
+  {
+    id: 1,
+    name: "Victus03",
+    designation: "Discord",
+    image:
+      "/about_logos/discord.png",
+  },
+  {
+    id: 2,
+    name: "TanayHingane",
+    designation: "Github",
+    image:
+      "/about_logos/github-mark-white.png",
+  },
+  {
+    id: 3,
+    name: "tanayhingane03@gmail.com",
+    designation: "Mail",
+    image:
+      "/about_logos/Email.webp",
+  },
+  {
+    id: 4,
+    name: "Tanay Hingane",
+    designation: "Linkedin",
+    image:
+      "/about_logos/linkedin.webp",
+  },
+];
+
+export const vsc = [
+    {
+      id: 1,
+      name: "Victus03",
+      designation: "Discord",
+      image:
+        "/about_logos/discord.png",
+    },
+    {
+      id: 2,
+      name: "TanayHingane",
+      designation: "Github",
+      image:
+        "/about_logos/github-mark-white.png",
+    },
+    {
+      id: 3,
+      name: "tanayhingane03@gmail.com",
+      designation: "Mail",
+      image:
+        "/about_logos/Email.webp",
+    },
+    {
+      id: 4,
+      name: "Tanay Hingane",
+      designation: "Linkedin",
+      image:
+        "/about_logos/linkedin.webp",
+    },
+  ];
+
+  export const gb = [
+    {
+      id: 1,
+      name: "Mr G.B.Katkade",
+      designation: "HOD",
+      image:
+        "/katkadesir.png",
+    },
+    {
+      id: 2,
+      name: "Mr A.D.Talole",
+      designation: "Lecturer(CM Dept)",
+      image:
+        "/talolesir.webp",
+    },
+  ];

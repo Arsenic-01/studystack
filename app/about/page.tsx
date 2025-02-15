@@ -1,28 +1,20 @@
 import { AnimatedPinDemo } from "@/components/AnimatedPinDemo";
 import React from "react";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { gb } from "@/data";
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { IconCloudDemo } from "@/components/IconCloudDemo";
 
 const AboutPage = () => {
   return (
-    <div suppressHydrationWarning>
+    <div>
       <AnimatedPinDemo />
-      <div className="py-10 text-start justify-items-center tracking-wide text-xl text-slate-950 dark:text-white/80">
+      <div className="flex flex-row">
+        <IconCloudDemo />
+      </div>
+      <div className="pb-10 text-start justify-center flex flex-col items-center gap-5 tracking-wide text-xl text-slate-950 dark:text-white/80">
         <h2>Guided By:</h2>
-        <div className="flex text-xl py-2 text-center align-middle gap-5 text-slate-950 dark:text-white/80">
-          <Avatar>
-            <AvatarImage src="/talolesir.webp" alt="@shadcn" />
-          </Avatar>
-          <div className="py-2">
-            <h3>Prof. A.D.Talole</h3>
-          </div>
-        </div>
-        <div className="flex text-xl text-center align-middle gap-5 text-slate-950 dark:text-white/80">
-          <Avatar>
-            <AvatarImage src="/katkadesir.png" alt="@shadcn" />
-          </Avatar>
-          <div className="py-2">
-            <h2>Prof. G.B.Katkade (HOD)</h2>
-          </div>
+        <div className="flex flex-row gap-10">
+          <AnimatedTooltip items={gb} />
         </div>
       </div>
     </div>

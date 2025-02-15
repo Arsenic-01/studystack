@@ -200,9 +200,9 @@ export function UsersTable({ initialData }: UsersTableProps) {
               </Button>
             </div>
 
-            <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
+            <div className="rounded-md border border-black dark:border-white/40">
               <Table>
-                <TableHeader className="">
+                <TableHeader className="text-base font-bold dark:bg-blue-50/10 bg-gray-100">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
