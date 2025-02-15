@@ -1,18 +1,11 @@
 "use client";
 
-import { UserContext } from "@/context/UserContext";
-import React, { useContext } from "react";
 import { Button } from "../ui/button";
 import { ArrowUpRight } from "lucide-react";
+import { useAuthStore } from "@/store/authStore";
 
 const UploadNotesButton = () => {
-  const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    throw new Error("Header must be used within a UserContextProvider");
-  }
-
-  const { isLoggedIn, user } = userContext;
+  const { user, isLoggedIn } = useAuthStore();
 
   return (
     <>

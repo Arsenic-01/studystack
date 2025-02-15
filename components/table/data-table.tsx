@@ -1,6 +1,5 @@
 "use client";
 
-import { useContext, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -36,8 +35,10 @@ import { UpdateUserDialog } from "../update-user-dialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "../ui/dialog";
-import { UserContext } from "@/context/UserContext";
 import Link from "next/link";
+import { useState } from "react";
+import { useAuthStore } from "../../store/authStore";
+import Image from "next/image";
 type Role = "admin" | "teacher" | "student";
 
 type User = {
@@ -60,13 +61,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    throw new Error("UsersTable must be used within a UserContextProvider");
-  }
-
-  const { isLoggedIn } = userContext;
+  const { isLoggedIn } = useAuthStore();
 
   const { data: users = initialData } = useQuery<User[]>({
     queryKey: ["users"],
@@ -201,10 +196,13 @@ export function UsersTable({ initialData }: UsersTableProps) {
             </div>
 
             <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
-              <Table>
+              <Table className="shad-table">
                 <TableHeader className="">
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
+                    <TableRow
+                      key={headerGroup.id}
+                      className="shad-table-row-header"
+                    >
                       {headerGroup.headers.map((header) => (
                         <TableHead key={header.id}>
                           {header.isPlaceholder
@@ -224,6 +222,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
                       <TableRow
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
+                        className="shad-table-row"
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>
@@ -247,25 +246,32 @@ export function UsersTable({ initialData }: UsersTableProps) {
                   )}
                 </TableBody>
               </Table>
-            </div>
-
-            <div className="flex items-center justify-end space-x-2 py-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
+              <div className="table-actions">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  className="shad-gray-btn"
+                >
+                  <Image src="/arrow.svg" width={24} height={24} alt="arrow" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  className="shad-gray-btn"
+                >
+                  <Image
+                    src="/arrow.svg"
+                    width={24}
+                    height={24}
+                    alt="arrow "
+                    className="rotate-180"
+                  />
+                </Button>
+              </div>
             </div>
 
             {updateUserData && (
@@ -309,9 +315,8 @@ export function UsersTable({ initialData }: UsersTableProps) {
         <div className="flex flex-col items-center justify-center w-full min-h-screen">
           <div className="flex flex-col gap-4 items-center justify-center w-full max-w-5xl  py-12 px-3 md:px-8">
             <h1 className="text-3xl font-bold">
-              You are not logged in or put invalid URL
+              You are not authorized to access this page ⚠️
             </h1>
-            <p className="text-lg">Please login to view your subjects.</p>
             <Button asChild>
               <Link href="/">Login</Link>
             </Button>

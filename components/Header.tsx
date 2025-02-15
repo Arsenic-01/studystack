@@ -1,17 +1,18 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import LoginButton from "./misc/Button";
 import { ThemeToggle } from "./ThemeSwitcher";
 import { AnimatePresence, motion } from "framer-motion";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "@/store/authStore";
 import { twMerge } from "tailwind-merge";
 
 const ProfileCard = dynamic(() => import("./ProfileCard"), { ssr: false });
 
-const navLink = [
+const navLinks = [
   { name: "About", href: "/about" },
   { name: "Contact", href: "/" },
   { name: "FAQs", href: "/#faq" },
@@ -19,38 +20,22 @@ const navLink = [
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    throw new Error("Header must be used within a UserContextProvider");
-  }
-
-  const { isLoggedIn, user, handleLogout } = userContext;
+  const { isLoggedIn, user, setUser } = useAuthStore();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await fetch("/api/session");
-        if (!res.ok) {
-          console.log("Not authenticated");
-          return userContext.setUser(null);
-        }
-        const data = await res.json();
-        userContext.setUser(data.user);
-      } catch (error) {
-        console.error("Error fetching session:", error);
-      }
-    };
-
     if (!user) {
-      fetchUserData();
+      fetch("/api/session")
+        .then((res) => (res.ok ? res.json() : Promise.reject()))
+        .then((data) => setUser(data.user))
+        .catch(() => setUser(null));
     }
-  }, [userContext, user]);
+  }, [user, setUser]);
 
   return (
     <nav className="fixed top-0 w-full px-5 z-50">
-      <div className="backdrop-blur-xl  max-w-6xl mx-auto dark:bg-neutral-950/70 border border-[#B4B4B4]/50 dark:border-white/20 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3">
-        <div className=" grid grid-cols-2 md:grid-cols-3 justify-end items-center">
+      <div className="backdrop-blur-xl max-w-6xl mx-auto dark:bg-neutral-950/70 border border-[#B4B4B4]/50 dark:border-white/20 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
+          {/* Logo */}
           <div className="flex items-center gap-7">
             <Link href={user ? "/home" : "/"} className="inline-block">
               <Image
@@ -62,23 +47,26 @@ const Header = () => {
               />
             </Link>
           </div>
-          <div className="justify-center items-center gap-7 hidden md:flex">
-            {navLink.map((item) => (
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex justify-center items-center gap-7">
+            {navLinks.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className=" text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50"
+                className="text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50"
               >
                 {item.name}
               </Link>
             ))}
           </div>
+
+          {/* Auth & Theme Toggle */}
           <div className="flex items-center gap-2 sm:gap-3 justify-end">
-            <div className="sm:hidden flex items-center gap-2 sm:gap-3 justify-end">
+            {/* Mobile Menu Toggle */}
+            <div className="sm:hidden flex items-center gap-2">
               <ThemeToggle />
-              {isLoggedIn && user && (
-                <ProfileCard user={user} handleLogout={handleLogout} />
-              )}
+              {isLoggedIn && user && <ProfileCard user={user} />}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -121,15 +109,20 @@ const Header = () => {
                 ></line>
               </svg>
             </div>
-            <div className="hidden sm:flex items-center gap-2 sm:gap-3 justify-end">
+
+            {/* Desktop Profile/Login */}
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3">
               <ThemeToggle />
-              {!isLoggedIn && <LoginButton text="Login" />}
-              {isLoggedIn && user && (
-                <ProfileCard user={user} handleLogout={handleLogout} />
+              {!isLoggedIn ? (
+                <LoginButton text="Login" />
+              ) : (
+                <ProfileCard user={user!} />
               )}
             </div>
           </div>
         </div>
+
+        {/* Mobile Navigation Dropdown */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -138,8 +131,8 @@ const Header = () => {
               exit={{ height: 0 }}
               className="overflow-hidden"
             >
-              <div className="flex flex-col items-center justify-center gap-4 sm:hidden pb-5 pt-7">
-                {navLink.map((item) => (
+              <div className="flex flex-col items-center gap-4 sm:hidden pb-5 pt-7">
+                {navLinks.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
