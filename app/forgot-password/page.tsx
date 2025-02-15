@@ -4,16 +4,31 @@ import { useState } from "react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { forgotPasswordSchema } from "@/components/validation";
+import Link from "next/link";
 
 export default function ForgotPassword() {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
   const [prnNo, setPrnNo] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [errors, setErrors] = useState<{ prnNo?: string; email?: string }>({});
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    const parsed = forgotPasswordSchema.safeParse({ prnNo, email });
+    if (!parsed.success) {
+      const fieldErrors = parsed.error.format();
+      setErrors({
+        prnNo: fieldErrors.prnNo?._errors[0],
+        email: fieldErrors.email?._errors[0],
+      });
+      setLoading(false);
+      return;
+    }
+
+    setErrors({}); // Clear errors if validation passes
 
     try {
       const res = await fetch("/api/requestReset", {
@@ -24,10 +39,7 @@ export default function ForgotPassword() {
 
       const data = await res.json();
       if (res.ok) toast.success(data.message);
-
       if (res.status === 400 || res.status === 404) toast.error(data.error);
-
-      console.log(data);
     } catch (error) {
       setMessage("Something went wrong.");
       console.error("Error resetting password:", error);
@@ -36,8 +48,8 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-5">
-      <div className="w-full max-w-md  rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-gray-100 dark:bg-neutral-900/70 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
+    <div className="flex min-h-screen items-center justify-center px-5  py-32">
+      <div className="w-full max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-gray-100 dark:bg-neutral-900/70 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
         <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-200 dark:from-zinc-900 rounded-xl"></div>
         <div className=" bg-zinc-200 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
           <div className="relative">
@@ -107,6 +119,11 @@ export default function ForgotPassword() {
                 className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
                 placeholder="Enter your email address"
               />
+              {errors.email && (
+                <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
+                  {errors.email}
+                </p>
+              )}
             </div>
           </div>
           <div>
@@ -126,9 +143,21 @@ export default function ForgotPassword() {
                 className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
                 placeholder="Enter your PRN number"
               />
+              {errors.prnNo && (
+                <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
+                  {errors.prnNo}
+                </p>
+              )}
+            </div>
+            <div className="mt-2 ml-1">
+              <Link
+                href={"/"}
+                className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Back to Login
+              </Link>
             </div>
           </div>
-
           {<p className="text-red-500">{message}</p>}
           <RainbowButton className="w-full" type="submit" disabled={loading}>
             {loading ? "Sending..." : "Send Reset Link"}

@@ -1,24 +1,20 @@
 "use client";
 
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { toast } from "sonner";
 import type React from "react";
-import { UserContext } from "@/context/UserContext";
 import Link from "next/link";
+import { loginSchema } from "./validation";
+import { useAuthStore } from "@/store/authStore";
 
 export default function LoginPage() {
   const router = useRouter();
-  const userContext = useContext(UserContext);
 
-  if (!userContext) {
-    throw new Error("LoginPage must be used within a UserContextProvider");
-  }
-
-  const { setIsLoggedIn, isLoggedIn, user, setUser } = userContext;
+  const { setUser, isLoggedIn, user } = useAuthStore();
 
   useEffect(() => {
     if (isLoggedIn && user) {
@@ -34,12 +30,28 @@ export default function LoginPage() {
   const [prnNo, setPrnNo] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ prnNo?: string; password?: string }>(
+    {}
+  );
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    const parsed = loginSchema.safeParse({ prnNo, password });
+    if (!parsed.success) {
+      const fieldErrors = parsed.error.format();
+      setErrors({
+        prnNo: fieldErrors.prnNo?._errors[0],
+        password: fieldErrors.password?._errors[0],
+      });
+      setLoading(false);
+      return;
+    }
+
+    setErrors({}); // Clear errors if validation passes
 
     try {
       const res = await fetch("/api/login", {
@@ -51,12 +63,11 @@ export default function LoginPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      console.log("Login response:", data);
-
-      setIsLoggedIn(true);
-      setUser(data); // Setting user data here
-
+      const { name, userId, role, email, lastLogin } = data;
+      const userData = { userId, name, email, prnNo, role, lastLogin };
+      setUser(userData); // Store user in Zustand
       toast.success(`Logged in as ${data.name} 🎉`);
+
       if (data.role === "admin") {
         router.push(`/admin/${data.userId}`);
       } else {
@@ -72,9 +83,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-md  rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-gray-100 dark:bg-neutral-900/70 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
-      <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-200 dark:from-zinc-900 rounded-xl"></div>
-      <div className=" bg-zinc-200 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
+    <div className="w-full max-w-md  rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-100 dark:bg-neutral-900/70 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
+      <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-100 dark:from-zinc-900 rounded-xl"></div>
+      <div className=" bg-neutral-100 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
         <div className="relative">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -138,16 +149,17 @@ export default function LoginPage() {
           <Input
             id="prn"
             name="prn"
-            type="text"
-            required
             value={prnNo}
+            required
             onChange={(e) => setPrnNo(e.target.value)}
-            minLength={10}
-            maxLength={10}
-            pattern="[0-9]{10}"
             className="mt-1 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
             placeholder="Enter your PRN number"
           />
+          {errors.prnNo && (
+            <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
+              {errors.prnNo}
+            </p>
+          )}
         </div>
         <div>
           <div>
@@ -162,7 +174,6 @@ export default function LoginPage() {
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
-                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
@@ -180,6 +191,11 @@ export default function LoginPage() {
                 )}
               </button>
             </div>
+            {errors.password && (
+              <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
+                {errors.password}
+              </p>
+            )}
           </div>
           <div className="mt-3">
             <Link

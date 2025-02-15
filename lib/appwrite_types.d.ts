@@ -53,7 +53,7 @@ interface UserProps {
   email: string;
   prnNo: string;
   role: string;
-  lastLogin: string;
+  lastLogin?: string;
 }
 
 export interface updateUserData {

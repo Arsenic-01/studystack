@@ -6,7 +6,7 @@ import UploadNotesButton from "./misc/UploadNotesButton";
 
 const SubjectCard = ({ subject }: { subject: Subject }) => {
   return (
-    <div className="flex flex-col items-start bg-neutral-50 dark:bg-neutral-900 my-5 rounded-xl gap-3 justify-center w-full border  border-neutral-200 dark:border-neutral-800 py-5 md:py-10 px-4 md:px-10">
+    <div className="flex flex-col items-start bg-neutral-100 dark:bg-neutral-900 my-5 rounded-xl gap-3 justify-center w-full border  border-neutral-300 dark:border-neutral-800 py-5 md:py-10 px-4 md:px-10">
       <div>
         <h2 className="text-xl md:text-2xl font-bold">
           Subject:{" "}

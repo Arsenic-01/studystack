@@ -6,6 +6,7 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { resetPasswordSchema } from "@/components/validation";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [errors, setErrors] = useState<{ password?: string }>({});
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handlePasswordReset = async (e: React.FormEvent) => {
@@ -27,6 +28,17 @@ export default function ResetPassword() {
       setMessage("Invalid token.");
       return;
     }
+    const parsed = resetPasswordSchema.safeParse({ password });
+    if (!parsed.success) {
+      const fieldErrors = parsed.error.format();
+      setErrors({
+        password: fieldErrors.password?._errors[0],
+      });
+      setLoading(false);
+      return;
+    }
+
+    setErrors({}); // Clear errors if validation passes
 
     try {
       const res = await fetch("/api/resetPassword", {
@@ -36,7 +48,6 @@ export default function ResetPassword() {
       });
 
       const data = await res.json();
-      console.log(res);
 
       if (res.status === 400) toast.error(data.error);
 
@@ -52,7 +63,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-5">
+    <div className="flex min-h-screen items-center justify-center px-5 py-32">
       <div className="w-full max-w-md  rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-gray-100 dark:bg-neutral-900/70 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
         <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-200 dark:from-zinc-900 rounded-xl"></div>
         <div className=" bg-zinc-200 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
@@ -136,6 +147,11 @@ export default function ResetPassword() {
                 )}
               </button>
             </div>
+            {errors.password && (
+              <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
+                {errors.password}
+              </p>
+            )}
           </div>
           {<p className="text-red-500">{message}</p>}
           <RainbowButton className="w-full" type="submit" disabled={loading}>

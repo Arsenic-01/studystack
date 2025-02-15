@@ -16,7 +16,7 @@ const Hero = () => {
         <div className="flex flex-col items-center justify-center gap-14">
           <div
             className={cn(
-              "group rounded-full border border-black/5  text-base text-white transition-all ease-in hover:cursor-pointer bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+              "group rounded-full border border-black/5  text-base text-white transition-all ease-in hover:cursor-pointer bg-neutral-50 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
             )}
           >
             <AnimatedShinyText className="inline-flex items-center justify-start sm:justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">

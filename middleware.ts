@@ -6,8 +6,16 @@ import { Query } from "node-appwrite";
 export async function middleware(req: NextRequest) {
   const sessionToken = (await cookies()).get("sessionToken")?.value;
 
+  if (req.nextUrl.pathname === "/") {
+    // 🔹 If user is already logged in, redirect them away from login page
+    if (sessionToken) {
+      return NextResponse.redirect(new URL("/home", req.url));
+    }
+    return NextResponse.next(); // Allow access to login page if not logged in
+  }
+
   if (!sessionToken) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/", req.url)); // Redirect to login if not authenticated
   }
 
   try {
@@ -21,7 +29,7 @@ export async function middleware(req: NextRequest) {
 
     const user = users.documents[0];
 
-    // Authorization checks for the different routes
+    // 🔹 Authorization checks for protected routes
     if (req.nextUrl.pathname.includes("/admin") && user.role !== "admin") {
       return NextResponse.redirect(new URL("/", req.url));
     }
@@ -37,5 +45,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/home", "/semester/:sem"],
+  matcher: ["/admin/:path*", "/home", "/semester/:sem", "/"], // 🔹 Added '/' to matcher
 };
