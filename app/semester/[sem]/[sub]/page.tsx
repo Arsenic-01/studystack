@@ -1,5 +1,3 @@
-// import { fetchNotes } from "@/lib/actions/Notes.actions";
-import Upload from "@/components/upload";
 import { fetchNotesBySubject } from "@/lib/actions/Notes.actions";
 import React from "react";
 
@@ -9,7 +7,6 @@ const page = async ({ params }: { params: { sub: string } }) => {
   console.log("response of fetch Subject = ", res);
   const notes = res;
   // console.log(sub);
-  const subject = sub;
   return (
     <div>
       {notes.map((note) => (
@@ -20,7 +17,6 @@ const page = async ({ params }: { params: { sub: string } }) => {
           <p>{note.name}</p>
         </div>
       ))}
-      <Upload subject={subject} />
     </div>
   );
 };

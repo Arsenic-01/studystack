@@ -12,29 +12,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        white: {
-          DEFAULT: "#FFF",
-          100: "#BEC1DD",
-          200: "#C1C2D3",
-        },
-        blue: {
-          "100": "#E4ECFF",
-          500: "#79B5EC",
-          600: "#152432",
-        },
         green: {
           500: "#24AE7C",
           700: "#0D2A1F",
         },
-        dark: {
-          200: "#0D0F10",
-          300: "#131619",
-          400: "#1A1D21",
-          500: "#363A3D",
-          600: "#76828D",
-          700: "#ABB8C4",
-        },
-
         light: {
           200: "#E8E9E9",
         },

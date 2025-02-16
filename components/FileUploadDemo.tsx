@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FileUpload } from "./ui/file-upload";
 import { Button } from "./ui/button";
 import { ArrowUpRight } from "lucide-react";
+import { useNotesStore } from "@/store/noteStore";
 
 export function FileUploadDemo({
   subjectId,
@@ -15,6 +16,7 @@ export function FileUploadDemo({
 }) {
   console.log(subjectId, sem, userId);
 
+  const { addNote } = useNotesStore();
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -39,6 +41,9 @@ export function FileUploadDemo({
       if (result.success) {
         console.log("Files uploaded successfully", result.uploadedFiles);
         setSelectedFiles([]);
+
+        // Update Zustand store
+        result.uploadedFiles.forEach((file: any) => addNote(file));
       } else {
         console.error("Upload error:", result.error);
       }

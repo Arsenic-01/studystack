@@ -1,12 +1,18 @@
 "use server";
 
-import { db, DATABASE_ID, SUBJECT_COLLECTION_ID, Query } from "@/lib/appwrite";
+import {
+  db,
+  DATABASE_ID,
+  SUBJECT_COLLECTION_ID,
+  Query,
+  NEW_SUBJECT_COLLECTION_ID,
+} from "@/lib/appwrite";
 
 export async function fetchSubjects(limit: number, offset: number) {
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
-      SUBJECT_COLLECTION_ID!,
+      NEW_SUBJECT_COLLECTION_ID!,
       [
         Query.limit(limit), // Limit the number of documents fetched
         Query.offset(offset), // Specify the starting point
@@ -55,21 +61,22 @@ export async function fetchSemesters() {
 
 // Fetch subjects for a given semester
 export async function fetchSubjectsBySemester(semester: number) {
+  const sem = String(semester);
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
-      SUBJECT_COLLECTION_ID!,
+      NEW_SUBJECT_COLLECTION_ID!,
       [
-        Query.equal("semester", semester), // Filter by semester
+        Query.equal("semester", sem), // Filter by semester
       ]
     );
 
     return response.documents.map((doc) => ({
       subjectId: doc.$id,
       name: doc.name,
-      courseId: doc.courseId,
+      courseId: doc.code,
       semester: doc.semester,
-      acronym: doc.acronym,
+      acronym: "NaN",
       notes: doc.notes,
     }));
   } catch (error) {
