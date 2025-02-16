@@ -1,10 +1,14 @@
+"use client";
+
 import React from "react";
 import { Button } from "./ui/button";
 import { ArrowUpRight } from "lucide-react";
 import { Subject } from "@/lib/appwrite_types";
 import UploadNotesButton from "./misc/UploadNotesButton";
+import { useRouter } from "next/navigation";
 
 const SubjectCard = ({ subject }: { subject: Subject }) => {
+  const router = useRouter();
   return (
     <div className="flex flex-col items-start bg-neutral-100 dark:bg-neutral-900 my-5 rounded-xl gap-3 justify-center w-full border  border-neutral-300 dark:border-neutral-800 py-5 md:py-10 px-4 md:px-10">
       <div>
@@ -20,9 +24,17 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
       </div>
       <div className="flex flex-col sm:inline-flex gap-3 justify-end pt-5  w-full">
         <div className="flex flex-col md:flex-row justify-end w-full gap-2">
-          <UploadNotesButton />
+          <UploadNotesButton
+            subjectId={subject.subjectId}
+            sem={subject.semester}
+          />
 
-          <Button className="rounded-full px-5 py-2 items-self-end w-full sm:w-auto">
+          <Button
+            className="rounded-full px-5 py-2 items-self-end w-full sm:w-auto"
+            onClick={() =>
+              router.push(`/semester/${subject.semester}/${subject.subjectId}`)
+            }
+          >
             View Notes <ArrowUpRight />
           </Button>
         </div>

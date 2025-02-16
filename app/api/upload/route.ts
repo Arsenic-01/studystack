@@ -4,11 +4,9 @@ import {
   db,
   DATABASE_ID,
   NOTE_COLLECTION_ID,
-  SUBJECT_COLLECTION_ID,
   BUCKET_ID,
 } from "@/lib/appwrite";
 import { ID } from "node-appwrite";
-import { useNotesStore } from "@/store/noteStore"; // Import Zustand store
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,28 +15,22 @@ export async function POST(req: NextRequest) {
     const subjectId = formData.get("subjectId") as string;
     const sem = Number(formData.get("sem"));
     const userId = formData.get("userId") as string;
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
 
-    if (!files.length || !subjectId || !sem || !userId) {
+    if (
+      !files.length ||
+      !subjectId ||
+      !sem ||
+      !userId ||
+      !title ||
+      !description
+    ) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
-
-    // Fetch the current subject document to check existing notes
-    const subjectDoc = await db.getDocument(
-      DATABASE_ID!,
-      SUBJECT_COLLECTION_ID!,
-      subjectId
-    );
-
-    if (!subjectDoc) {
-      throw new Error("Subject document not found");
-    }
-
-    const existingNotes = Array.isArray(subjectDoc.notes)
-      ? subjectDoc.notes
-      : [];
 
     const uploadedFiles = await Promise.all(
       files.map(async (file) => {
@@ -47,30 +39,21 @@ export async function POST(req: NextRequest) {
           ID.unique(),
           file
         );
-
+        const noteId = ID.unique();
         // Create a note document in the database
         const newNote = await db.createDocument(
           DATABASE_ID!,
           NOTE_COLLECTION_ID!,
-          ID.unique(),
+          noteId,
           {
-            noteId: uploadedFile.$id,
+            noteId: noteId,
             users: userId,
             sem,
-            uploadDate: new Date().toISOString(),
+            title,
+            description,
             fileId: uploadedFile.$id,
-          }
-        );
-
-        // Update Zustand store with the new note
-        useNotesStore.getState().addNote(newNote);
-
-        await db.updateDocument(
-          DATABASE_ID!,
-          SUBJECT_COLLECTION_ID!,
-          subjectId,
-          {
-            uplodedNotes: [...existingNotes, newNote.$id],
+            subject: subjectId,
+            createdAt: new Date().toISOString(),
           }
         );
 
@@ -78,9 +61,9 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    return NextResponse.json({ success: true, uploadedFiles });
+    return NextResponse.json({ success: true, uploadedFiles }, { status: 200 });
   } catch (error) {
     console.error("Upload failed", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }

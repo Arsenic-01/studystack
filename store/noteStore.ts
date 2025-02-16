@@ -4,8 +4,11 @@ interface Note {
   noteId: string;
   users: string; // Change this to an array if multiple users can be associated
   sem: number;
-  uploadDate: string;
+  createdAt: string;
   fileId: string;
+  title: string;
+  description: string;
+  subjectId: string;
 }
 
 interface NotesStore {

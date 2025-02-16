@@ -68,11 +68,13 @@ export interface updateUserData {
 
 export interface Note {
   noteId: string;
-  user: User;
+  users: User;
   sem: number;
-  uploadDate: Date;
-  fileUrl: string;
+  createdAt: string;
+  fileId: string;
   subjectId: string;
+  title: string;
+  description: string;
 }
 export interface Subject {
   subjectId: string;
