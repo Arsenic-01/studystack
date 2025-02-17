@@ -70,7 +70,7 @@ export function NoteCard({ note }: NoteCardProps) {
             View Online <ArrowUpRight className="ml-1 h-4 w-4" />
           </Link>
         </Button>
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" className="w-full" asChild>
           <Link
             href={`https://cloud.appwrite.io/v1/storage/buckets/67a6452c003b5b6b6502/files/${note.fileId}/download?project=679a700c0013ee3706ba`}
             className="inline-flex"
