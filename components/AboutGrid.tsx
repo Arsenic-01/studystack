@@ -14,7 +14,7 @@ export function AboutGrid() {
           alt="jerry"
           width={200}
           height={200}
-          className="rounded-xl w-full h-full"
+          className="rounded-xl h-72 md:h-full w-full object-cover pointer-events-none select-none"
         />
         <div className="flex w-full items-center justify-center mt-6 mb-2 pr-4">
           <AnimatedTooltip items={vsc} />
@@ -35,7 +35,7 @@ export function AboutGrid() {
             SYCM-LIN 2025
           </div>
         </div>
-        <div className="mt-5 flex flex-col md:flex-row gap-1">
+        <div className="mt-5 flex flex-wrap flex-row gap-1">
           <Chip color="danger">Front End</Chip>
           <Chip color="warning">Back End</Chip>
           <Chip color="success">Database Management</Chip>
@@ -58,7 +58,7 @@ export function AboutGrid() {
             SYCM-LIN 2025
           </div>
         </div>
-        <div className="mt-5 flex flex-col flex-wrap md:flex-row gap-1">
+        <div className="mt-5 flex flex-wrap flex-row gap-1">
           <Chip color="danger" className="w-fit">
             Front End
           </Chip>
@@ -73,7 +73,7 @@ export function AboutGrid() {
           alt="jerry"
           width={200}
           height={200}
-          className="rounded-xl w-full h-full"
+          className="rounded-xl h-72 md:h-full w-full object-cover pointer-events-none select-none"
         />
         <div className="flex w-full items-center justify-center mt-6 mb-2 pr-4">
           <AnimatedTooltip items={vsc} />
