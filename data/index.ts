@@ -99,76 +99,77 @@ export const tsc = [
     id: 1,
     name: "Victus03",
     designation: "Discord",
-    image:
-      "/about_logos/discord.png",
+    image: "/about_logos/discord.png",
   },
   {
     id: 2,
     name: "TanayHingane",
     designation: "Github",
-    image:
-      "/about_logos/Git.png",
+    image: "/about_logos/Git.png",
   },
   {
     id: 3,
     name: "tanayhingane03@gmail.com",
     designation: "Mail",
-    image:
-      "/about_logos/Email.webp",
+    image: "/about_logos/Email.webp",
   },
   {
     id: 4,
     name: "Tanay Hingane",
     designation: "Linkedin",
-    image:
-      "/about_logos/linkedin.webp",
+    image: "/about_logos/linkedin.webp",
   },
 ];
 
 export const vsc = [
-    {
-      id: 1,
-      name: "Victus03",
-      designation: "Discord",
-      image:
-        "/about_logos/discord.png",
-    },
-    {
-      id: 2,
-      name: "TanayHingane",
-      designation: "Github",
-      image:
-        "/about_logos/Git.png",
-    },
-    {
-      id: 3,
-      name: "tanayhingane03@gmail.com",
-      designation: "Mail",
-      image:
-        "/about_logos/Email.webp",
-    },
-    {
-      id: 4,
-      name: "Tanay Hingane",
-      designation: "Linkedin",
-      image:
-        "/about_logos/linkedin.webp",
-    },
-  ];
+  {
+    id: 1,
+    name: "Victus03",
+    designation: "Discord",
+    image: "/about_logos/discord.png",
+    href: "https://discord.com/users/101001002002#0001",
+  },
+  {
+    id: 2,
+    name: "TanayHingane",
+    designation: "Github",
+    image: "/about_logos/Git.png",
+    href: "https://github/Arsenic-01",
+  },
+  {
+    id: 3,
+    name: "tanayhingane03@gmail.com",
+    designation: "Mail",
+    image: "/about_logos/Email.webp",
+    href: "https://discord.com/users/101001002002#0001",
+  },
+  {
+    id: 4,
+    name: "Tanay Hingane",
+    designation: "Linkedin",
+    image: "/about_logos/linkedin.webp",
+    href: "https://discord.com/users/101001002002#0001",
+  },
+  {
+    id: 5,
+    name: "arsenic",
+    designation: "Portfolio",
+    image: "/about_logos/website.png",
+    href: "https://discord.com/users/101001002002#0001",
+  },
+];
 
-  export const gb = [
-    {
-      id: 1,
-      name: "Mr G.B.Katkade",
-      designation: "HOD(CM Dept)",
-      image:
-        "/katkadesir.png",
-    },
-    {
-      id: 2,
-      name: "Mr A.D.Talole",
-      designation: "Lecturer(CM Dept)",
-      image:
-        "/talolesir.webp",
-    },
-  ];
+export const gb = [
+  {
+    id: 1,
+    name: "Mr G.B.Katkade",
+    designation: "HOD(CM Dept)",
+    image: "/katkadesir.png",
+  },
+  {
+    id: 2,
+    name: "Mr A.D.Talole",
+    designation: "Lecturer(CM Dept)",
+    image: "/talolesir.webp",
+  },
+];

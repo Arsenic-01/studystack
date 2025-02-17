@@ -15,7 +15,7 @@ const ProfileCard = dynamic(() => import("./ProfileCard"), { ssr: false });
 const navLinks = [
   { name: "About", href: "/about" },
   { name: "Contact", href: "/" },
-  { name: "FAQs", href: "/#faq" },
+  { name: "FAQs", href: "/home#faq" },
 ];
 
 const Header = () => {
@@ -54,7 +54,10 @@ const Header = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50"
+                className={twMerge(
+                  !isLoggedIn && item.name === "FAQs" && "hidden",
+                  `text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50`
+                )}
               >
                 {item.name}
               </Link>

@@ -1,21 +1,27 @@
-import { AnimatedPinDemo } from "@/components/AnimatedPinDemo";
+import { AboutGrid } from "@/components/AboutGrid";
+import Created from "@/components/Created";
+import GuidedBy from "@/components/GuidedBy";
 import React from "react";
-import { gb } from "@/data";
-import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
-import { IconCloudDemo } from "@/components/IconCloudDemo";
 
 const AboutPage = () => {
   return (
-    <div>
-      <AnimatedPinDemo />
-      {/* <div className="flex flex-row">
-        <IconCloudDemo />
-      </div> */}
-      <div className="pb-10 text-start justify-center flex flex-col items-center gap-5 tracking-wide text-xl text-slate-950 dark:text-white/80">
-        <h2>Guided By:</h2>
-        <div className="flex flex-row gap-10">
-          <AnimatedTooltip items={gb} />
+    <div className="flex flex-col gap-20 md:gap-32 max-w-5xl mx-auto py-32 md:py-36 xl:py-44  px-5">
+      <div className="flex flex-col gap-10">
+        <h1 className="text-3xl tracking-tighter font-bold">About Us</h1>
+        <div className="">
+          <AboutGrid />
         </div>
+      </div>
+      <div className="flex flex-col gap-10">
+        <h1 className="text-3xl tracking-tighter font-bold">
+          Why we created this?
+        </h1>
+        <div className="">
+          <Created />
+        </div>
+      </div>
+      <div>
+        <GuidedBy />
       </div>
     </div>
   );

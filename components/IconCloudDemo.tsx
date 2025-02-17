@@ -12,10 +12,10 @@ const slugs = [
   "css3",
   "nodedotjs",
   "express",
-  //"nextdotjs",
-  //"prisma",
+  "nextdotjs",
+  "prisma",
   //"amazonaws",
-  //"postgresql",
+  "postgresql",
   //"firebase",
   //"nginx",
   "vercel",
@@ -36,7 +36,7 @@ const slugs = [
 
 export function IconCloudDemo() {
   const images = slugs.map(
-    (slug) => `https://cdn.simpleicons.org/${slug}/${slug}`,
+    (slug) => `https://cdn.simpleicons.org/${slug}/${slug}`
   );
 
   return (
