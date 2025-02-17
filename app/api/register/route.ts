@@ -52,10 +52,6 @@ export async function POST(req: Request) {
         password: hashedPassword,
         role,
         createdAt: new Date().toISOString(),
-        teacherSem: role === "teacher" ? [] : undefined,
-        uploadedNotes: [],
-        usersAdded: [],
-        usersRemoved: [],
       }
     );
 

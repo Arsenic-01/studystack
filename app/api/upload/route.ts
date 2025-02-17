@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const files = formData.getAll("files") as File[];
     const subjectId = formData.get("subjectId") as string;
-    const sem = Number(formData.get("sem"));
+    const sem = formData.get("sem") as string;
     const userId = formData.get("userId") as string;
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
@@ -31,6 +31,18 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    console.log(
+      "Route of upload : ",
+      " Subject id =",
+      subjectId,
+      sem,
+      "user id : ",
+      userId,
+      " title : ",
+      title,
+      " description : ",
+      description
+    );
 
     const uploadedFiles = await Promise.all(
       files.map(async (file) => {

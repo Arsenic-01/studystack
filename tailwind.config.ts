@@ -34,6 +34,7 @@ export default {
       },
       animation: {
         rainbow: "rainbow var(--speed, 2s) infinite linear",
+        spotlight: "spotlight 2s ease .75s 1 forwards",
         "shiny-text": "shiny-text 8s infinite",
         scroll:
           "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
@@ -45,6 +46,16 @@ export default {
           },
           "100%": {
             "background-position": "200%",
+          },
+        },
+        spotlight: {
+          "0%": {
+            opacity: "0",
+            transform: "translate(-72%, -62%) scale(0.5)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translate(-50%,-40%) scale(1)",
           },
         },
         scroll: {

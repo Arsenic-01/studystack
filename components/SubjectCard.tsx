@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 const SubjectCard = ({ subject }: { subject: Subject }) => {
   const router = useRouter();
   return (
-    <div className="flex flex-col items-start bg-neutral-100 dark:bg-neutral-900 my-5 rounded-xl gap-3 justify-center w-full border  border-neutral-300 dark:border-neutral-800 py-5 md:py-10 px-4 md:px-10">
+    <div className="flex flex-col items-start rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 my-5  gap-3 justify-center w-full  py-5 md:py-10 px-4 md:px-10">
       <div>
         <h2 className="text-xl md:text-2xl font-bold">
           Subject:{" "}
@@ -19,7 +19,7 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
           </span>
         </h2>
         <h3 className="text-lg text-neutral-600 dark:text-neutral-400">
-          Course Code : {subject.courseId}
+          Course Code : {subject.code}
         </h3>
       </div>
       <div className="flex flex-col sm:inline-flex gap-3 justify-end pt-5  w-full">

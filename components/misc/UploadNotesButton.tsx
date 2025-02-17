@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { Button } from '../ui/button';
-import { ArrowUpRight } from 'lucide-react';
-import { useAuthStore } from '@/store/authStore';
-import { useState } from 'react';
-import UploadNotesModal from '../UploadNotesModal';
+import { Button } from "../ui/button";
+import { ArrowUpRight } from "lucide-react";
+import { useAuthStore } from "@/store/authStore";
+import { useState } from "react";
+import UploadNotesModal from "../UploadNotesModal";
 
 const UploadNotesButton = ({
   subjectId,
   sem,
 }: {
   subjectId: string | null;
-  sem: number | null;
+  sem: string | null;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
   const [open, setOpen] = useState(false);
@@ -20,10 +20,10 @@ const UploadNotesButton = ({
 
   return (
     <>
-      {isLoggedIn && user?.role === 'teacher' && (
+      {isLoggedIn && (
         <Button
-          className='rounded-full px-5 py-2 w-full sm:w-auto sm:mr-3'
-          variant={'outline'}
+          className="rounded-full px-5 py-2 w-full sm:w-auto sm:mr-3"
+          variant={"outline"}
           onClick={() => setOpen(true)}
         >
           Upload Notes <ArrowUpRight />

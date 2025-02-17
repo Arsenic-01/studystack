@@ -33,7 +33,7 @@ const Header = () => {
 
   return (
     <nav className="fixed top-0 w-full px-5 z-50">
-      <div className="backdrop-blur-xl max-w-6xl mx-auto dark:bg-neutral-950/70 border border-[#B4B4B4]/50 dark:border-white/20 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3">
+      <div className="backdrop-blur-xl max-w-5xl mx-auto dark:bg-neutral-950/70 border border-[#B4B4B4]/50 dark:border-white/20 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3">
         <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
           {/* Logo */}
           <div className="flex items-center gap-7">
@@ -64,7 +64,7 @@ const Header = () => {
           {/* Auth & Theme Toggle */}
           <div className="flex items-center gap-2 sm:gap-3 justify-end">
             {/* Mobile Menu Toggle */}
-            <div className="sm:hidden flex items-center gap-2">
+            <div className="md:hidden flex items-center gap-2">
               <ThemeToggle />
               {isLoggedIn && user && <ProfileCard user={user} />}
               <svg
@@ -111,7 +111,7 @@ const Header = () => {
             </div>
 
             {/* Desktop Profile/Login */}
-            <div className="hidden sm:flex items-center gap-2 sm:gap-3">
+            <div className="hidden md:flex items-center gap-2 md:gap-3">
               <ThemeToggle />
               {!isLoggedIn ? (
                 <LoginButton text="Login" />
@@ -131,7 +131,7 @@ const Header = () => {
               exit={{ height: 0 }}
               className="overflow-hidden"
             >
-              <div className="flex flex-col items-center gap-4 sm:hidden pb-5 pt-7">
+              <div className="flex flex-col items-center gap-4 md:hidden pb-5 pt-7">
                 {navLinks.map((item) => (
                   <Link
                     key={item.name}

@@ -27,7 +27,7 @@ interface UploadNotesModalProps {
   open: boolean;
   closeModal: () => void;
   subjectId: string | null;
-  sem: number | null;
+  sem: string | null;
   userId: string | null;
 }
 

@@ -29,7 +29,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, ArrowUpDown, PlusCircle } from "lucide-react";
+import {
+  MoreHorizontal,
+  ArrowUpDown,
+  PlusCircle,
+  Search,
+  X,
+} from "lucide-react"; // Import Search and X icons
 import { deleteUser, fetchUsers } from "@/lib/actions/Admin.actions";
 import { UpdateUserDialog } from "../update-user-dialog";
 import { toast } from "sonner";
@@ -39,6 +45,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import Image from "next/image";
+
 type Role = "admin" | "teacher" | "student";
 
 type User = {
@@ -168,6 +175,9 @@ export function UsersTable({ initialData }: UsersTableProps) {
     state: { sorting, columnFilters },
   });
 
+  const searchValue =
+    (table.getColumn("name")?.getFilterValue() as string) ?? "";
+
   return (
     <div>
       {isLoggedIn ? (
@@ -176,16 +186,23 @@ export function UsersTable({ initialData }: UsersTableProps) {
             <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between py-4">
-              <Input
-                placeholder="Search user by name"
-                value={
-                  (table.getColumn("name")?.getFilterValue() as string) ?? ""
-                }
-                onChange={(e) =>
-                  table.getColumn("name")?.setFilterValue(e.target.value)
-                }
-                className="w-full sm:max-w-sm"
-              />
+              <div className="relative w-full sm:max-w-sm">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search by anything"
+                  value={searchValue}
+                  onChange={(e) =>
+                    table.getColumn("name")?.setFilterValue(e.target.value)
+                  }
+                  className="w-full pl-10 pr-10"
+                />
+                {searchValue && (
+                  <X
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer"
+                    onClick={() => table.getColumn("name")?.setFilterValue("")}
+                  />
+                )}
+              </div>
               <Button
                 onClick={() => router.push("/admin/register")}
                 className="w-full sm:w-auto inline-flex justify-center items-center gap-2"

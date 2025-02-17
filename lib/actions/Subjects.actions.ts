@@ -1,18 +1,17 @@
 "use server";
-import { DATABASE_ID, db, Query, SUBJECT_COLLECTION_ID } from "../appwrite";
+import { DATABASE_ID, db, NEW_SUBJECT_COLLECTION_ID } from "../appwrite";
 
-export async function fetchSubject({ courseId }: { courseId: string }) {
+export async function fetchSubject({ subjectId }: { subjectId: string }) {
   try {
-    const response = await db.listDocuments(
+    const response = await db.getDocument(
       DATABASE_ID!,
-      SUBJECT_COLLECTION_ID!,
-      [Query.equal("courseId", courseId)]
+      NEW_SUBJECT_COLLECTION_ID!,
+      subjectId
     );
-    console.log(response.documents);
 
-    return response.documents;
+    return response;
   } catch (error) {
     console.log("Error fetching subjects:", error);
-    return [];
+    return null;
   }
 }

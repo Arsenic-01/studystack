@@ -66,21 +66,23 @@ export interface updateUserData {
   password?: string;
 }
 
-export interface Note {
+export type Note = {
   noteId: string;
-  users: User;
-  sem: number;
-  createdAt: string;
-  fileId: string;
-  subjectId: string;
   title: string;
   description: string;
-}
+  createdAt: string;
+  fileId: string;
+  sem: string;
+  subjectId: string;
+  users: { name: string };
+  subject: { name: string };
+  previewUrl?: string; // Add previewUrl as optional
+};
+
 export interface Subject {
   subjectId: string;
   name: string;
-  courseId: string;
-  semester: number;
-  acronym: string;
+  code: string;
+  semester: string;
   notes?: Note[];
 }
