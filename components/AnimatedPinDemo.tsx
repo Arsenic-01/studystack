@@ -41,6 +41,27 @@ export function AnimatedPinDemo() {
         <div className="flex flex-row my-16">
           <AnimatedTooltip items={vsc} />
         </div>
+      <div className=" w-fit px-5 flex items-center justify-center ">
+        <PinContainer title="LinkedIn" href="https://twitter.com/mannupaaji">
+          <div className="w-[20rem] h-[20rem] p-4 text-slate-100">
+            <h3 className="text-base font-bold text-black dark:text-slate-100">Vedant A. Bhor</h3>
+            <Button variant="destructive">Backend</Button>
+          <div className="flex flex-1 w-full rounded-lg mt-4 overflow-hidden">
+            <Image
+              src="/jerry.jpg"  // Update with your image path
+              alt="Aceternity UI Preview"
+              width={320}
+              height={320}
+              className="w-full h-full object-cover rounded-lg"
+            />
+          </div>
+          </div>
+        </PinContainer>
+        <div></div>
+      </div>
+      <div className="flex flex-row my-16 gap-5">
+      <AnimatedTooltip items={vsc} />
+      </div>
       </div>
 
       <div className="flex flex-col justify-center items-center">

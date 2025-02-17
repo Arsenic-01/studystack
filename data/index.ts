@@ -107,7 +107,7 @@ export const tsc = [
     name: "TanayHingane",
     designation: "Github",
     image:
-      "/about_logos/github-mark-white.png",
+      "/about_logos/Git.png",
   },
   {
     id: 3,
@@ -138,7 +138,7 @@ export const vsc = [
       name: "TanayHingane",
       designation: "Github",
       image:
-        "/about_logos/github-mark-white.png",
+        "/about_logos/Git.png",
     },
     {
       id: 3,
@@ -160,7 +160,7 @@ export const vsc = [
     {
       id: 1,
       name: "Mr G.B.Katkade",
-      designation: "HOD",
+      designation: "HOD(CM Dept)",
       image:
         "/katkadesir.png",
     },
