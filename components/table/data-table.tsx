@@ -187,8 +187,8 @@ export function UsersTable({ initialData }: UsersTableProps) {
               Admin Dashboard
             </h1>
 
-            <div className='flex flex-col sm:flex-row gap-4 items-center justify-between py-4'>
-              <div className='relative w-full sm:max-w-sm'>
+            <div className='flex flex-col md:flex-row gap-4 items-center justify-between py-4'>
+              <div className='relative w-full'>
                 <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
                 <Input
                   placeholder='Search by Name'
@@ -205,13 +205,22 @@ export function UsersTable({ initialData }: UsersTableProps) {
                   />
                 )}
               </div>
-              <Button
-                onClick={() => router.push('/admin/register')}
-                className='w-full sm:w-auto inline-flex justify-center items-center gap-2'
-              >
-                Register new user{' '}
-                <PlusCircle className='h-6 w-6 text-green-600' />
-              </Button>
+              <div className='flex flex-col md:flex-row gap-4 md:gap-2 w-full justify-end'>
+                <Button
+                  onClick={() => router.push('/admin/addsub')}
+                  className='w-full md:w-auto inline-flex justify-center items-center gap-2'
+                >
+                  Add new Subject{' '}
+                  <PlusCircle className='h-6 w-6 text-green-600' />
+                </Button>
+                <Button
+                  onClick={() => router.push('/admin/register')}
+                  className='w-full md:w-auto inline-flex justify-center items-center gap-2'
+                >
+                  Register new user{' '}
+                  <PlusCircle className='h-6 w-6 text-green-600' />
+                </Button>
+              </div>
             </div>
 
             <div className='rounded-md border border-neutral-200 dark:border-neutral-800'>
