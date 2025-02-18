@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   type ColumnDef,
   flexRender,
@@ -11,7 +11,7 @@ import {
   type SortingState,
   type ColumnFiltersState,
   getFilteredRowModel,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
 import {
   Table,
   TableBody,
@@ -19,34 +19,34 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   MoreHorizontal,
   ArrowUpDown,
   PlusCircle,
   Search,
   X,
-} from "lucide-react"; // Import Search and X icons
-import { deleteUser, fetchUsers } from "@/lib/actions/Admin.actions";
-import { UpdateUserDialog } from "../update-user-dialog";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { Dialog, DialogClose, DialogContent, DialogTitle } from "../ui/dialog";
-import Link from "next/link";
-import { useState } from "react";
-import { useAuthStore } from "../../store/authStore";
-import Image from "next/image";
+} from 'lucide-react'; // Import Search and X icons
+import { deleteUser, fetchUsers } from '@/lib/actions/Admin.actions';
+import { UpdateUserDialog } from '../update-user-dialog';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { Dialog, DialogClose, DialogContent, DialogTitle } from '../ui/dialog';
+import { useState } from 'react';
+import { useAuthStore } from '../../store/authStore';
+import Image from 'next/image';
+import AdminSkeleton from '../AdminSkeleton';
 
-type Role = "admin" | "teacher" | "student";
+type Role = 'admin' | 'teacher' | 'student';
 
 type User = {
   id: string;
@@ -71,7 +71,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
   const { isLoggedIn } = useAuthStore();
 
   const { data: users = initialData } = useQuery<User[]>({
-    queryKey: ["users"],
+    queryKey: ['users'],
     queryFn: fetchUsers,
     initialData,
   });
@@ -79,50 +79,50 @@ export function UsersTable({ initialData }: UsersTableProps) {
   const deleteMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success("User deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('User deleted successfully');
     },
   });
 
   const columns: ColumnDef<User>[] = [
     {
-      accessorKey: "prnNo",
+      accessorKey: 'prnNo',
       header: ({ column }) => (
         <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           PRN No
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       ),
       cell: ({ row }) => (
-        <span className="font-medium ml-4">{row.getValue("prnNo")}</span>
+        <span className='font-medium ml-4'>{row.getValue('prnNo')}</span>
       ),
     },
     {
-      accessorKey: "role",
-      header: "Role",
+      accessorKey: 'role',
+      header: 'Role',
       cell: ({ row }) => {
-        const role = row.getValue("role") as string;
+        const role = row.getValue('role') as string;
 
         return (
           <span
             className={`capitalize px-4 py-1 rounded-full font-medium
             ${
-              role === "admin"
-                ? "bg-red-900/20 text-red-700 dark:bg-red-900/40 dark:text-red-400"
-                : ""
+              role === 'admin'
+                ? 'bg-red-900/20 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+                : ''
             }
             ${
-              role === "teacher"
-                ? "bg-green-900/20 text-green-700 dark:bg-green-900/60 dark:text-green-500"
-                : ""
+              role === 'teacher'
+                ? 'bg-green-900/20 text-green-700 dark:bg-green-900/60 dark:text-green-500'
+                : ''
             }
             ${
-              role === "student"
-                ? "bg-blue-900/20 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400"
-                : ""
+              role === 'student'
+                ? 'bg-blue-900/20 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400'
+                : ''
             }`}
           >
             {role}
@@ -130,26 +130,26 @@ export function UsersTable({ initialData }: UsersTableProps) {
         );
       },
     },
-    { accessorKey: "email", header: "Email" },
+    { accessorKey: 'email', header: 'Email' },
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: 'name',
+      header: 'Name',
       cell: ({ row }) => (
-        <span className="font-medium whitespace-nowrap md:whitespace-normal">
-          {row.getValue("name")}
+        <span className='font-medium whitespace-nowrap md:whitespace-normal'>
+          {row.getValue('name')}
         </span>
       ),
     },
     {
-      id: "actions",
+      id: 'actions',
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
+            <Button variant='ghost' className='h-8 w-8 p-0'>
+              <MoreHorizontal className='h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => setUpdateUserData(row.original)}>
               Update user
@@ -176,49 +176,51 @@ export function UsersTable({ initialData }: UsersTableProps) {
   });
 
   const searchValue =
-    (table.getColumn("name")?.getFilterValue() as string) ?? "";
+    (table.getColumn('name')?.getFilterValue() as string) ?? '';
 
   return (
     <div>
       {isLoggedIn ? (
         <>
-          <div className="container mx-auto py-36 xl:py-40 md:max-w-6xl px-5">
-            <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+          <div className='container mx-auto'>
+            <h1 className='text-3xl tracking-tighter font-bold mb-8'>
+              Admin Dashboard
+            </h1>
 
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between py-4">
-              <div className="relative w-full sm:max-w-sm">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <div className='flex flex-col sm:flex-row gap-4 items-center justify-between py-4'>
+              <div className='relative w-full sm:max-w-sm'>
+                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
                 <Input
-                  placeholder="Search by anything"
+                  placeholder='Search by Name'
                   value={searchValue}
                   onChange={(e) =>
-                    table.getColumn("name")?.setFilterValue(e.target.value)
+                    table.getColumn('name')?.setFilterValue(e.target.value)
                   }
-                  className="w-full pl-10 pr-10"
+                  className='w-full pl-10 pr-10'
                 />
                 {searchValue && (
                   <X
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer"
-                    onClick={() => table.getColumn("name")?.setFilterValue("")}
+                    className='absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer'
+                    onClick={() => table.getColumn('name')?.setFilterValue('')}
                   />
                 )}
               </div>
               <Button
-                onClick={() => router.push("/admin/register")}
-                className="w-full sm:w-auto inline-flex justify-center items-center gap-2"
+                onClick={() => router.push('/admin/register')}
+                className='w-full sm:w-auto inline-flex justify-center items-center gap-2'
               >
-                Register new user{" "}
-                <PlusCircle className="h-6 w-6 text-green-600" />
+                Register new user{' '}
+                <PlusCircle className='h-6 w-6 text-green-600' />
               </Button>
             </div>
 
-            <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
-              <Table className="shad-table">
-                <TableHeader className="">
+            <div className='rounded-md border border-neutral-200 dark:border-neutral-800'>
+              <Table className='shad-table'>
+                <TableHeader className=''>
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow
                       key={headerGroup.id}
-                      className="shad-table-row-header"
+                      className='shad-table-row-header'
                     >
                       {headerGroup.headers.map((header) => (
                         <TableHead key={header.id}>
@@ -238,8 +240,8 @@ export function UsersTable({ initialData }: UsersTableProps) {
                     table.getRowModel().rows.map((row) => (
                       <TableRow
                         key={row.id}
-                        data-state={row.getIsSelected() && "selected"}
-                        className="shad-table-row"
+                        data-state={row.getIsSelected() && 'selected'}
+                        className='shad-table-row'
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>
@@ -255,7 +257,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
                     <TableRow>
                       <TableCell
                         colSpan={columns.length}
-                        className="h-24 text-center"
+                        className='h-24 text-center'
                       >
                         No results.
                       </TableCell>
@@ -263,29 +265,29 @@ export function UsersTable({ initialData }: UsersTableProps) {
                   )}
                 </TableBody>
               </Table>
-              <div className="table-actions">
+              <div className='table-actions'>
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                   onClick={() => table.previousPage()}
                   disabled={!table.getCanPreviousPage()}
-                  className="shad-gray-btn"
+                  className='shad-gray-btn'
                 >
-                  <Image src="/arrow.svg" width={24} height={24} alt="arrow" />
+                  <Image src='/arrow.svg' width={24} height={24} alt='arrow' />
                 </Button>
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                   onClick={() => table.nextPage()}
                   disabled={!table.getCanNextPage()}
-                  className="shad-gray-btn"
+                  className='shad-gray-btn'
                 >
                   <Image
-                    src="/arrow.svg"
+                    src='/arrow.svg'
                     width={24}
                     height={24}
-                    alt="arrow "
-                    className="rotate-180"
+                    alt='arrow '
+                    className='rotate-180'
                   />
                 </Button>
               </div>
@@ -296,9 +298,9 @@ export function UsersTable({ initialData }: UsersTableProps) {
                 user={updateUserData}
                 onClose={() => setUpdateUserData(null)}
                 onUpdate={() => {
-                  queryClient.invalidateQueries({ queryKey: ["users"] });
+                  queryClient.invalidateQueries({ queryKey: ['users'] });
                   setUpdateUserData(null);
-                  toast.success("User updated successfully");
+                  toast.success('User updated successfully');
                 }}
               />
             )}
@@ -310,12 +312,12 @@ export function UsersTable({ initialData }: UsersTableProps) {
               <DialogContent>
                 <DialogTitle>Confirm Deletion</DialogTitle>
                 <p>Are you sure you want to delete this user?</p>
-                <div className="flex justify-end gap-2 mt-4">
+                <div className='flex justify-end gap-2 mt-4'>
                   <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button variant='outline'>Cancel</Button>
                   </DialogClose>
                   <Button
-                    variant="destructive"
+                    variant='destructive'
                     onClick={() => {
                       if (deleteUserId) deleteMutation.mutate(deleteUserId);
                       setDeleteUserId(null);
@@ -329,16 +331,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center w-full min-h-screen">
-          <div className="flex flex-col gap-4 items-center justify-center w-full max-w-5xl  py-12 px-3 md:px-8">
-            <h1 className="text-3xl font-bold">
-              You are not authorized to access this page ⚠️
-            </h1>
-            <Button asChild>
-              <Link href="/">Login</Link>
-            </Button>
-          </div>
-        </div>
+        <AdminSkeleton />
       )}
     </div>
   );

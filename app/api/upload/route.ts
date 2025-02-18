@@ -1,22 +1,22 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import {
   storage,
   db,
   DATABASE_ID,
   NOTE_COLLECTION_ID,
   BUCKET_ID,
-} from "@/lib/appwrite";
-import { ID } from "node-appwrite";
+} from '@/lib/appwrite';
+import { ID } from 'node-appwrite';
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const files = formData.getAll("files") as File[];
-    const subjectId = formData.get("subjectId") as string;
-    const sem = formData.get("sem") as string;
-    const userId = formData.get("userId") as string;
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
+    const files = formData.getAll('files') as File[];
+    const subjectId = formData.get('subjectId') as string;
+    const sem = formData.get('sem') as string;
+    const userId = formData.get('userId') as string;
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
 
     if (
       !files.length ||
@@ -27,22 +27,10 @@ export async function POST(req: NextRequest) {
       !description
     ) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: 'Missing required fields' },
         { status: 400 }
       );
     }
-    console.log(
-      "Route of upload : ",
-      " Subject id =",
-      subjectId,
-      sem,
-      "user id : ",
-      userId,
-      " title : ",
-      title,
-      " description : ",
-      description
-    );
 
     const uploadedFiles = await Promise.all(
       files.map(async (file) => {
@@ -75,7 +63,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, uploadedFiles }, { status: 200 });
   } catch (error) {
-    console.error("Upload failed", error);
+    console.error('Upload failed', error);
     return NextResponse.json({ error: error }, { status: 500 });
   }
 }

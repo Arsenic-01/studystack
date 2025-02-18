@@ -1,33 +1,47 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { RainbowButton } from "@/components/ui/rainbow-button";
-import { useRouter } from "next/navigation";
-import { Select, SelectItem } from "@heroui/select";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { toast } from "sonner";
-import { SharedSelection } from "@heroui/react";
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { RainbowButton } from '@/components/ui/rainbow-button';
+import { useRouter } from 'next/navigation';
+import { Select, SelectItem } from '@heroui/select';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { toast } from 'sonner';
+import { SharedSelection } from '@heroui/react';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  prnNo: z
+    .string()
+    .length(10, 'PRN No must be exactly 10 digits')
+    .regex(/^[0-9]{10}$/, 'PRN No must be numeric'),
+  name: z.string().min(6, 'Full Name must be at least 6 characters'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  role: z.string(),
+});
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
-    prnNo: "",
-    name: "",
-    email: "",
-    password: "",
-    role: "",
+    prnNo: '',
+    name: '',
+    email: '',
+    password: '',
+    role: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
-  const [error, setError] = useState("");
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
   const handleRoleChange = (selection: SharedSelection) => {
-    const selectedRole = selection.currentKey || ""; // Get the selected role from currentKey
+    const selectedRole = selection.currentKey || '';
     setForm((prevForm) => ({ ...prevForm, role: selectedRole }));
   };
 
@@ -35,23 +49,29 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
 
+    const validation = formSchema.safeParse(form);
+    if (!validation.success) {
+      setError(validation.error.errors[0].message);
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
 
       const data = await response.json();
 
-      if (!response.ok) throw new Error(data.message || "Registration failed");
+      if (!response.ok) throw new Error(data.message || 'Registration failed');
 
-      toast.success("Registration successful!🎉 Please login.");
-      // Redirect to login page after successful registration
-      router.push("/");
+      toast.success('Registration successful!🎉 Please login.');
+      router.push('/');
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "An unexpected error occurred"
+        err instanceof Error ? err.message : 'An unexpected error occurred'
       );
     } finally {
       setLoading(false);
@@ -59,97 +79,95 @@ export default function RegisterPage() {
   };
 
   return (
-    <div
-      suppressHydrationWarning
-      className="flex min-h-screen flex-col items-center justify-center py-24 xl:py-36 px-5"
-    >
-      <div className="w-full max-w-md space-y-8 rounded-xl px-4 sm:px-6 py-8 sm:py-10 shadow-lg bg-gray-50 dark:bg-neutral-900">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+    <div className='py-36 2xl:py-40 px-5 mx-auto'>
+      <div className='w-full  mx-auto max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800'>
+        <div className='text-center flex-col items-center gap-4'>
+          <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
             Register
           </h2>
+          <p className='mt-2 text-sm text-gray-500 dark:text-gray-400'>
+            Create a new account
+          </p>
         </div>
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <form onSubmit={handleSubmit} className='mt-8 space-y-6'>
           <div>
             <Input
-              name="prnNo"
-              type="text"
+              name='prnNo'
+              type='text'
               required
-              minLength={10}
-              maxLength={10}
-              pattern="[0-9]{10}"
               value={form.prnNo}
-              placeholder="Enter PRN No."
+              placeholder='Enter PRN No.'
               onChange={handleChange}
-              className="mt-1 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
+              className='mt-1'
             />
           </div>
           <div>
             <Input
-              name="name"
-              type="text"
+              name='name'
+              type='text'
               required
               value={form.name}
-              placeholder="Enter Full Name"
+              placeholder='Enter Full Name'
               onChange={handleChange}
-              className="mt-1 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
+              className='mt-1'
             />
           </div>
           <div>
             <Input
-              name="email"
-              type="email"
+              name='email'
+              type='email'
               required
               value={form.email}
-              placeholder="Enter Email"
+              placeholder='Enter Email'
               onChange={handleChange}
-              className="mt-1 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
+              className='mt-1'
             />
           </div>
           <div>
-            <div className="relative mt-1">
+            <div className='relative mt-1'>
               <Input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
+                id='password'
+                name='password'
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={form.password}
                 onChange={handleChange}
-                className="pr-10 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white"
-                placeholder="Enter your password"
+                className='pr-10'
+                placeholder='Enter your password'
               />
               <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                type='button'
+                className='absolute inset-y-0 right-0 flex items-center pr-3'
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? (
-                  <EyeOffIcon className="h-5 w-5 text-gray-400" />
+                  <EyeOffIcon className='h-5 w-5 text-gray-400' />
                 ) : (
-                  <EyeIcon className="h-5 w-5 text-gray-400" />
+                  <EyeIcon className='h-5 w-5 text-gray-400' />
                 )}
               </button>
             </div>
           </div>
           <div>
             <Select
-              name="role"
+              name='role'
               selectedKeys={new Set([form.role])}
               onSelectionChange={handleRoleChange}
-              placeholder="Select Role"
+              placeholder='Select Role'
+              variant='flat'
             >
-              <SelectItem key="student">Student</SelectItem>
-              <SelectItem key="teacher">Teacher</SelectItem>
-              <SelectItem key="admin">Admin</SelectItem>
+              <SelectItem key='student'>Student</SelectItem>
+              <SelectItem key='teacher'>Teacher</SelectItem>
+              <SelectItem key='admin'>Admin</SelectItem>
             </Select>
           </div>
           {error && (
-            <p className="text-white text-center w-full bg-red-500 dark:bg-red-500/70 py-2 text-sm rounded-lg">
+            <p className='text-white text-center w-full bg-red-500 dark:bg-red-500/70 py-2 text-sm rounded-lg'>
               {error}
             </p>
           )}
-          <RainbowButton className="w-full" type="submit" disabled={loading}>
-            {loading ? "Registering..." : "Sign Up"}
+          <RainbowButton className='w-full' type='submit' disabled={loading}>
+            {loading ? 'Registering...' : 'Sign Up'}
           </RainbowButton>
         </form>
       </div>

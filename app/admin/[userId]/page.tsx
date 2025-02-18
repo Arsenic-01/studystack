@@ -1,14 +1,14 @@
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { UsersTable } from "@/components/table/data-table";
-import { fetchUsers } from "@/lib/actions/Admin.actions";
+import { Suspense } from 'react';
+import { UsersTable } from '@/components/table/data-table';
+import { fetchUsers } from '@/lib/actions/Admin.actions';
+import AdminSkeleton from '@/components/AdminSkeleton';
 
 export default async function DashboardPage() {
   const users = await fetchUsers();
 
   return (
-    <div className="">
-      <Suspense fallback={<Skeleton className="w-full h-[400px]" />}>
+    <div className='py-32 lg:py-36 px-5 max-w-5xl mx-auto'>
+      <Suspense fallback={<AdminSkeleton />}>
         <UsersTable initialData={users} />
       </Suspense>
     </div>
