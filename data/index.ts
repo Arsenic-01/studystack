@@ -55,6 +55,7 @@ export const accordianItems = [
 
 export const footerLinks = [
   {
+<<<<<<< Updated upstream
     title: "KKWP",
     href: "",
   },
@@ -69,11 +70,28 @@ export const footerLinks = [
   {
     title: "MSBTE",
     href: "#",
+=======
+    title: 'KKWP',
+    href: 'https://poly.kkwagh.edu.in/',
+  },
+  {
+    title: 'About',
+    href: '/about',
+  },
+  {
+    title: 'Contact',
+    href: 'https://docs.google.com/forms/d/e/1FAIpQLSeCgACy0cfy08L_CGsxputmIIqvh-aD4uUE7B-sX1oIzqwZ9g/viewform?usp=sharing',
+  },
+  {
+    title: 'MSBTE',
+    href: 'https://msbte.ac.in/',
+>>>>>>> Stashed changes
   },
 ];
 
 export const footerIcons = [
   {
+<<<<<<< Updated upstream
     name: "instagram",
     href: "#",
     icon: "/instagram.svg",
@@ -87,12 +105,28 @@ export const footerIcons = [
     name: "kkwp main website",
     href: "#",
     icon: "/globe.svg",
+=======
+    name: 'instagram',
+    href: 'https://www.instagram.com/study_stack02/',
+    icon: '/instagram.svg',
+  },
+  {
+    name: 'youtube',
+    href: 'https://www.youtube.com/@StudyStack01',
+    icon: '/youtube.svg',
+  },
+  {
+    name: 'kkwp main website',
+    href: 'https://poly.kkwagh.edu.in/',
+    icon: '/globe.svg',
+>>>>>>> Stashed changes
   },
 ];
 
 export const tsc = [
   {
     id: 1,
+<<<<<<< Updated upstream
     name: "Victus03",
     designation: "Discord",
     image: "/about_logos/discord.png",
@@ -114,12 +148,47 @@ export const tsc = [
     name: "Tanay Hingane",
     designation: "Linkedin",
     image: "/about_logos/linkedin.webp",
+=======
+    name: 'Victus03',
+    designation: 'Discord',
+    image: '/about_logos/discord.png',
+    href: 'https://discordapp.com/users/1198554997386915880',
+  },
+  {
+    id: 2,
+    name: 'TanayHingane',
+    designation: 'Github',
+    image: '/about_logos/Git.png',
+    href: 'https://github/TanayHingane',
+  },
+  {
+    id: 3,
+    name: 'tanayhingane03@gmail.com',
+    designation: 'Mail',
+    image: '/about_logos/Email.webp',
+    href: 'https://mail.google.com/mail/u/3/#inbox?compose=CllgCHrkVVRPrDrZxpSwjmzvwQWqGpsRGltCdVPzxWkJngnrVMFBgCMNdWpfhfCSLPZXmbJZVKL',
+  },
+  {
+    id: 4,
+    name: 'Tanay Hingane',
+    designation: 'Linkedin',
+    image: '/about_logos/linkedin.webp',
+    href: 'https://github/Arsenic-01',
+  },
+  {
+    id: 5,
+    name: 'Victus03',
+    designation: 'Portfolio',
+    image: '/about_logos/website.png',
+    href: '#',
+>>>>>>> Stashed changes
   },
 ];
 
 export const vsc = [
   {
     id: 1,
+<<<<<<< Updated upstream
     name: "Victus03",
     designation: "Discord",
     image: "/about_logos/discord.png",
@@ -152,6 +221,40 @@ export const vsc = [
     designation: "Portfolio",
     image: "/about_logos/website.png",
     href: "https://discord.com/users/101001002002#0001",
+=======
+    name: 'Arsenic',
+    designation: 'Discord',
+    image: '/about_logos/discord.png',
+    href: 'https://discordapp.com/users/862682607162359819',
+  },
+  {
+    id: 2,
+    name: 'Arsenic01',
+    designation: 'Github',
+    image: '/about_logos/Git.png',
+    href: 'https://github/Arsenic-01',
+  },
+  {
+    id: 3,
+    name: 'vedbhor25@gmail.com',
+    designation: 'Mail',
+    image: '/about_logos/Email.webp',
+    href: 'https://mail.google.com/mail/u/3/#inbox?compose=prDfqJrXVQDHFVpDZkcGPhBsFwxhFxFdjFJtGvtRzfcGXjCVSvqVNNBvmLwtSfJZgDWrTwqZDdRBTmZSDxDVsWShJTwCqtvSfTQWNXmlvQQTCxsfWWkFhqpQXpSzvqffsTHTgrhQpfQjzhDnwmvZBlPg',
+  },
+  {
+    id: 4,
+    name: 'Vedant Bhor',
+    designation: 'Linkedin',
+    image: '/about_logos/linkedin.webp',
+    href: 'https://www.linkedin.com/in/vedant-bhor-39287828b/',
+  },
+  {
+    id: 5,
+    name: 'arsenic',
+    designation: 'Portfolio',
+    image: '/about_logos/website.png',
+    href: 'https://vedantbhor.vercel.app/',
+>>>>>>> Stashed changes
   },
 ];
 

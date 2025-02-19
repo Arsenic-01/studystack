@@ -21,12 +21,10 @@ export function AboutGrid() {
         </div>
       </div>
       <div className="sm:col-span-3 lg:col-span-3 p-5 border border-neutral-200 dark:border-neutral-800 flex flex-col justify-center rounded-xl">
-        <p className="text-xl font-bold tracking-tighter">
-          &quot; I am a motivated and versatile individual, always eager to take
-          on new challenges. With a passion for learning I am dedicated to
-          delivering high-quality results. With a positive attitude and a growth
-          mindset, I am ready to make a meaningful contribution and achieve
-          great things. &quot;
+        <p className="text-lg font-bold tracking-tighter">
+          &quot; I am a motivated, versatile student, passionate about learning and building innovative projects.
+           I strive to enhance my skills in programming, networking, and software development, always eager to explore new technologies.
+            My dedication to both academics and practical work drives me to grow and excel in the tech industry. 🚀 &quot;
         </p>
         <div className="mt-5 flex flex-col  items-end">
           {" "}
@@ -39,17 +37,15 @@ export function AboutGrid() {
           <Chip color="danger">Front End</Chip>
           <Chip color="warning">Back End</Chip>
           <Chip color="success">Database Management</Chip>
-          <Chip color="primary">Front End</Chip>
         </div>
       </div>
 
       <div className="sm:col-span-3 lg:col-span-3 p-5 border border-neutral-200 dark:border-neutral-800 flex flex-col justify-center rounded-xl">
-        <p className="text-xl font-bold tracking-tighter">
-          &quot; I am a motivated and versatile individual, always eager to take
-          on new challenges. With a passion for learning I am dedicated to
-          delivering high-quality results. With a positive attitude and a growth
-          mindset, I am ready to make a meaningful contribution and achieve
-          great things. &quot;
+        <p className="text-lg font-bold tracking-tighter">
+          &quot; I am a passionate, versatile student, always eager to learn and innovate.
+           I enjoy working on coding projects, software development, and problem-solving,
+           constantly exploring new technologies.
+           My dedication to both studies and hands-on projects drives me to excel and push my limits in the tech field. 🚀 &quot;
         </p>
         <div className="mt-5 flex flex-col  items-end">
           {" "}

@@ -13,9 +13,15 @@ import { twMerge } from "tailwind-merge";
 const ProfileCard = dynamic(() => import("./ProfileCard"), { ssr: false });
 
 const navLinks = [
+<<<<<<< Updated upstream
   { name: "About", href: "/about" },
   { name: "Contact", href: "/" },
   { name: "FAQs", href: "/home#faq" },
+=======
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: 'https://docs.google.com/forms/d/e/1FAIpQLSeCgACy0cfy08L_CGsxputmIIqvh-aD4uUE7B-sX1oIzqwZ9g/viewform?usp=sharing' },
+  { name: 'FAQs', href: '/home#faq' },
+>>>>>>> Stashed changes
 ];
 
 const Header = () => {
