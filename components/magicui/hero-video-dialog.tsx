@@ -138,6 +138,7 @@ export default function HeroVideoDialog({
           )}
         </AnimatePresence>
         <BorderBeam
+          className="hidden md:block"
           colorFrom="#ffffff"
           colorTo="#505050"
           duration={22}

@@ -16,11 +16,9 @@ const UploadNotesButton = ({
   const { user, isLoggedIn } = useAuthStore();
   const [open, setOpen] = useState(false);
 
-  console.log(subjectId, sem);
-
   return (
     <>
-      {isLoggedIn && (
+      {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
         <Button
           className="rounded-full px-5 py-2 w-full sm:w-auto sm:mr-3"
           variant={"outline"}

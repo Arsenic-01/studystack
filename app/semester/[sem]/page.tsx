@@ -1,8 +1,8 @@
-import BreadcrumbWithDropdown from '@/components/BreadCrumb';
-import SubjectCard from '@/components/SubjectCard';
-import { fetchSubjectsBySemester } from '@/lib/actions/Student.actions';
-import { Subject } from '@/lib/appwrite_types';
-import React from 'react';
+import BreadcrumbWithDropdown from "@/components/BreadCrumb";
+import SubjectCard from "@/components/SubjectCard";
+import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
+import { Subject } from "@/lib/appwrite_types";
+import React from "react";
 
 const page = async ({ params }: { params: { sem: string } }) => {
   const { sem } = await params;
@@ -11,8 +11,8 @@ const page = async ({ params }: { params: { sem: string } }) => {
 
   return (
     <div>
-      <div className='flex flex-col gap-8 sm:gap-16 items-center justify-center w-full py-16 md:py-24 px-1'>
-        <div className='flex flex-col gap-4 items-start justify-center w-full  max-w-4xl  pt-12 px-5 md:px-8'>
+      <div className="flex flex-col gap-8 sm:gap-16 items-center justify-center w-full py-16 md:py-24 px-1">
+        <div className="flex flex-col gap-4 items-start justify-center w-full  max-w-5xl  pt-12 px-5 md:px-8">
           <BreadcrumbWithDropdown sem={sem} />
 
           {res.map((subject: Subject) => (

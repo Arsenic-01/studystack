@@ -3,6 +3,19 @@
 @tailwind utilities;
 
 /* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #303030;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #3b3b3b;
+}
 
 html {
   scroll-behavior: smooth;
@@ -85,6 +98,6 @@ body {
     @apply border-b border-neutral-300 dark:border-neutral-800 dark:text-light-200 !important;
   }
 }
-[data-state='closed'][data-overlay] {
+[data-state="closed"][data-overlay] {
   display: none !important;
 }
