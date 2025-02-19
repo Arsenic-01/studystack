@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-interface User {
+export interface User {
   userId: string;
   name: string;
   email: string;
@@ -25,10 +25,10 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user) => set({ user, isLoggedIn: !!user }),
       logout: () => {
         set({ user: null, isLoggedIn: false });
-        localStorage.setItem('logout', 'true');
-        setTimeout(() => localStorage.removeItem('logout'), 500);
+        localStorage.setItem("logout", "true");
+        setTimeout(() => localStorage.removeItem("logout"), 500);
       },
     }),
-    { name: 'auth-storage' }
+    { name: "auth-storage" }
   )
 );

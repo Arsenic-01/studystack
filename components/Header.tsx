@@ -13,9 +13,12 @@ import { twMerge } from "tailwind-merge";
 const ProfileCard = dynamic(() => import("./ProfileCard"), { ssr: false });
 
 const navLinks = [
-  { name: 'About', href: '/about' },
-  { name: 'Contact', href: 'https://docs.google.com/forms/d/e/1FAIpQLSeCgACy0cfy08L_CGsxputmIIqvh-aD4uUE7B-sX1oIzqwZ9g/viewform?usp=sharing' },
-  { name: 'FAQs', href: '/home#faq' },
+  { name: "About", href: "/about" },
+  {
+    name: "Contact",
+    href: "https://docs.google.com/forms/d/e/1FAIpQLSeCgACy0cfy08L_CGsxputmIIqvh-aD4uUE7B-sX1oIzqwZ9g/viewform?usp=sharing",
+  },
+  { name: "FAQs", href: "/home#faq" },
 ];
 
 const Header = () => {
@@ -33,7 +36,7 @@ const Header = () => {
 
   return (
     <nav className="fixed top-0 w-full px-5 z-50">
-      <div className="backdrop-blur-xl max-w-5xl mx-auto dark:bg-neutral-950/50 border border-neutral-300 dark:border-neutral-800 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3">
+      <div className="backdrop-blur-lg max-w-5xl mx-auto dark:bg-neutral-950/50 border border-neutral-300 dark:border-neutral-800 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3">
         <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
           {/* Logo */}
           <div className="flex items-center gap-7">

@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { toast } from "sonner";
-import type React from "react";
 import Link from "next/link";
 import { loginSchema } from "./validation";
 import { useAuthStore } from "@/store/authStore";
@@ -24,9 +23,33 @@ export default function LoginPage() {
   );
 
   useEffect(() => {
-    // Refresh the route to revalidate the user's authentication status
-    router.refresh();
-  }, [router]);
+    const syncSession = async () => {
+      try {
+        const res = await fetch("/api/session", {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          throw new Error("Session invalid");
+        }
+
+        const data = await res.json();
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          throw new Error("No user found");
+        }
+      } catch (error) {
+        console.warn("Session expired. Logging out...", error);
+        setUser(null); // Clear auth store
+        router.push("/"); // Redirect to login
+      }
+    };
+
+    syncSession();
+  }, [setUser, router]);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 

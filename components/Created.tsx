@@ -7,13 +7,8 @@ const Created = () => {
     <div>
       <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-10 border border-neutral-200 dark:border-neutral-800 p-5 rounded-xl">
         <div className="text-xl font-bold tracking-tighter max-w-lg">
-          <BlurFade delay={0.25} inView>
-        <h2 className="text-xl font-bold tracking-tighter sm:text-4xl xl:text-4xl/none">
-          Problems faced:
-        </h2><br/>
-      </BlurFade>
-      <BlurFade delay={0.25 * 2} inView>
-        <span className="text-pretty text-base tracking-tighter sm:text-2xl xl:text-2xl/none">
+          <BlurFade delay={0.25 * 2} inView>
+            {/* <span className="text-pretty text-base tracking-tighter sm:text-2xl xl:text-2xl/none">
         • Various Softwares Required to be used.
         </span><br/>
         <span className="text-pretty text-base tracking-tighter sm:text-2xl xl:text-2xl/none">
@@ -24,12 +19,17 @@ const Created = () => {
         </span><br/>
         <span className="text-pretty text-base tracking-tighter sm:text-2xl xl:text-2xl/none">
         • Large Storage of Teacher Notes.
-        </span><br/>
-      </BlurFade>
-          {/* <TextReveal text="Various Softwares Required to be used."/>
-          <TextReveal text="Not getting Resources during exam."/>
-          <TextReveal text="Security of Notes."/>
-          <TextReveal text="Large Storage of Teacher Notes."/> */}
+        </span><br/> */}
+            <div>
+              Diploma students in Computer Technology (MSBTE) struggle with
+              scattered notes, multiple software requirements, and difficult
+              resource retrieval on platforms like Google Classroom. Study Stack
+              simplifies this by providing a centralized, secure, and organized
+              space where teachers upload and students easily access study
+              materials—no more endless searching. Everything you need, all in
+              one place! 🚀
+            </div>
+          </BlurFade>
         </div>
         <IconCloudDemo />
       </div>
