@@ -24,32 +24,41 @@ export const semester = [
   //   label: 'Semester 6',
   // },
 ];
-
 export const accordianItems = [
   {
-    title: "What is Study Stack?",
+    title: "What is StudyStack?",
     content:
-      "Study Stack is a platform where computer technology (CM) department students of K.K.Wagh Polytechnic, Nashik can find all the notes and resources for their course in one place.",
+      "StudyStack is a centralized platform for Computer Technology (CM) students at K.K. Wagh Polytechnic, Nashik, providing all necessary notes and resources in one place.",
   },
   {
-    title: "Why was it created?",
+    title: "Why was StudyStack created?",
     content:
-      "Study Stack was created to help students find all the resources they need to succeed in their course and be able to score 95+% in their final exams.",
+      "StudyStack was designed to help students easily access essential study materials, enabling them to excel in their coursework and achieve top scores in their exams.",
   },
   {
-    title: "Who built it?",
+    title: "Who developed StudyStack?",
     content:
-      "Study Stack was built by a team of students (Vedant B. Bhor & Tanay K. Hingane) who are passionate about technology and education.",
+      "StudyStack was created by students Vedant B. Bhor and Tanay K. Hingane, who share a passion for technology and education.",
   },
   {
-    title: "Who can use it?",
+    title: "Who can use StudyStack?",
     content:
-      "Study Stack is free to use for any student (as long as they have their login and passoword) who is enrolled in above course.",
+      "StudyStack is free to use for any student enrolled in the Computer Technology course, provided they have valid login credentials.",
   },
   {
-    title: "How does it work?",
+    title: "How does StudyStack work?",
     content:
-      "Study Stack is a platform where teachers/faculty can upload notes and resources for their respected subjects and students can access them, much like google classroom, but better.",
+      "StudyStack allows teachers and faculty to upload subject-specific notes and resources, which students can access conveniently. It functions similarly to Google Classroom but with enhanced usability.",
+  },
+  {
+    title: "What technologies power StudyStack?",
+    content:
+      "StudyStack is built using Next.js for the frontend + turbopack, Tailwind CSS for styling, Appwrite for backend services, React for UI components, and Framer Motion for animations.",
+  },
+  {
+    title: "Is StudyStack open-source?",
+    content:
+      "Yes! StudyStack is an open-source project. You can explore the source code on GitHub: https://github.com/Arsenic-01/studystack",
   },
 ];
 
@@ -93,10 +102,10 @@ export const footerIcons = [
 export const tsc = [
   {
     id: 1,
-    name: "Victus03",
+    name: "tanay.h03",
     designation: "Discord",
     image: "/about_logos/discord.png",
-    href: "https://discordapp.com/users/1198554997386915880",
+    href: "https://discord.com/users/1198554997386915880",
   },
   {
     id: 2,
@@ -108,7 +117,7 @@ export const tsc = [
   {
     id: 3,
     name: "tanayhingane03@gmail.com",
-    designation: "Mail",
+    designation: "Gmail",
     image: "/about_logos/Email.webp",
     href: "mailto:tanayhingane03@gmail.com.com?subject=Approach%20via%20Study%20Stack%20webapp&body=Hey%20there!%2C%20I%20am%20___%20and%20I%20wanted%20to%20contact%20you%20because%20___",
   },
@@ -117,7 +126,7 @@ export const tsc = [
     name: "Tanay Hingane",
     designation: "Linkedin",
     image: "/about_logos/linkedin.webp",
-    href: "#",
+    href: "http://www.linkedin.com/in/TanayHingane",
   },
   {
     id: 5,
@@ -131,14 +140,14 @@ export const tsc = [
 export const vsc = [
   {
     id: 1,
-    name: "Arsenic",
+    name: "itsmehomie",
     designation: "Discord",
     image: "/about_logos/discord.png",
-    href: "https://discordapp.com/users/862682607162359819",
+    href: "https://discord.com/users/862682607162359819",
   },
   {
     id: 2,
-    name: "Arsenic01",
+    name: "Arsenic-01",
     designation: "Github",
     image: "/about_logos/Git.png",
     href: "https://github/Arsenic-01",
@@ -146,7 +155,7 @@ export const vsc = [
   {
     id: 3,
     name: "vedbhor25@gmail.com",
-    designation: "Mail",
+    designation: "Gmail",
     image: "/about_logos/Email.webp",
     href: "mailto:vedbhor25@gmail.com?subject=Approach%20via%20Study%20Stack%20webapp&body=Hey%20there!%2C%20I%20am%20___%20and%20I%20wanted%20to%20contact%20you%20because%20___",
   },
