@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Header from "@/components/Header";
@@ -7,7 +7,9 @@ import { Toaster } from "sonner";
 import ReactQueryProvider from "./QueryProvider";
 import Footer from "@/components/Footer";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
+
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
 export const metadata: Metadata = {
   title: "Study Stack",
@@ -25,7 +27,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/title_logo.png" sizes="any" />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${dmSans.className} antialiased`}>
         <Providers>
           <ReactQueryProvider>
             <Header />

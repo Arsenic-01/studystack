@@ -37,14 +37,20 @@ const Header = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
           {/* Logo */}
           <div className="flex items-center gap-7">
-            <Link href={user ? "/home" : "/"} className="inline-block">
+            <Link
+              href={user ? "/home" : "/"}
+              className="inline-flex gap-1 items-center justify-center"
+            >
               <Image
-                src="/logo.png"
+                src="/title_logo.png"
                 alt="Study Stack Logo"
-                width={140}
-                height={38}
-                className="select-none pointer-events-none dark:invert"
+                width={35}
+                height={35}
+                className="select-none pointer-events-none invert dark:invert-0"
               />
+              <span className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
+                StudyStack
+              </span>
             </Link>
           </div>
 
