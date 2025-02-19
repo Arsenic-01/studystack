@@ -74,12 +74,12 @@ const dropdownItems = [
     label: "Semester 4",
     href: "/semester/4",
   },
-  {
-    label: "Semester 5",
-    href: "/semester/5",
-  },
-  {
-    label: "Semester 6",
-    href: "/semester/6",
-  },
+  // {
+  //   label: "Semester 5",
+  //   href: "/semester/5",
+  // },
+  // {
+  //   label: "Semester 6",
+  //   href: "/semester/6",
+  // },
 ];

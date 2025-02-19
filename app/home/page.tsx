@@ -6,9 +6,8 @@ import React from "react";
 
 const page = () => {
   return (
-    <div>
+    <div className="overflow-x-clip">
       <Hero />
-      {/* <CardHoverEffectDemo /> */}
       <HeroVideoDialogDemoTopInBottomOut />
       <InfiniteMovingCardsDemo />
       <FAQ />

@@ -2,7 +2,6 @@
 import { UserProps } from "@/lib/appwrite_types";
 import { useAuthStore } from "@/store/authStore";
 import {
-  Avatar,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -11,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { Avatar, AvatarImage } from "./ui/avatar";
 
 const ProfileCard = ({ user }: { user: UserProps }) => {
   const { logout } = useAuthStore();
@@ -48,15 +48,13 @@ const ProfileCard = ({ user }: { user: UserProps }) => {
     <div>
       <Dropdown placement="bottom-end">
         <DropdownTrigger>
-          <Avatar
-            isBordered
-            as="button"
-            className="transition-transform hover:scale-105"
-            color="secondary"
-            name={user.name}
-            size="sm"
-            src="/tom.jpg"
-          />
+          <Avatar className="hover:cursor-pointer border border-neutral-300 dark:border-none size-8">
+            <AvatarImage
+              className="pointer-events-none select-none"
+              src="/user_img.png"
+              alt={user.name}
+            />
+          </Avatar>
         </DropdownTrigger>
         <DropdownMenu
           aria-label="Profile Actions"

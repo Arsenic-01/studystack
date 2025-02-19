@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import LoginButton from './misc/Button';
-import { ThemeToggle } from './ThemeSwitcher';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useAuthStore } from '@/store/authStore';
-import { twMerge } from 'tailwind-merge';
+import Image from "next/image";
+import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import LoginButton from "./misc/Button";
+import { ThemeToggle } from "./ThemeSwitcher";
+import { AnimatePresence, motion } from "framer-motion";
+import { useAuthStore } from "@/store/authStore";
+import { twMerge } from "tailwind-merge";
 
-const ProfileCard = dynamic(() => import('./ProfileCard'), { ssr: false });
+const ProfileCard = dynamic(() => import("./ProfileCard"), { ssr: false });
 
 const navLinks = [
-  { name: 'About', href: '/about' },
-  { name: 'Contact', href: '/' },
-  { name: 'FAQs', href: '/home#faq' },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/" },
+  { name: "FAQs", href: "/home#faq" },
 ];
 
 const Header = () => {
@@ -24,7 +24,7 @@ const Header = () => {
 
   useEffect(() => {
     if (!user) {
-      fetch('/api/session')
+      fetch("/api/session")
         .then((res) => (res.ok ? res.json() : Promise.reject()))
         .then((data) => setUser(data.user))
         .catch(() => setUser(null));
@@ -32,40 +32,40 @@ const Header = () => {
   }, [user, setUser]);
 
   return (
-    <nav className='fixed top-0 w-full px-5 z-50'>
-      <div className='backdrop-blur-xl max-w-5xl mx-auto dark:bg-neutral-950/50 border border-[#B4B4B4]/50 dark:border-white/20 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3'>
-        <div className='grid grid-cols-2 md:grid-cols-3 justify-end items-center'>
+    <nav className="fixed top-0 w-full px-5 z-50">
+      <div className="backdrop-blur-xl max-w-5xl mx-auto dark:bg-neutral-950/50 border border-[#B4B4B4]/50 dark:border-white/20 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
           {/* Logo */}
-          <div className='flex items-center gap-7'>
-            <Link href={user ? '/home' : '/'} className='inline-block'>
+          <div className="flex items-center gap-7">
+            <Link href={user ? "/home" : "/"} className="inline-block">
               <Image
-                src='/logo.png'
-                alt='Study Stack Logo'
+                src="/logo.png"
+                alt="Study Stack Logo"
                 width={140}
                 height={38}
-                className='select-none pointer-events-none dark:invert'
+                className="select-none pointer-events-none dark:invert"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className='hidden md:flex justify-center items-center gap-7'>
+          <div className="hidden md:flex justify-center items-center gap-7">
             {navLinks.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 className={twMerge(
-                  !isLoggedIn && item.name === 'FAQs' && 'hidden',
+                  !isLoggedIn && item.name === "FAQs" && "hidden",
                   `text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50`
                 )}
               >
                 {item.name}
               </Link>
             ))}
-            {isLoggedIn && user && user.role === 'admin' && (
+            {isLoggedIn && user && user.role === "admin" && (
               <Link
                 href={`/admin/${user.userId}`}
-                className='text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50'
+                className="text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50"
               >
                 Admin
               </Link>
@@ -73,59 +73,59 @@ const Header = () => {
           </div>
 
           {/* Auth & Theme Toggle */}
-          <div className='flex items-center gap-2 sm:gap-3 justify-end'>
+          <div className="flex items-center gap-2 sm:gap-3 justify-end">
             {/* Mobile Menu Toggle */}
-            <div className='md:hidden flex items-center gap-2'>
+            <div className="md:hidden flex items-center gap-2">
               <ThemeToggle />
               {isLoggedIn && user && <ProfileCard user={user} />}
               <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                className='feather feather-menu'
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="feather feather-menu hover:cursor-pointer"
                 onClick={() => setIsOpen(!isOpen)}
               >
                 <line
-                  x1='3'
-                  y1='6'
-                  x2='21'
-                  y2='6'
+                  x1="3"
+                  y1="6"
+                  x2="21"
+                  y2="6"
                   className={twMerge(
-                    'origin-left transition',
-                    isOpen && 'rotate-45 -translate-y-1'
+                    "origin-left transition",
+                    isOpen && "rotate-45 -translate-y-1"
                   )}
                 ></line>
                 <line
-                  x1='3'
-                  y1='12'
-                  x2='21'
-                  y2='12'
-                  className={twMerge('transition', isOpen && 'opacity-0')}
+                  x1="3"
+                  y1="12"
+                  x2="21"
+                  y2="12"
+                  className={twMerge("transition", isOpen && "opacity-0")}
                 ></line>
                 <line
-                  x1='3'
-                  y1='18'
-                  x2='21'
-                  y2='18'
+                  x1="3"
+                  y1="18"
+                  x2="21"
+                  y2="18"
                   className={twMerge(
-                    'origin-left transition',
-                    isOpen && '-rotate-45 translate-y-1'
+                    "origin-left transition",
+                    isOpen && "-rotate-45 translate-y-1"
                   )}
                 ></line>
               </svg>
             </div>
 
             {/* Desktop Profile/Login */}
-            <div className='hidden md:flex items-center gap-2 md:gap-3'>
+            <div className="hidden md:flex items-center gap-2 md:gap-3">
               <ThemeToggle />
               {!isLoggedIn ? (
-                <LoginButton text='Login' />
+                <LoginButton text="Login" />
               ) : (
                 <ProfileCard user={user!} />
               )}
@@ -138,15 +138,15 @@ const Header = () => {
           {isOpen && (
             <motion.div
               initial={{ height: 0 }}
-              animate={{ height: 'auto' }}
+              animate={{ height: "auto" }}
               exit={{ height: 0 }}
-              className='overflow-hidden'
+              className="overflow-hidden"
             >
-              <div className='flex flex-col items-center gap-4 md:hidden pb-5 pt-7'>
-                {isLoggedIn && user && user.role === 'admin' && (
+              <div className="flex flex-col items-center gap-4 md:hidden pb-5 pt-7">
+                {isLoggedIn && user && user.role === "admin" && (
                   <Link
                     href={`/admin/${user.userId}`}
-                    className='text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out'
+                    className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
                   >
                     Admin
                   </Link>
@@ -156,15 +156,15 @@ const Header = () => {
                     key={item.name}
                     href={item.href}
                     className={twMerge(
-                      !isLoggedIn && item.name === 'FAQs' && 'hidden',
-                      'text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out'
+                      !isLoggedIn && item.name === "FAQs" && "hidden",
+                      "text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
                     )}
                   >
                     {item.name}
                   </Link>
                 ))}
 
-                {!isLoggedIn && <LoginButton text='Login' className='w-full' />}
+                {!isLoggedIn && <LoginButton text="Login" className="w-full" />}
               </div>
             </motion.div>
           )}
