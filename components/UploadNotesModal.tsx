@@ -89,7 +89,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={closeModal}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="lg:max-w-xl">
         <DialogHeader>
           <DialogTitle>Upload Notes</DialogTitle>
         </DialogHeader>
@@ -128,7 +128,9 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
           </Button>
         </form>
         <DialogClose asChild>
-          <Button variant="secondary">Close</Button>
+          <Button className="w-full mt-2 lg:mt-0" variant="secondary">
+            Close
+          </Button>
         </DialogClose>
       </DialogContent>
     </Dialog>
