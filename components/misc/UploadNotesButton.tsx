@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "../ui/button";
-import { ArrowUpRight } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
+import { Upload } from "lucide-react";
 import { useState } from "react";
+import { Button } from "../ui/button";
 import UploadNotesModal from "../UploadNotesModal";
 
 const UploadNotesButton = ({
@@ -24,7 +24,7 @@ const UploadNotesButton = ({
           variant={"outline"}
           onClick={() => setOpen(true)}
         >
-          Upload Notes <ArrowUpRight />
+          Upload Notes <Upload />
         </Button>
       )}
       {open && (

@@ -10,10 +10,12 @@ export function AboutGrid() {
     <div className="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-4 gap-10 sm:gap-5 md:gap-10">
       <div className=" sm:col-span-2 lg:col-span-1 flex flex-col justify-center items-center border border-neutral-200 dark:border-neutral-800 p-5 rounded-xl">
         <Image
-          src="/jerry.jpg"
+          src="/pfp1.jpg"
           alt="jerry"
           width={200}
           height={200}
+          priority
+          loading="eager"
           className="rounded-xl h-72 md:h-full w-full object-cover pointer-events-none select-none"
         />
         <div className="flex w-full items-center justify-center mt-6 mb-2 pr-4">
@@ -75,6 +77,8 @@ export function AboutGrid() {
           alt="jerry"
           width={200}
           height={200}
+          priority
+          loading="eager"
           className="rounded-xl h-72 md:h-full w-full object-cover pointer-events-none select-none"
         />
         <div className="flex w-full items-center justify-center mt-6 mb-2 pr-4">

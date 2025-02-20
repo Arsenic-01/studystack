@@ -117,7 +117,7 @@ export const tsc = [
     name: "TanayHingane",
     designation: "Github",
     image: "/about_logos/Git.png",
-    href: "https://github/TanayHingane",
+    href: "https://github.com/TanayHingane",
   },
   {
     id: 3,
@@ -140,6 +140,13 @@ export const tsc = [
     image: "/about_logos/website.png",
     href: "#",
   },
+  {
+    id: 6,
+    name: "tanay.h03",
+    designation: "Snapchat",
+    image: "/about_logos/snapchat.webp",
+    href: "https://www.snapchat.com/add/tanay.h03?share_id=L1uzTRlecFo&locale=en-IN",
+  },
 ];
 
 export const vsc = [
@@ -155,7 +162,7 @@ export const vsc = [
     name: "Arsenic-01",
     designation: "Github",
     image: "/about_logos/Git.png",
-    href: "https://github/Arsenic-01",
+    href: "https://github.com/Arsenic-01/",
   },
   {
     id: 3,
@@ -177,6 +184,13 @@ export const vsc = [
     designation: "Portfolio",
     image: "/about_logos/website.png",
     href: "https://vedantbhor.vercel.app/",
+  },
+  {
+    id: 6,
+    name: "arsenic_vedant",
+    designation: "Snapchat",
+    image: "/about_logos/snapchat.webp",
+    href: "https://www.snapchat.com/add/arsenic_vedant?share_id=U01iwIWZbqQ&locale=en-IN",
   },
 ];
 

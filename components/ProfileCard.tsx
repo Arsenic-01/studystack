@@ -48,7 +48,7 @@ const ProfileCard = ({ user }: { user: UserProps }) => {
     <div>
       <Dropdown placement="bottom-end">
         <DropdownTrigger>
-          <Avatar className="hover:cursor-pointer border border-neutral-300 dark:border-none size-7">
+          <Avatar className="hover:cursor-pointer dark:border dark:border-none size-7">
             <AvatarImage
               className="pointer-events-none select-none"
               src="/user_img.png"

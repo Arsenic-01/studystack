@@ -1,21 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
-import { ArrowUpRight } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Upload } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 
 // Define validation schema using Zod
 const noteSchema = z.object({
@@ -124,7 +124,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
             disabled={uploading || !selectedFiles.length}
           >
             {uploading ? "Uploading..." : "Upload Notes"}
-            <ArrowUpRight size={16} />
+            <Upload />
           </Button>
         </form>
         <DialogClose asChild>

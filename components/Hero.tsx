@@ -1,10 +1,10 @@
 import React from "react";
-import SelectSem from "./misc/SelectSemester";
 import { AnimatedShinyText } from "./ui/animated-shiny-text";
 import { ArrowRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Cover } from "./ui/cover";
 import { Spotlight } from "./ui/Spotlight";
+import SelectSem from "./misc/SelectSemester";
 
 const Hero = () => {
   return (

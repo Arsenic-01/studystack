@@ -101,62 +101,67 @@ export default function ForgotPassword() {
             Reset Password
           </h2>
         </div>
-        <form onSubmit={handlePasswordReset} className="mt-10 space-y-6">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-white"
-            >
-              Enter your email
-            </label>
-            <div className="relative mt-1">
-              <Input
-                id="email"
-                name="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
-                placeholder="Enter your email address"
-              />
-              {errors.email && (
-                <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
-                  {errors.email}
-                </p>
-              )}
+        <form onSubmit={handlePasswordReset} className="mt-10">
+          <div className="space-y-6">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-white"
+              >
+                Enter your email
+              </label>
+              <div className="relative mt-1">
+                <Input
+                  id="email"
+                  name="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
+                  placeholder="Enter your email address"
+                />
+                {errors.email && (
+                  <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div>
+              <div>
+                <label
+                  htmlFor="prnNo"
+                  className="block text-sm font-medium text-gray-700 dark:text-white"
+                >
+                  Enter your PRN number
+                </label>
+                <div className="relative mt-1">
+                  <Input
+                    id="prnNo"
+                    name="prnNo"
+                    required
+                    value={prnNo}
+                    onChange={(e) => setPrnNo(e.target.value)}
+                    className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
+                    placeholder="Enter your PRN number"
+                  />
+                  {errors.prnNo && (
+                    <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
+                      {errors.prnNo}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-          <div>
-            <label
-              htmlFor="prnNo"
-              className="block text-sm font-medium text-gray-700 dark:text-white"
+
+          <div className="mt-3 mb-5 ml-1">
+            <Link
+              href={"/"}
+              className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline"
             >
-              Enter your PRN number
-            </label>
-            <div className="relative mt-1">
-              <Input
-                id="prnNo"
-                name="prnNo"
-                required
-                value={prnNo}
-                onChange={(e) => setPrnNo(e.target.value)}
-                className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
-                placeholder="Enter your PRN number"
-              />
-              {errors.prnNo && (
-                <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
-                  {errors.prnNo}
-                </p>
-              )}
-            </div>
-            <div className="mt-2 ml-1">
-              <Link
-                href={"/"}
-                className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline"
-              >
-                Back to Login
-              </Link>
-            </div>
+              Back to Login
+            </Link>
           </div>
           {<p className="text-red-500">{message}</p>}
           <RainbowButton className="w-full" type="submit" disabled={loading}>
