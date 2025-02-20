@@ -25,7 +25,7 @@ const Footer = () => {
                 height={35}
                 className="select-none pointer-events-none invert dark:invert-0"
               />
-              <span className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
+              <span className="select-none pointer-events-none text-lg font-medium text-neutral-900 dark:text-neutral-50">
                 StudyStack
               </span>
             </Link>
@@ -34,6 +34,7 @@ const Footer = () => {
             {footerLinks.map((item, _) => (
               <Link
                 key={_}
+                target="_blank"
                 href={item.href}
                 className="text-base text-neutral-900/80 transition-all ease-in-out duration-300 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200"
               >
@@ -45,6 +46,7 @@ const Footer = () => {
             {footerIcons.map((item, _) => (
               <Link
                 href={item.href}
+                target="_blank"
                 className="text-base text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200"
                 key={_}
               >
@@ -53,17 +55,25 @@ const Footer = () => {
                   alt={item.name}
                   width={25}
                   height={25}
-                  className="opacity-80 dark:invert hover:opacity-100 transition-all ease-in-out duration-300"
+                  className="opacity-80 dark:invert hover:opacity-100 transition-all ease-in-out duration-300 select-none pointer-events-none"
                 />
               </Link>
             ))}
           </div>
         </div>
         <div>
-          <p className="font-normal text-sm text-black/60 dark:text-white/60 text-center">
+          <div className="font-normal text-sm text-black/60 dark:text-white/60 text-center">
             {" "}
-            &copy; {new Date().getFullYear()} Study Stack. All rights reserved.
-          </p>
+            &copy; {new Date().getFullYear()} StudyStack by{" "}
+            <Link
+              className="hover:underline hover:underline-offset-4 text-black/80 dark:text-white/80 transition-all ease-in-out duration-300"
+              href="https://poly.kkwagh.edu.in/"
+              target="_blank"
+            >
+              k.k.wagh polytechnic.
+            </Link>
+            <br /> All rights reserved.
+          </div>
         </div>
       </div>
     </div>

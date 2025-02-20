@@ -60,6 +60,11 @@ export const accordianItems = [
     content:
       "Yes! StudyStack is an open-source project. You can explore the source code on GitHub: https://github.com/Arsenic-01/studystack",
   },
+  {
+    title: "Can I use studystack from multiple devices?",
+    content:
+      "No, studystack is a single-user application. You can only use it from a single device. This is to ensure that your data is secure and easy to manage.",
+  },
 ];
 
 export const footerLinks = [

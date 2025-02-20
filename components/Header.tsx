@@ -51,7 +51,7 @@ const Header = () => {
                 height={35}
                 className="select-none pointer-events-none invert dark:invert-0"
               />
-              <span className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
+              <span className="select-none pointer-events-none text-lg font-medium text-neutral-900 dark:text-neutral-50">
                 StudyStack
               </span>
             </Link>
@@ -106,7 +106,7 @@ const Header = () => {
                   x2="21"
                   y2="6"
                   className={twMerge(
-                    "origin-left transition",
+                    "origin-left transition duration-150",
                     isOpen && "rotate-45 -translate-y-1"
                   )}
                 ></line>
@@ -115,7 +115,10 @@ const Header = () => {
                   y1="12"
                   x2="21"
                   y2="12"
-                  className={twMerge("transition", isOpen && "opacity-0")}
+                  className={twMerge(
+                    "transition duration-150",
+                    isOpen && "opacity-0"
+                  )}
                 ></line>
                 <line
                   x1="3"
@@ -123,7 +126,7 @@ const Header = () => {
                   x2="21"
                   y2="18"
                   className={twMerge(
-                    "origin-left transition",
+                    "origin-left transition duration-150",
                     isOpen && "-rotate-45 translate-y-1"
                   )}
                 ></line>
