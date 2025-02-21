@@ -73,7 +73,7 @@ export function AboutGrid() {
 
       <div className="sm:col-span-2 lg:col-span-1 flex flex-col justify-center items-center border border-neutral-200 dark:border-neutral-800 p-5 rounded-xl">
         <Image
-          src="/tomm.jpg"
+          src="/tpfp.jpg"
           alt="jerry"
           width={200}
           height={200}
