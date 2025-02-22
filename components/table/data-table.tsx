@@ -45,6 +45,7 @@ import { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import Image from "next/image";
 import AdminSkeleton from "../AdminSkeleton";
+import StatCard from "./StatCard";
 
 type Role = "admin" | "teacher" | "student";
 
@@ -186,6 +187,8 @@ export function UsersTable({ initialData }: UsersTableProps) {
             <h1 className="text-3xl tracking-tighter font-bold mb-8">
               Admin Dashboard
             </h1>
+
+            <StatCard user={initialData}/>
 
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between py-4">
               <div className="relative w-full">
