@@ -18,7 +18,7 @@ export async function getUserDetails(userId: string) {
       role: user.role,
       email: user.email,
       createdAt: user.createdAt,
-      lastLogin: user.lastLogin,
+      loginHistory: user.loginHistory,
       teacherSem: user.teacherSem,
       uploadedNotes: user.uploadedNotes,
       usersAdded: user.usersAdded,

@@ -6,6 +6,8 @@ import { updateUserData } from "../appwrite_types";
 export async function fetchUsers() {
   try {
     const response = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!);
+    // console.log("response", response);
+
     return response.documents.map((doc) => ({
       id: doc.$id,
       prnNo: doc.prnNo,
@@ -13,6 +15,7 @@ export async function fetchUsers() {
       role: doc.role as "admin" | "student" | "teacher",
       email: doc.email,
       password: doc.password,
+      loginHistory: doc.loginHistory,
     }));
   } catch (error) {
     console.log("Error fetching users:", error);

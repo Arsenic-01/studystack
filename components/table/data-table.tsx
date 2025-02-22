@@ -35,7 +35,7 @@ import {
   PlusCircle,
   Search,
   X,
-} from "lucide-react"; // Import Search and X icons
+} from "lucide-react";
 import { deleteUser, fetchUsers } from "@/lib/actions/Admin.actions";
 import { UpdateUserDialog } from "../update-user-dialog";
 import { toast } from "sonner";
@@ -46,16 +46,19 @@ import { useAuthStore } from "../../store/authStore";
 import Image from "next/image";
 import AdminSkeleton from "../AdminSkeleton";
 import StatCard from "./StatCard";
+import { fetchAllNotes } from "@/lib/actions/Notes.actions";
+import { Component as ActivityChart } from "../chart-bar-interactive";
 
 type Role = "admin" | "teacher" | "student";
 
-type User = {
+export type User = {
   id: string;
   prnNo: string;
   role: Role;
   email: string;
   name: string;
   password: string;
+  loginHistory: string[];
 };
 
 interface UsersTableProps {
@@ -71,10 +74,20 @@ export function UsersTable({ initialData }: UsersTableProps) {
   const router = useRouter();
   const { isLoggedIn } = useAuthStore();
 
+  // Use React Query to fetch users with long stale and cache times
   const { data: users = initialData } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: fetchUsers,
     initialData,
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    //cacheTime: 1000 * 60 * 15, // 15 minutes
+  });
+
+  // Also fetch notes with the same approach
+  const { data: notes = [] } = useQuery({
+    queryKey: ["notes"],
+    queryFn: fetchAllNotes,
+    initialData: [],
   });
 
   const deleteMutation = useMutation({
@@ -106,7 +119,6 @@ export function UsersTable({ initialData }: UsersTableProps) {
       header: "Role",
       cell: ({ row }) => {
         const role = row.getValue("role") as string;
-
         return (
           <span
             className={`capitalize px-4 py-1 rounded-full font-medium
@@ -179,6 +191,16 @@ export function UsersTable({ initialData }: UsersTableProps) {
   const searchValue =
     (table.getColumn("name")?.getFilterValue() as string) ?? "";
 
+  // Compute summary statistics for the StatCard component
+  const studentCount = users.filter((user) => user.role === "student").length;
+  const teacherCount = users.filter((user) => user.role === "teacher").length;
+  const activeUsers = users.filter((user) => {
+    const lastLogin = new Date(user.loginHistory[user.loginHistory.length - 1]);
+    const hoursSinceLastLogin =
+      (new Date().getTime() - lastLogin.getTime()) / (1000 * 60 * 60);
+    return hoursSinceLastLogin < 24;
+  }).length;
+
   return (
     <div>
       {isLoggedIn ? (
@@ -188,7 +210,12 @@ export function UsersTable({ initialData }: UsersTableProps) {
               Admin Dashboard
             </h1>
 
-            <StatCard user={initialData}/>
+            <StatCard
+              studentCount={studentCount}
+              teacherCount={teacherCount}
+              noteCount={notes.length}
+              activeUsers={activeUsers}
+            />
 
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between py-4">
               <div className="relative w-full">
@@ -229,7 +256,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
 
             <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
               <Table className="shad-table">
-                <TableHeader className="">
+                <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow
                       key={headerGroup.id}
@@ -341,6 +368,9 @@ export function UsersTable({ initialData }: UsersTableProps) {
                 </div>
               </DialogContent>
             </Dialog>
+            <div className="py-5">
+              <ActivityChart notes={notes} users={users} />
+            </div>
           </div>
         </>
       ) : (

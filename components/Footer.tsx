@@ -70,7 +70,7 @@ const Footer = () => {
               href="https://poly.kkwagh.edu.in/"
               target="_blank"
             >
-              k.k.wagh polytechnic.
+              K.K.Wagh Polytechnic.
             </Link>
             <br /> All rights reserved.
           </div>
