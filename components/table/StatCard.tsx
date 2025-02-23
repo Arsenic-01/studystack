@@ -20,7 +20,7 @@ const StatCard = ({
 }) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 py-2">
-      <Card className="hover:shadow-md dark:bg-neutral-950 dark:hover:bg-neutral-900">
+      <Card className="hover:shadow-md dark:bg-neutral-950">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-lg font-medium">Students</CardTitle>
           <SquareUser className="size-6" />
@@ -29,7 +29,7 @@ const StatCard = ({
           <div className="text-2xl font-bold">{studentCount}</div>
         </CardContent>
       </Card>
-      <Card className="hover:shadow-md dark:bg-neutral-950 dark:hover:bg-neutral-900">
+      <Card className="hover:shadow-md dark:bg-neutral-950">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-lg font-medium">Teachers</CardTitle>
           <GraduationCap className="size-7" />
@@ -38,7 +38,7 @@ const StatCard = ({
           <div className="text-2xl font-bold">{teacherCount}</div>
         </CardContent>
       </Card>
-      <Card className="hover:shadow-md dark:bg-neutral-950 dark:hover:bg-neutral-900">
+      <Card className="hover:shadow-md dark:bg-neutral-950">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-lg font-medium">Uploaded Notes</CardTitle>
           <NotebookPen className="size-6" />
@@ -47,7 +47,7 @@ const StatCard = ({
           <div className="text-2xl font-bold">{noteCount}</div>
         </CardContent>
       </Card>
-      <Card className="hover:shadow-md dark:bg-neutral-950 dark:hover:bg-neutral-900">
+      <Card className="hover:shadow-md dark:bg-neutral-950">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-lg font-medium">Active Users</CardTitle>
           <UserRoundCheck className="size-6" />

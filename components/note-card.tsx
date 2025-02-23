@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { ArrowUpRight, Download } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import CardOwner from "./CardOwner";
@@ -72,7 +72,7 @@ export function NoteCard({ note }: NoteCardProps) {
             View Online <ArrowUpRight className="ml-1 h-4 w-4" />
           </Link>
         </Button>
-        <Button variant="outline" className="w-full" asChild>
+        {/* <Button variant="outline" className="w-full" asChild>
           <Link
             href={`https://cloud.appwrite.io/v1/storage/buckets/67a6452c003b5b6b6502/files/${note.fileId}/download?project=679a700c0013ee3706ba`}
             className="inline-flex"
@@ -80,7 +80,7 @@ export function NoteCard({ note }: NoteCardProps) {
             {" "}
             Download <Download className="ml-1 h-4 w-4" />
           </Link>
-        </Button>
+        </Button> */}
       </CardFooter>
     </Card>
   );
