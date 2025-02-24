@@ -24,6 +24,7 @@ export async function fetchNotesBySubject({ sub }: { sub: string }) {
       fileId: doc.fileId,
       sem: doc.sem || "", // Ensure sem is included
       subjectId: doc.subjectId || "", // Ensure subjectId is included
+      type_of_file: doc.type_of_file || "", // Ensure type_of_file is included
       users: {
         name: doc.users?.name || "Unknown User", // Handle missing user name
         userId: doc.users?.userId || "", // Ensure userId is included

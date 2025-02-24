@@ -43,6 +43,7 @@ export async function POST(req: Request) {
     await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, user.$id, {
       sessionToken,
       loginHistory: user.loginHistory.concat(new Date().toISOString()), // Ensure it's a string
+      loginData: user.loginData.concat(new Date()),
     });
 
     // Set session token in a secure cookie
@@ -61,6 +62,7 @@ export async function POST(req: Request) {
       email: user.email,
       prnNo: user.prnNo,
       loginHistory: user.loginHistory,
+      loginData: user.loginData,
     });
   } catch (error) {
     console.error("Login error:", error);

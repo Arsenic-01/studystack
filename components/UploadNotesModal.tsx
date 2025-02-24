@@ -16,11 +16,39 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
 // Define validation schema using Zod
 const noteSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   description: z.string().min(5, "Description must be at least 5 characters"),
+  fileType: z.enum(
+    [
+      "notes",
+      "ppts",
+      "pyqs",
+      "modal_ans",
+      "videos",
+      "animation",
+      "sample_code",
+      "outputs",
+      "other",
+    ],
+    { message: "Please select a file type" }
+  ),
 });
 
 interface UploadNotesModalProps {
@@ -41,30 +69,30 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const form = useForm({
     resolver: zodResolver(noteSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+    },
   });
 
   const handleFileUpload = async (data: {
     title: string;
     description: string;
+    fileType: string;
   }) => {
     if (!selectedFiles.length || !subjectId || !sem || !userId) return;
 
     setUploading(true);
     const formData = new FormData();
-
     selectedFiles.forEach((file) => formData.append("files", file));
     formData.append("title", data.title);
     formData.append("description", data.description);
+    formData.append("fileType", data.fileType);
     formData.append("subjectId", subjectId);
     formData.append("sem", String(sem));
     formData.append("userId", userId);
-
     try {
       const response = await fetch("/api/upload", {
         method: "POST",
@@ -76,8 +104,6 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
         toast.success("File Uploaded Successfully! 🎉");
         closeModal();
       } else {
-        console.log("Something went wrong, please try again.");
-
         console.error("Upload error:", result.error);
       }
     } catch (error) {
@@ -93,40 +119,84 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
         <DialogHeader>
           <DialogTitle>Upload Notes</DialogTitle>
         </DialogHeader>
-        <form
-          className="flex flex-col gap-6 mt-5"
-          onSubmit={handleSubmit(handleFileUpload)}
-        >
-          <div className="flex flex-col gap-3">
-            <Input placeholder="Enter Notes Title" {...register("title")} />
-            {errors.title && (
-              <p className="text-red-500 text-sm">{errors.title.message}</p>
-            )}
-
-            <Input
-              placeholder="Enter Notes Description"
-              {...register("description")}
-            />
-            {errors.description && (
-              <p className="text-red-500 text-sm">
-                {errors.description.message}
-              </p>
-            )}
-          </div>
-
-          <div className="w-full min-h-32 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-            <FileUpload onChange={setSelectedFiles} />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full mx-auto flex items-center gap-2"
-            disabled={uploading || !selectedFiles.length}
+        <Form {...form}>
+          <form
+            className="flex flex-col gap-2 mt-5"
+            onSubmit={form.handleSubmit(handleFileUpload)}
           >
-            {uploading ? "Uploading..." : "Upload Notes"}
-            <Upload />
-          </Button>
-        </form>
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Enter Notes Title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Enter Notes Description" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="fileType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select the type of file" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="notes">Notes</SelectItem>
+                        <SelectItem value="ppts">PPTs</SelectItem>
+                        <SelectItem value="pyqs">PYQs</SelectItem>
+                        <SelectItem value="modal_ans">
+                          Modal Answer Key
+                        </SelectItem>
+                        <SelectItem value="videos">Videos</SelectItem>
+                        <SelectItem value="animation">Animation</SelectItem>
+                        <SelectItem value="sample_code">Sample Code</SelectItem>
+                        <SelectItem value="outputs">Outputs</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="w-full min-h-32 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+              <FileUpload onChange={setSelectedFiles} />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full flex items-center gap-2"
+              disabled={uploading || !selectedFiles.length}
+            >
+              {uploading ? "Uploading..." : "Upload Notes"}
+              <Upload />
+            </Button>
+          </form>
+        </Form>
         <DialogClose asChild>
           <Button className="w-full mt-2 lg:mt-0" variant="secondary">
             Close

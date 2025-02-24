@@ -1,17 +1,14 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import {
-  type ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  type SortingState,
-  type ColumnFiltersState,
-  getFilteredRowModel,
-} from "@tanstack/react-table";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -20,34 +17,45 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { deleteUser, fetchUsers } from "@/lib/actions/Admin.actions";
+import { fetchAllNotes } from "@/lib/actions/Notes.actions";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  type ColumnDef,
+  type ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  type SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
 import {
-  MoreHorizontal,
   ArrowUpDown,
+  MoreHorizontal,
   PlusCircle,
   Search,
   X,
 } from "lucide-react";
-import { deleteUser, fetchUsers } from "@/lib/actions/Admin.actions";
-import { UpdateUserDialog } from "../update-user-dialog";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { Dialog, DialogClose, DialogContent, DialogTitle } from "../ui/dialog";
-import { useState } from "react";
-import { useAuthStore } from "../../store/authStore";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useAuthStore } from "../../store/authStore";
 import AdminSkeleton from "../AdminSkeleton";
-import StatCard from "./StatCard";
-import { fetchAllNotes } from "@/lib/actions/Notes.actions";
 import { Component as ActivityChart } from "../chart-bar-interactive";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
+import { UpdateUserDialog } from "../update-user-dialog";
+import StatCard from "./StatCard";
 
 type Role = "admin" | "teacher" | "student";
 
@@ -345,29 +353,30 @@ export function UsersTable({ initialData }: UsersTableProps) {
               />
             )}
 
-            <Dialog
+            <AlertDialog
               open={!!deleteUserId}
               onOpenChange={() => setDeleteUserId(null)}
             >
-              <DialogContent>
-                <DialogTitle>Confirm Deletion</DialogTitle>
-                <p>Are you sure you want to delete this user?</p>
-                <div className="flex justify-end gap-2 mt-4">
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button
-                    variant="destructive"
+              <AlertDialogContent>
+                <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  user.
+                </AlertDialogDescription>
+
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
                     onClick={() => {
                       if (deleteUserId) deleteMutation.mutate(deleteUserId);
                       setDeleteUserId(null);
                     }}
                   >
-                    Confirm Delete
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <div className="py-5">
               <ActivityChart notes={notes} users={users} />
             </div>

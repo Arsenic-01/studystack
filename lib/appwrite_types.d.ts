@@ -74,9 +74,9 @@ export type Note = {
   fileId: string;
   sem: string;
   subjectId: string;
-  users: { name: string };
+  users: { name: string; userId: string };
   subject: { name: string };
-  previewUrl?: string; // Add previewUrl as optional
+  type_of_file?: string;
 };
 
 export interface Subject {
