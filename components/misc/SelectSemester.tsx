@@ -12,7 +12,7 @@ const SelectSem = () => {
   const handleSelectionChange = (selection: Selection) => {
     const selectedKey = Array.from(selection)[0] as string; // Extract key as string
     setSelectedSemester(selectedKey);
-    console.log("Selected semester:", selectedKey);
+    // console.log("Selected semester:", selectedKey);
   };
 
   return (

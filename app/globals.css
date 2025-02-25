@@ -2,19 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-/* width */
+/* Custom Scrollbar Styling */
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 5px; /* Adjust scrollbar width */
+  height: 10px; /* Adjust scrollbar height for horizontal scrollbar */
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #303030;
+  background: #313131; /* Scrollbar color */
+  border-radius: 20px; /* Rounded corners for the thumb */
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b3b3b;
+  background: #393939; /* Darker color on hover */
 }
 
 html {

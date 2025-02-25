@@ -65,7 +65,7 @@ const chartConfig = {
     color: "hsl(var(--chart-1))",
   },
   uploads: {
-    label: "Document Uploads",
+    label: "Documents Uploaded",
     color: "hsl(var(--chart-2))",
   },
 } as const;
@@ -113,8 +113,8 @@ export function ActivityChart({
           </CardTitle>
           <CardDescription>
             Showing{" "}
-            {activeChart === "logins" ? "user logins" : "document uploads"} for
-            the last 7 days
+            {activeChart === "logins" ? "user logins" : "documents uploaded"}{" "}
+            for the last <span className="font-bold">7 days</span>{" "}
           </CardDescription>
         </div>
         <div className="flex">

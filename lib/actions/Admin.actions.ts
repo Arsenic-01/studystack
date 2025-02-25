@@ -53,22 +53,3 @@ export async function deleteUser(userId: string) {
   }
 }
 
-export async function getCurrentUser({ userId }: { userId: string }) {
-  try {
-    const response = await db.getDocument(
-      DATABASE_ID!,
-      USER_COLLECTION_ID!,
-      userId
-    );
-    return {
-      userId: response.$id,
-      prnNo: response.prnNo,
-      name: response.name,
-      role: response.role as "admin" | "student" | "teacher",
-      email: response.email,
-    };
-  } catch (error) {
-    console.log("Error fetching user:", error);
-    return null;
-  }
-}

@@ -7,7 +7,7 @@ export interface User {
   email: string;
   prnNo: string;
   role: string;
-  loginHistory: string[];
+  loginData: string[];
 }
 
 interface AuthState {

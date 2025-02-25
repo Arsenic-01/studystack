@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarImage } from "./ui/avatar";
+import { LogOut } from "lucide-react";
 
 const ProfileCard = ({ user }: { user: UserProps }) => {
   const { logout } = useAuthStore();
@@ -73,7 +74,9 @@ const ProfileCard = ({ user }: { user: UserProps }) => {
             // className="bg-red-500 text-white hover:bg-red-600 transition-all font-medium"
             onPress={handleLogout}
           >
-            Logout
+            <div className="inline-flex items-center gap-2">
+              Logout <LogOut className="h-4 w-4" />
+            </div>
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

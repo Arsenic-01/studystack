@@ -58,6 +58,7 @@ import {
 import { UpdateUserDialog } from "../update-user-dialog";
 import { UserLogDialog } from "../UserLogDialog";
 import StatCard from "./StatCard";
+import { NotesTable } from "../note-table";
 
 type Role = "admin" | "teacher" | "student";
 
@@ -179,7 +180,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
               Delete user
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setUserLogData(row.original)}>
-              See user log
+              View user log
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -391,6 +392,9 @@ export function UsersTable({ initialData }: UsersTableProps) {
             </AlertDialog>
             <div className="py-5">
               <ActivityChart notes={notes} users={users} />
+            </div>
+            <div>
+              <NotesTable notes={notes} />
             </div>
           </div>
         </>

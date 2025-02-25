@@ -37,8 +37,8 @@ export function NoteCard({ note }: NoteCardProps) {
   return (
     <Card className="flex flex-col h-full">
       <CardHeader>
-        <div className="flex justify-between">
-          <CardTitle className="text-lg font-semibold truncate">
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-lg font-semibold truncate pr-1">
             {note.title}
           </CardTitle>
           <CardOwner note={note} formattedDate={formattedDate} />

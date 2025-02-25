@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const fileType = formData.get("fileType") as string;
-
+    const unit = formData.get("unit") as string;
     if (
       !files.length ||
       !subjectId ||
@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
       !userId ||
       !title ||
       !description ||
-      !fileType
+      !fileType ||
+      !unit
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -34,7 +35,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("Uploading files", fileType);
+    // console.log("Uploading files", fileType);
+    // console.log("Uploading unit", unit);
 
     const uploadedFiles = await Promise.all(
       files.map(async (file) => {
@@ -59,6 +61,7 @@ export async function POST(req: NextRequest) {
             subject: subjectId,
             createdAt: new Date().toISOString(),
             type_of_file: fileType,
+            unit,
           }
         );
 

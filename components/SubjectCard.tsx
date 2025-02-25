@@ -27,6 +27,7 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
           <UploadNotesButton
             subjectId={subject.subjectId}
             sem={subject.semester}
+            subjectUnit={subject.unit!}
           />
 
           <Button

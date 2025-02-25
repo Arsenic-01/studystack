@@ -1,5 +1,5 @@
 "use server";
-import { ID } from "node-appwrite";
+
 import {
   DATABASE_ID,
   db,
@@ -25,6 +25,7 @@ export async function fetchNotesBySubject({ sub }: { sub: string }) {
       sem: doc.sem || "", // Ensure sem is included
       subjectId: doc.subjectId || "", // Ensure subjectId is included
       type_of_file: doc.type_of_file || "", // Ensure type_of_file is included
+      unit: doc.unit || [], // Ensure unit is included
       users: {
         name: doc.users?.name || "Unknown User", // Handle missing user name
         userId: doc.users?.userId || "", // Ensure userId is included
@@ -38,40 +39,6 @@ export async function fetchNotesBySubject({ sub }: { sub: string }) {
   } catch (error) {
     console.log("Error fetching notes:", error);
     return [];
-  }
-}
-
-export async function uploadFile(file: File) {
-  try {
-    const response = await storage.createFile(BUCKET_ID!, ID.unique(), file);
-    const fileUrl = storage.getFileView(BUCKET_ID!, response.$id); // Ensure this returns a string
-    return { $id: response.$id, url: fileUrl };
-  } catch (error) {
-    console.error("File upload error:", error);
-    throw error;
-  }
-}
-
-export async function createNote({
-  title,
-  description,
-  file,
-}: {
-  title: string;
-  description: string;
-  file: File;
-}) {
-  try {
-    const { $id, url } = await uploadFile(file); // Ensure `url` is a string
-    await db.createDocument(DATABASE_ID!, NOTE_COLLECTION_ID!, ID.unique(), {
-      title,
-      description,
-      fileId: $id,
-      fileUrl: url, // Ensure this is a string
-    });
-  } catch (error) {
-    console.error("Error creating note:", error);
-    throw error;
   }
 }
 
@@ -96,6 +63,10 @@ export const fetchAllNotes = async () => {
     const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!);
     return response.documents.map((doc) => ({
       createdAt: doc.createdAt,
+      title: doc.title,
+      fileId: doc.fileId,
+      uploadedBy: doc.users.name,
+      subject: doc.subject.name,
     }));
   } catch (error) {
     console.error("Error fetching notes:", error);

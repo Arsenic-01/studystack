@@ -27,6 +27,7 @@ export async function fetchSubjectsBySemester(semester: number) {
       code: doc.code,
       semester: doc.semester,
       notes: doc.notes,
+      unit: doc.unit,
     }));
   } catch (error) {
     console.log("Error fetching subjects:", error);

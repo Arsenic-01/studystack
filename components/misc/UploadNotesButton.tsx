@@ -9,9 +9,11 @@ import UploadNotesModal from "../UploadNotesModal";
 const UploadNotesButton = ({
   subjectId,
   sem,
+  subjectUnit,
 }: {
   subjectId: string | null;
   sem: string | null;
+  subjectUnit: string[];
 }) => {
   const { user, isLoggedIn } = useAuthStore();
   const [open, setOpen] = useState(false);
@@ -29,6 +31,7 @@ const UploadNotesButton = ({
       )}
       {open && (
         <UploadNotesModal
+          subjectUnit={subjectUnit}
           open={open}
           closeModal={() => setOpen(false)}
           subjectId={subjectId}

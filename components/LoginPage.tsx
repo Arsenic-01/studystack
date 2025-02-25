@@ -80,8 +80,8 @@ export default function LoginPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      const { name, userId, role, email, loginHistory } = data;
-      setUser({ userId, name, email, prnNo, role, loginHistory });
+      const { name, userId, role, email, loginData } = data;
+      setUser({ userId, name, email, prnNo, role, loginData });
       toast.success(`Logged in as ${data.name} 🎉`);
 
       router.push(role === "admin" ? `/admin/${userId}` : "/home");

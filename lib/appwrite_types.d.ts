@@ -77,6 +77,7 @@ export type Note = {
   users: { name: string; userId: string };
   subject: { name: string };
   type_of_file?: string;
+  unit: string[];
 };
 
 export interface Subject {
@@ -85,4 +86,5 @@ export interface Subject {
   code: string;
   semester: string;
   notes?: Note[];
+  unit?: string[];
 }

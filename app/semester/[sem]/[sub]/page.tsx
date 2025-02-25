@@ -6,13 +6,13 @@ const Page = async ({ params }: { params: { sub: string } }) => {
   const { sub } = await params;
   const notes = await fetchNotesBySubject({ sub });
   const res = await fetchSubject({ subjectId: sub });
-  console.log(res);
+  // console.log(res);
 
   return (
     <NotesFilter
       notes={notes}
       subjectName={res?.name}
-      // subjectUnits={res?.unit}
+      subjectUnits={res?.unit || []} // Pass subjectUnits as a prop
       semester={res?.semester}
     />
   );

@@ -12,6 +12,13 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Note } from "@/lib/appwrite_types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const fileTypes = [
   "notes",
@@ -29,37 +36,42 @@ const NotesFilter = ({
   notes,
   subjectName,
   semester,
+  subjectUnits,
 }: {
   notes: Note[];
   subjectName: string | undefined;
   semester: string;
+  subjectUnits: string[]; // Add subjectUnits as a prop
 }) => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [selectedUnit, setSelectedUnit] = useState<string>("All"); // State for selected unit
 
-  // Toggle selection in the filter
+  // Toggle selection in the file type filter
   const toggleFilter = (type: string) => {
     setSelectedFilters((prev) =>
       prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
     );
   };
 
-  // Filter notes based on selected file types
-  const filteredNotes =
-    selectedFilters.length === 0
-      ? notes
-      : notes.filter((note) => selectedFilters.includes(note.type_of_file!));
-
-  console.log(notes);
+  // Filter notes based on selected file types and unit
+  const filteredNotes = notes.filter((note) => {
+    const matchesFileType =
+      selectedFilters.length === 0 ||
+      selectedFilters.includes(note.type_of_file!);
+    const matchesUnit =
+      selectedUnit === "All" || note.unit.includes(selectedUnit);
+    return matchesFileType && matchesUnit;
+  });
 
   return (
-    <div className="container mx-auto py-28 sm:py-32 xl:py-36 max-w-5xl px-5">
+    <div className="container mx-auto py-24 sm:py-32 xl:py-36 max-w-5xl px-5">
       <div className="flex flex-col sm:flex-row gap-5 sm:gap-10 mb-8">
         <Button variant="outline" className="w-fit" asChild>
           <Link href={`/semester/${semester}`}>
             <ArrowLeft /> Back
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold tracking-tighter">
+        <h1 className="text-2xl lg:text-3xl font-bold tracking-tighter">
           {subjectName ? `Notes for ${subjectName}` : "Invalid Subject URL"}
         </h1>
       </div>
@@ -68,7 +80,7 @@ const NotesFilter = ({
 
       {notes.length > 0 && (
         <div className="flex flex-col gap-5">
-          {/* Multi-Select Filter */}
+          {/* File Type Filter */}
           <div className="flex items-center gap-3">
             <Popover>
               <PopoverTrigger asChild>
@@ -99,6 +111,21 @@ const NotesFilter = ({
                 </div>
               </PopoverContent>
             </Popover>
+
+            {/* Unit Filter */}
+            <Select value={selectedUnit} onValueChange={setSelectedUnit}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a unit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Units</SelectItem>
+                {subjectUnits.map((unit, index) => (
+                  <SelectItem key={index} value={unit}>
+                    {unit.length > 10 ? `${unit.substring(0, 30)}...` : unit}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Notes Grid */}
@@ -107,7 +134,8 @@ const NotesFilter = ({
               <NoteCard key={note.noteId} note={note} />
             ))}
           </div>
-          {/* <div>{subjectUnits}</div> */}
+
+          {/* Notes Count */}
           <div>
             <p className="text-sm text-muted-foreground mt-4">
               Showing {filteredNotes.length} out of {notes.length} notes

@@ -49,8 +49,8 @@ export default function ForgotPassword() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-5  py-32">
-      <div className="w-full max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-gray-100 dark:bg-neutral-900/70 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
-        <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-200 dark:from-zinc-900 rounded-xl"></div>
+      <div className="w-full max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
+        <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-100 dark:from-zinc-900/70 rounded-xl"></div>
         <div className=" bg-zinc-200 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
           <div className="relative">
             <svg
@@ -117,7 +117,7 @@ export default function ForgotPassword() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
+                  className="pr-10 "
                   placeholder="Enter your email address"
                 />
                 {errors.email && (
@@ -142,7 +142,7 @@ export default function ForgotPassword() {
                     required
                     value={prnNo}
                     onChange={(e) => setPrnNo(e.target.value)}
-                    className="pr-10 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
+                    className="pr-10 "
                     placeholder="Enter your PRN number"
                   />
                   {errors.prnNo && (

@@ -18,8 +18,8 @@ interface UserLogDialogProps {
 export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-black text-white p-0 overflow-hidden">
-        <DialogHeader className="bg-zinc-900 p-4 flex flex-row items-center gap-2">
+      <DialogContent className="bg-white  dark:bg-black text-white p-0 overflow-hidden">
+        <DialogHeader className="bg-white text-black dark:text-white dark:bg-zinc-900 p-4 flex flex-row items-center gap-2">
           <Terminal className="w-5 h-5" />
           <DialogTitle className="text-lg">Login History</DialogTitle>
         </DialogHeader>

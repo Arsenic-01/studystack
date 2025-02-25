@@ -30,7 +30,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-
 // Define validation schema using Zod
 const noteSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -49,6 +48,7 @@ const noteSchema = z.object({
     ],
     { message: "Please select a file type" }
   ),
+  unit: z.string().min(1, "Please select a unit"),
 });
 
 interface UploadNotesModalProps {
@@ -57,6 +57,7 @@ interface UploadNotesModalProps {
   subjectId: string | null;
   sem: string | null;
   userId: string | null;
+  subjectUnit: string[];
 }
 
 const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
@@ -65,6 +66,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
   subjectId,
   sem,
   userId,
+  subjectUnit,
 }) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -81,6 +83,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     title: string;
     description: string;
     fileType: string;
+    unit: string;
   }) => {
     if (!selectedFiles.length || !subjectId || !sem || !userId) return;
 
@@ -91,8 +94,10 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     formData.append("description", data.description);
     formData.append("fileType", data.fileType);
     formData.append("subjectId", subjectId);
-    formData.append("sem", String(sem));
+    formData.append("sem", sem);
     formData.append("userId", userId);
+    formData.append("unit", data.unit); // Sending selected unit
+
     try {
       const response = await fetch("/api/upload", {
         method: "POST",
@@ -103,6 +108,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
       if (result.success) {
         toast.success("File Uploaded Successfully! 🎉");
         closeModal();
+        form.reset();
       } else {
         console.error("Upload error:", result.error);
       }
@@ -112,7 +118,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
       setUploading(false);
     }
   };
-
+  // console.log(subjectUnit);
   return (
     <Dialog open={open} onOpenChange={closeModal}>
       <DialogContent className="lg:max-w-xl">
@@ -121,9 +127,10 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
         </DialogHeader>
         <Form {...form}>
           <form
-            className="flex flex-col gap-2 mt-5"
+            className="flex flex-col gap-2"
             onSubmit={form.handleSubmit(handleFileUpload)}
           >
+            {/* Title Input */}
             <FormField
               control={form.control}
               name="title"
@@ -137,6 +144,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
               )}
             />
 
+            {/* Description Input */}
             <FormField
               control={form.control}
               name="description"
@@ -150,16 +158,43 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
               )}
             />
 
+            {subjectUnit.length > 0 && (
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Unit" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {subjectUnit.map((unit, index) => (
+                            <SelectItem key={index} value={unit}>
+                              {unit}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {/* File Type Selection */}
             <FormField
               control={form.control}
               name="fileType"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select the type of file" />
                       </SelectTrigger>
@@ -183,10 +218,12 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
               )}
             />
 
+            {/* File Upload */}
             <div className="w-full min-h-32 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
               <FileUpload onChange={setSelectedFiles} />
             </div>
 
+            {/* Upload Button */}
             <Button
               type="submit"
               className="w-full flex items-center gap-2"
@@ -197,6 +234,8 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
             </Button>
           </form>
         </Form>
+
+        {/* Close Button */}
         <DialogClose asChild>
           <Button className="w-full mt-2 lg:mt-0" variant="secondary">
             Close

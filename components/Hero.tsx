@@ -5,7 +5,7 @@ import { Spotlight } from "./ui/Spotlight";
 const Hero = () => {
   return (
     <div
-      className="pt-36 2xl:pt-48 mb-16 sm:mb-20 xl:mb-14 2xl:mb-20 flex items-center justify-center relative overflow-x-clip"
+      className="pt-32 sm:pt-36 2xl:pt-48 mb-16 sm:mb-20 xl:mb-14 2xl:mb-20 flex items-center justify-center relative overflow-x-clip"
       id="hero"
     >
       <Spotlight />
