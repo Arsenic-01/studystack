@@ -15,7 +15,7 @@ export async function fetchUsers() {
       role: doc.role as "admin" | "student" | "teacher",
       email: doc.email,
       password: doc.password,
-      loginHistory: doc.loginHistory,
+      loginHistory: doc.loginData,
     }));
   } catch (error) {
     console.log("Error fetching users:", error);

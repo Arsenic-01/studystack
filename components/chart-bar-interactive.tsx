@@ -72,7 +72,13 @@ const chartConfig = {
 
 type ChartType = keyof typeof chartConfig;
 
-export function Component({ users, notes }: { users: User[]; notes: Note[] }) {
+export function ActivityChart({
+  users,
+  notes,
+}: {
+  users: User[];
+  notes: Note[];
+}) {
   const [activeChart, setActiveChart] = React.useState<ChartType>("logins");
 
   // Normalize loginHistory so every item is an object with a timestamp

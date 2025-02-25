@@ -14,6 +14,7 @@ export async function GET() {
   ]);
 
   if (users.total === 0) {
+    (await cookies()).delete("sessionToken");
     return NextResponse.json({ message: "Session invalid" }, { status: 401 });
   }
 

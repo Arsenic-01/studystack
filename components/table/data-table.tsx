@@ -44,7 +44,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "../../store/authStore";
 import AdminSkeleton from "../AdminSkeleton";
-import { Component as ActivityChart } from "../chart-bar-interactive";
+import { ActivityChart } from "../chart-bar-interactive";
+import RefreshButton from "../misc/RefreshButton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,6 +56,7 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { UpdateUserDialog } from "../update-user-dialog";
+import { UserLogDialog } from "../UserLogDialog";
 import StatCard from "./StatCard";
 
 type Role = "admin" | "teacher" | "student";
@@ -78,20 +80,18 @@ export function UsersTable({ initialData }: UsersTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [updateUserData, setUpdateUserData] = useState<User | null>(null);
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const [userLogData, setUserLogData] = useState<User | null>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
   const { isLoggedIn } = useAuthStore();
 
-  // Use React Query to fetch users with long stale and cache times
   const { data: users = initialData } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: fetchUsers,
     initialData,
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    //cacheTime: 1000 * 60 * 15, // 15 minutes
+    staleTime: 1000 * 60 * 10,
   });
 
-  // Also fetch notes with the same approach
   const { data: notes = [] } = useQuery({
     queryKey: ["notes"],
     queryFn: fetchAllNotes,
@@ -178,6 +178,9 @@ export function UsersTable({ initialData }: UsersTableProps) {
             <DropdownMenuItem onClick={() => setDeleteUserId(row.original.id)}>
               Delete user
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setUserLogData(row.original)}>
+              See user log
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
@@ -199,7 +202,6 @@ export function UsersTable({ initialData }: UsersTableProps) {
   const searchValue =
     (table.getColumn("name")?.getFilterValue() as string) ?? "";
 
-  // Compute summary statistics for the StatCard component
   const studentCount = users.filter((user) => user.role === "student").length;
   const teacherCount = users.filter((user) => user.role === "teacher").length;
   const activeUsers = users.filter((user) => {
@@ -214,10 +216,12 @@ export function UsersTable({ initialData }: UsersTableProps) {
       {isLoggedIn ? (
         <>
           <div className="container mx-auto">
-            <h1 className="text-3xl tracking-tighter font-bold mb-8">
-              Admin Dashboard
-            </h1>
-
+            <div className="flex items-start justify-between mb-5 sm:mb-8">
+              <h1 className="text-3xl tracking-tighter font-bold">
+                Admin Dashboard
+              </h1>
+              <RefreshButton />
+            </div>
             <StatCard
               studentCount={studentCount}
               teacherCount={teacherCount}
@@ -350,6 +354,14 @@ export function UsersTable({ initialData }: UsersTableProps) {
                   setUpdateUserData(null);
                   toast.success("User updated successfully");
                 }}
+              />
+            )}
+
+            {userLogData && (
+              <UserLogDialog
+                user={userLogData}
+                open={!!userLogData}
+                onClose={() => setUserLogData(null)}
               />
             )}
 

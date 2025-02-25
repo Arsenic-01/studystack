@@ -59,7 +59,7 @@ const ProfileCard = ({ user }: { user: UserProps }) => {
         <DropdownMenu
           aria-label="Profile Actions"
           className="max-w-sm w-full"
-          variant="bordered"
+          variant="flat"
         >
           <DropdownItem key="profile" className="flex flex-col gap-2">
             <p className="font-semibold">Signed in as {user.name}</p>
@@ -68,8 +68,9 @@ const ProfileCard = ({ user }: { user: UserProps }) => {
           </DropdownItem>
           <DropdownItem
             key="logout"
+            color="danger"
             as="button"
-            className="bg-red-500 text-white hover:bg-red-600 transition-all font-medium"
+            // className="bg-red-500 text-white hover:bg-red-600 transition-all font-medium"
             onPress={handleLogout}
           >
             Logout

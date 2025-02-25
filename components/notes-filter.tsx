@@ -107,6 +107,12 @@ const NotesFilter = ({
               <NoteCard key={note.noteId} note={note} />
             ))}
           </div>
+          {/* <div>{subjectUnits}</div> */}
+          <div>
+            <p className="text-sm text-muted-foreground mt-4">
+              Showing {filteredNotes.length} out of {notes.length} notes
+            </p>
+          </div>
         </div>
       )}
     </div>
