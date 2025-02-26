@@ -16,7 +16,7 @@ const SelectSem = () => {
   };
 
   return (
-    <div className="flex justify-start items-center sm:justify-center gap-5 w-full px-2">
+    <div className="flex justify-start items-center sm:justify-center gap-3 sm:gap-5 w-full px-2">
       <Select
         className="w-full sm:w-64"
         label="Select a semester"

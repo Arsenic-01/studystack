@@ -19,7 +19,7 @@ const StatCard = ({
   activeUsers: number;
 }) => {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 py-2">
+    <div className="grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-4 py-2">
       <Card className="hover:shadow-md dark:bg-neutral-950">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-lg font-medium">Students</CardTitle>

@@ -123,7 +123,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     <Dialog open={open} onOpenChange={closeModal}>
       <DialogContent className="lg:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Upload Notes</DialogTitle>
+          <DialogTitle className="mb-5 lg:mb-0">Upload Notes</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -169,12 +169,16 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="max-w-[525px]">
                           <SelectValue placeholder="Select Unit" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-w-[525px]">
                           {subjectUnit.map((unit, index) => (
-                            <SelectItem key={index} value={unit}>
+                            <SelectItem
+                              className="max-w-[525px]"
+                              key={index}
+                              value={unit}
+                            >
                               {unit}
                             </SelectItem>
                           ))}

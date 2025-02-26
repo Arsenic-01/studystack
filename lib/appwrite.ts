@@ -21,4 +21,5 @@ export const {
   NOTE_COLLECTION_ID,
   BUCKET_ID,
   NEW_SUBJECT_COLLECTION_ID,
+  YOUTUBE_COLLECTION_ID,
 } = process.env;

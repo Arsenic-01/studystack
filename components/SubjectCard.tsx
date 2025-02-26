@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
-import { Button } from "./ui/button";
-import { ArrowUpRight } from "lucide-react";
 import { Subject } from "@/lib/appwrite_types";
-import UploadNotesButton from "./misc/UploadNotesButton";
+import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import UploadNotesButton from "./misc/UploadNotesButton";
+import { Button } from "./ui/button";
+import YoutubeModal from "./YoutubeModal";
 
 const SubjectCard = ({ subject }: { subject: Subject }) => {
   const router = useRouter();
@@ -24,6 +24,8 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
       </div>
       <div className="flex flex-col sm:inline-flex gap-3 justify-end pt-5  w-full">
         <div className="flex flex-col md:flex-row justify-end w-full gap-2">
+          <YoutubeModal subjectId={subject.subjectId} />
+
           <UploadNotesButton
             subjectId={subject.subjectId}
             sem={subject.semester}

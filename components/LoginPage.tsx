@@ -97,20 +97,22 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
       {isLoggedIn && user ? (
-        <div className="text-center">
-          <p className="text-gray-800 dark:text-white/80 mb-4">
-            You are already logged in as {user.name}
-          </p>
+        <div className="py-32">
+          <div className="text-center">
+            <p className="text-gray-800 dark:text-white/80 mb-4">
+              You are already logged in as {user.name}
+            </p>
 
-          <RainbowButton
-            onClick={() =>
-              router.push(
-                user.role === "admin" ? `/admin/${user.userId}` : "/home"
-              )
-            }
-          >
-            Continue to Dashboard
-          </RainbowButton>
+            <RainbowButton
+              onClick={() =>
+                router.push(
+                  user.role === "admin" ? `/admin/${user.userId}` : "/home"
+                )
+              }
+            >
+              Continue to Dashboard
+            </RainbowButton>
+          </div>
         </div>
       ) : (
         <>

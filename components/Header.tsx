@@ -38,7 +38,7 @@ const Header = () => {
     <nav className="fixed top-0 w-full px-5 z-50">
       <div
         suppressHydrationWarning
-        className="backdrop-blur-lg max-w-5xl mx-auto dark:bg-neutral-950/50 border-[0.1px] border-neutral-300 sm:border-neutral-300 dark:border-neutral-800 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3"
+        className="backdrop-blur-lg max-w-5xl mx-auto bg-white/80 dark:bg-neutral-950/50 border-[0.1px] border-neutral-300 sm:border-neutral-300 dark:border-neutral-800 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3"
       >
         <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
           {/* Logo */}
