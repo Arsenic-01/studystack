@@ -36,15 +36,14 @@ const noteSchema = z.object({
   description: z.string().min(5, "Description must be at least 5 characters"),
   fileType: z.enum(
     [
-      "notes",
-      "ppts",
-      "pyqs",
-      "modal_ans",
-      "videos",
-      "animation",
-      "sample_code",
-      "outputs",
-      "other",
+      "Notes",
+      "PPTS",
+      "Modal_Solutions",
+      "MSBTE_QP",
+      "Videos",
+      "Animations",
+      "Programs",
+      "Other",
     ],
     { message: "Please select a file type" }
   ),

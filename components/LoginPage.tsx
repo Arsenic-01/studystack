@@ -26,7 +26,7 @@ export default function LoginPage() {
     const syncSession = async () => {
       try {
         const res = await fetch("/api/session", {
-          method: "GET",
+          method: "POST", // Change to POST
           credentials: "include",
           cache: "no-store",
         });
@@ -50,7 +50,6 @@ export default function LoginPage() {
 
     syncSession();
   }, [setUser, router]);
-
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -83,7 +82,7 @@ export default function LoginPage() {
       const { name, userId, role, email, loginData } = data;
       setUser({ userId, name, email, prnNo, role, loginData });
       toast.success(`Logged in as ${data.name} 🎉`);
-
+      router.refresh();
       router.push(role === "admin" ? `/admin/${userId}` : "/home");
     } catch (err) {
       toast.error(
@@ -97,7 +96,7 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
       {isLoggedIn && user ? (
-        <div className="py-32">
+        <div className="">
           <div className="text-center">
             <p className="text-gray-800 dark:text-white/80 mb-4">
               You are already logged in as {user.name}

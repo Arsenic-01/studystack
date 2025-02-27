@@ -56,7 +56,6 @@ export function AboutGrid() {
           and push my limits in the tech field. 🚀 &quot;
         </p>
         <div className="mt-5 flex flex-col  items-end">
-          {" "}
           <div className="font-semibold">Tanay K. Hingane</div>
           <div className="text-sm text-neutral-700 dark:text-white/70">
             SYCM-LIN 2025

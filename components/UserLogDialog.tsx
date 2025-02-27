@@ -23,12 +23,23 @@ export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
           <Terminal className="w-5 h-5" />
           <DialogTitle className="text-lg">Login History</DialogTitle>
         </DialogHeader>
-        <div className="p-4 text-sm overflow-y-auto max-h-[60vh]">
+        <div className="p-4 text-sm overflow-y-auto max-h-[50vh]">
           {user.loginHistory.length === 0 && (
             <div className="text-center text-gray-400 py-8">
               No login history
             </div>
           )}
+          {user.loginHistory.map((timestamp, index) => (
+            <div key={index} className="mb-2  font-mono">
+              <span className="text-green-400">●</span>{" "}
+              <span className="text-gray-400">
+                {format(new Date(timestamp), "dd MMM yyyy")}
+              </span>{" "}
+              <span className="text-yellow-400">
+                {format(new Date(timestamp), "hh:mm:ss a")}
+              </span>
+            </div>
+          ))}
           {user.loginHistory.map((timestamp, index) => (
             <div key={index} className="mb-2  font-mono">
               <span className="text-green-400">●</span>{" "}

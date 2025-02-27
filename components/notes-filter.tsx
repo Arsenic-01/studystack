@@ -27,15 +27,14 @@ import DeleteYoutubeLink from "./DeleteYoutubeLink";
 import EditYoutubeLink from "./EditYoutubeLink";
 
 const fileTypes = [
-  "notes",
-  "ppts",
-  "pyqs",
-  "modal_ans",
-  "videos",
-  "animation",
-  "sample_code",
-  "outputs",
-  "other",
+  "Notes",
+  "PPTS",
+  "Modal_Solutions",
+  "MSBTE_QP",
+  "Videos",
+  "Animations",
+  "Programs",
+  "Other",
 ];
 
 const NotesFilter = ({
@@ -88,7 +87,7 @@ const NotesFilter = ({
             <ArrowLeft /> Back
           </Link>
         </Button>
-        <h1 className="text-2xl lg:text-3xl font-bold tracking-tighter">
+        <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">
           {subjectName ? `Notes for ${subjectName}` : "Invalid Subject URL"}
         </h1>
       </div>

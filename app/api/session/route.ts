@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { db, USER_COLLECTION_ID, DATABASE_ID, Query } from "@/lib/appwrite";
 
-export async function GET() {
+export async function POST() {
   const sessionToken = (await cookies()).get("sessionToken")?.value;
 
   if (!sessionToken) {

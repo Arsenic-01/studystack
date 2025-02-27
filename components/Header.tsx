@@ -27,13 +27,15 @@ const Header = () => {
 
   useEffect(() => {
     if (!user) {
-      fetch("/api/session")
+      fetch("/api/session", {
+        method: "POST", // Change to POST
+        credentials: "include",
+      })
         .then((res) => (res.ok ? res.json() : Promise.reject()))
         .then((data) => setUser(data.user))
         .catch(() => setUser(null));
     }
   }, [user, setUser]);
-
   return (
     <nav className="fixed top-0 w-full px-5 z-50">
       <div
