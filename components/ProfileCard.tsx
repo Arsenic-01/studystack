@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { LogOut } from "lucide-react";
+import { sessionStopLog } from "@/lib/actions/Student.actions";
 
 const ProfileCard = ({ user }: { user: UserProps }) => {
   const { logout } = useAuthStore();
@@ -20,8 +21,8 @@ const ProfileCard = ({ user }: { user: UserProps }) => {
   const handleLogout = async () => {
     try {
       await fetch("/api/logout", { method: "POST" });
-
       logout(); // Zustand store logout
+      await sessionStopLog(user); // Log session before logout
       localStorage.setItem("logout", "true");
       setTimeout(() => localStorage.removeItem("logout"), 500);
 

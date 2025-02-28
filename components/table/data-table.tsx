@@ -70,6 +70,8 @@ export type User = {
   name: string;
   password: string;
   loginHistory: string[];
+  sessionStart: string[];
+  sessionEnd: string[];
 };
 
 interface UsersTableProps {
@@ -254,14 +256,14 @@ export function UsersTable({ initialData }: UsersTableProps) {
                   variant="secondary"
                   className="w-full md:w-auto inline-flex justify-center items-center gap-2"
                 >
-                  Add new Subject{" "}
+                  Add new Subject
                   <PlusCircle className="h-6 w-6 text-green-600" />
                 </Button>
                 <Button
                   onClick={() => router.push("/admin/register")}
                   className="w-full md:w-auto inline-flex justify-center items-center gap-2"
                 >
-                  Register new user{" "}
+                  Register new user
                   <PlusCircle className="h-6 w-6 text-green-600" />
                 </Button>
               </div>

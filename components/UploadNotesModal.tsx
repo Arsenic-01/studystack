@@ -168,17 +168,15 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <SelectTrigger className="max-w-[525px]">
+                        <SelectTrigger className="">
                           <SelectValue placeholder="Select Unit" />
                         </SelectTrigger>
-                        <SelectContent className="max-w-[525px]">
+                        <SelectContent className="">
                           {subjectUnit.map((unit, index) => (
-                            <SelectItem
-                              className="max-w-[525px]"
-                              key={index}
-                              value={unit}
-                            >
-                              {unit}
+                            <SelectItem key={index} value={unit} className="">
+                              <span className="flex justify-start items-start w-[350px] lg:w-full truncate">
+                                {unit}
+                              </span>
                             </SelectItem>
                           ))}
                         </SelectContent>

@@ -10,34 +10,33 @@ import {
 } from "../appwrite";
 
 export async function fetchNotesBySubject({ sub }: { sub: string }) {
+  if (!sub) return []; // Prevents unnecessary fetches
+
   try {
     const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!, [
       Query.equal("subject", sub),
     ]);
 
-    // Transform the documents to match the expected Note type
-    const transformedNotes = response.documents.map((doc) => ({
-      noteId: doc.$id, // Use document ID as noteId
+    return response.documents.map((doc) => ({
+      noteId: doc.$id,
       title: doc.title,
       description: doc.description,
       createdAt: doc.createdAt,
       fileId: doc.fileId,
-      sem: doc.sem || "", // Ensure sem is included
-      subjectId: doc.subjectId || "", // Ensure subjectId is included
-      type_of_file: doc.type_of_file || "", // Ensure type_of_file is included
-      unit: doc.unit || [], // Ensure unit is included
+      sem: doc.sem || "",
+      subjectId: doc.subjectId || "",
+      type_of_file: doc.type_of_file || "",
+      unit: doc.unit || [],
       users: {
-        name: doc.users?.name || "Unknown User", // Handle missing user name
-        userId: doc.users?.userId || "", // Ensure userId is included
+        name: doc.users?.name || "Unknown User",
+        userId: doc.users?.userId || "",
       },
       subject: {
-        name: doc.subject?.name || "Unknown Subject", // Handle missing subject name
+        name: doc.subject?.name || "Unknown Subject",
       },
     }));
-
-    return transformedNotes;
   } catch (error) {
-    console.log("Error fetching notes:", error);
+    console.error("Error fetching notes:", error);
     return [];
   }
 }

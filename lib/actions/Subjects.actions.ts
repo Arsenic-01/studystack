@@ -8,10 +8,13 @@ export async function fetchSubject({ subjectId }: { subjectId: string }) {
       NEW_SUBJECT_COLLECTION_ID!,
       subjectId
     );
-
     return response;
-  } catch (error) {
-    console.log("Error fetching subjects:", error);
+  } catch (error: any) {
+    if (error.code === 404) {
+      console.warn("Subject not found, returning null.");
+      return null; // Return null instead of throwing an error
+    }
+    console.error("Error fetching subject:", error);
     return null;
   }
 }

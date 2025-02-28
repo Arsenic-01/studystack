@@ -8,6 +8,8 @@ export interface User {
   prnNo: string;
   role: string;
   loginData: string[];
+  sessionStart: string[];
+  sessionEnd?: string[];
 }
 
 interface AuthState {

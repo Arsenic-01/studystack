@@ -5,7 +5,7 @@
 /* Custom Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 5px; /* Adjust scrollbar width */
-  height: 10px; /* Adjust scrollbar height for horizontal scrollbar */
+  height: 5px; /* Adjust scrollbar height for horizontal scrollbar */
 }
 
 ::-webkit-scrollbar-thumb {

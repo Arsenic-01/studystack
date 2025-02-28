@@ -44,6 +44,7 @@ export async function POST(req: Request) {
       sessionToken,
       // loginHistory: user.loginHistory.concat(new Date().toISOString()), // Ensure it's a string
       loginData: user.loginData.concat(new Date()),
+      sessionStart: user.sessionStart.concat(new Date()),
     });
 
     // Set session token in a secure cookie
@@ -51,7 +52,7 @@ export async function POST(req: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 24, // 24 days
     });
 
     return NextResponse.json({
@@ -61,8 +62,8 @@ export async function POST(req: Request) {
       name: user.name,
       email: user.email,
       prnNo: user.prnNo,
-      // loginHistory: user.loginHistory,
       loginData: user.loginData,
+      sessionStart: user.sessionStart,
     });
   } catch (error) {
     console.error("Login error:", error);

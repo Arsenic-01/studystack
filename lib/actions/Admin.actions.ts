@@ -16,6 +16,8 @@ export async function fetchUsers() {
       email: doc.email,
       password: doc.password,
       loginHistory: doc.loginData,
+      sessionStart: doc.sessionStart,
+      sessionEnd: doc.sessionEnd,
     }));
   } catch (error) {
     console.log("Error fetching users:", error);
@@ -52,4 +54,3 @@ export async function deleteUser(userId: string) {
     return false;
   }
 }
-

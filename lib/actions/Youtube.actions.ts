@@ -4,8 +4,6 @@ import { DATABASE_ID, db, Query, YOUTUBE_COLLECTION_ID } from "../appwrite";
 
 export async function fetchYoutubeLinks({ subjectId }: { subjectId: string }) {
   try {
-    console.log("Fetching YouTube links for subject:", subjectId);
-
     if (!subjectId) {
       throw new Error("subjectId is required but was not provided.");
     }
