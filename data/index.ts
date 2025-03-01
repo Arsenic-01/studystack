@@ -86,6 +86,30 @@ export const footerLinks = [
   },
 ];
 
+export const creators = [
+  {
+    name: "Vedant Bhor",
+    role: "Lead Developer",
+    avatar: "/pfp1.jpg",
+  },
+  {
+    name: "Tanay Hingane",
+    role: "UI/UX Designer",
+    avatar: "/tpfp.jpg",
+  },
+];
+
+export const guide = [
+  {
+    name: "AD. Talole",
+    role: "Lecturer",
+  },
+  {
+    name: "GB. Katkade",
+    role: "HOD, Computer Department",
+  },
+];
+
 export const footerIcons = [
   {
     name: "instagram",

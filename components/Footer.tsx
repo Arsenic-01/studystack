@@ -44,12 +44,7 @@ const Footer = () => {
           </div>
           <div className="flex items-center gap-4">
             {footerIcons.map((item, _) => (
-              <Link
-                href={item.href}
-                target="_blank"
-                className="text-base text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200"
-                key={_}
-              >
+              <Link href={item.href} target="_blank" key={_}>
                 <Image
                   src={item.icon}
                   alt={item.name}

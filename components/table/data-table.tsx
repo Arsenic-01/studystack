@@ -59,6 +59,8 @@ import { UpdateUserDialog } from "../update-user-dialog";
 import { UserLogDialog } from "../UserLogDialog";
 import StatCard from "./StatCard";
 import { NotesTable } from "../note-table";
+import { ActiveUsersChart } from "../active-users-chart";
+import { TeacherNotesChart } from "../teacher-notes-chart";
 
 type Role = "admin" | "teacher" | "student";
 
@@ -232,7 +234,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
               activeUsers={activeUsers}
             />
 
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between py-4">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between pt-0 pb-4 sm:py-4">
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
@@ -397,6 +399,10 @@ export function UsersTable({ initialData }: UsersTableProps) {
             </div>
             <div>
               <NotesTable notes={notes} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <ActiveUsersChart users={users} />
+              <TeacherNotesChart notes={notes} users={users} />
             </div>
           </div>
         </>

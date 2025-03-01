@@ -83,7 +83,7 @@ const YoutubeModal = ({ subjectId }: { subjectId: string }) => {
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="rounded-full" size="icon" variant="secondary">
+            <Button className="rounded-full" size="icon" variant="outline">
               <IconBrandYoutube />
             </Button>
           </DialogTrigger>

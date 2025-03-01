@@ -1,63 +1,67 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import {
-  GraduationCap,
-  NotebookPen,
-  SquareUser,
-  UserRoundCheck,
-} from "lucide-react";
-
+import { Card, CardContent } from "@/components/ui/card";
+import { Users, BookText, UserCheck, BarChart } from "lucide-react";
+interface StatCardProps {
+  studentCount: number;
+  teacherCount: number;
+  noteCount: number;
+  activeUsers: number;
+}
 const StatCard = ({
   studentCount,
   teacherCount,
   noteCount,
   activeUsers,
-}: {
-  studentCount: number;
-  teacherCount: number;
-  noteCount: number;
-  activeUsers: number;
-}) => {
+}: StatCardProps) => {
+  const stats = [
+    {
+      title: "Students",
+      value: studentCount,
+      icon: <Users className="h-5 w-5" />,
+      color: "bg-primary/10 text-primary",
+    },
+    {
+      title: "Teachers",
+      value: teacherCount,
+      icon: <UserCheck className="h-5 w-5" />,
+      color: "bg-pink-500/10 text-pink-500",
+    },
+    {
+      title: "Notes",
+      value: noteCount,
+      icon: <BookText className="h-5 w-5" />,
+      color: "bg-amber-500/10 text-amber-500",
+    },
+    {
+      title: "Active Users",
+      value: activeUsers,
+      icon: <BarChart className="h-5 w-5" />,
+      color: "bg-emerald-500/10 text-emerald-500",
+    },
+  ];
   return (
-    <div className="grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-4 py-2">
-      <Card className="hover:shadow-md dark:bg-neutral-950">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg font-medium">Students</CardTitle>
-          <SquareUser className="size-6" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{studentCount}</div>
-        </CardContent>
-      </Card>
-      <Card className="hover:shadow-md dark:bg-neutral-950">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg font-medium">Teachers</CardTitle>
-          <GraduationCap className="size-7" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{teacherCount}</div>
-        </CardContent>
-      </Card>
-      <Card className="hover:shadow-md dark:bg-neutral-950">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg font-medium">Uploaded Notes</CardTitle>
-          <NotebookPen className="size-6" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{noteCount}</div>
-        </CardContent>
-      </Card>
-      <Card className="hover:shadow-md dark:bg-neutral-950">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg font-medium">Active Users</CardTitle>
-          <UserRoundCheck className="size-6" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{activeUsers}</div>
-        </CardContent>
-      </Card>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {stats.map((stat, index) => (
+        <Card
+          key={index}
+          className="stat-card slide-in-bottom"
+          style={{ animationDelay: `${index * 100}ms` }}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">
+                  {stat.title}
+                </p>
+                <h3 className="text-2xl font-bold">{stat.value}</h3>
+              </div>
+              <div className={`rounded-full p-2.5 ${stat.color}`}>
+                {stat.icon}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 };
-
 export default StatCard;

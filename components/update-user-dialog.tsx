@@ -1,32 +1,32 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { updateUser } from '@/lib/actions/Admin.actions';
-import bcrypt from 'bcryptjs';
+} from "@/components/ui/select";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { updateUser } from "@/lib/actions/Admin.actions";
+import bcrypt from "bcryptjs";
 
 interface UpdateUserData {
   id: string;
   prnNo: string;
-  role: 'admin' | 'teacher' | 'student';
+  role: "admin" | "teacher" | "student";
   email: string;
   name: string;
   password: string;
@@ -43,7 +43,7 @@ export function UpdateUserDialog({
   onClose,
   onUpdate,
 }: UpdateUserDialogProps) {
-  const [formData, setFormData] = useState<Omit<UpdateUserData, 'password'>>({
+  const [formData, setFormData] = useState<Omit<UpdateUserData, "password">>({
     id: user.id,
     prnNo: user.prnNo,
     role: user.role,
@@ -51,7 +51,7 @@ export function UpdateUserDialog({
     name: user.name,
   });
 
-  const [newPassword, setNewPassword] = useState('');
+  const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
@@ -78,62 +78,62 @@ export function UpdateUserDialog({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-lg'>
-        <DialogHeader>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader className="mb-5">
           <DialogTitle>Update User</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className='space-y-4'>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <FormInput
-            label='Name'
-            id='name'
+            label="Name"
+            id="name"
             value={formData.name}
             onChange={(name) => setFormData((prev) => ({ ...prev, name }))}
           />
           <FormInput
-            label='Email'
-            id='email'
+            label="Email"
+            id="email"
             value={formData.email}
             onChange={(email) => setFormData((prev) => ({ ...prev, email }))}
           />
           <FormInput
-            label='PRN No'
-            id='prnNo'
+            label="PRN No"
+            id="prnNo"
             value={formData.prnNo}
             onChange={(prnNo) => setFormData((prev) => ({ ...prev, prnNo }))}
           />
 
           {/* Password Field */}
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='newPassword' className=' '>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="newPassword" className=" ">
               New Password
             </Label>
-            <div className='relative col-span-3'>
+            <div className="relative col-span-3">
               <Input
-                id='newPassword'
-                type={showPassword ? 'text' : 'password'}
+                id="newPassword"
+                type={showPassword ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder='Leave blank to keep current password'
-                className='pr-10'
+                placeholder="Leave blank to keep current password"
+                className="pr-10"
               />
               <button
-                type='button'
-                className='absolute inset-y-0 right-0 flex items-center pr-3'
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? (
-                  <EyeOffIcon className='h-5 w-5 text-gray-400' />
+                  <EyeOffIcon className="h-5 w-5 text-gray-400" />
                 ) : (
-                  <EyeIcon className='h-5 w-5 text-gray-400' />
+                  <EyeIcon className="h-5 w-5 text-gray-400" />
                 )}
               </button>
             </div>
           </div>
 
           {/* Role Selector */}
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='role' className=' '>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="role" className=" ">
               Role
             </Label>
             <Select
@@ -141,24 +141,24 @@ export function UpdateUserDialog({
               onValueChange={(role) =>
                 setFormData((prev) => ({
                   ...prev,
-                  role: role as 'admin' | 'teacher' | 'student',
+                  role: role as "admin" | "teacher" | "student",
                 }))
               }
             >
-              <SelectTrigger className='col-span-3'>
-                <SelectValue placeholder='Select a role' />
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select a role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='admin'>Admin</SelectItem>
-                <SelectItem value='teacher'>Teacher</SelectItem>
-                <SelectItem value='student'>Student</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="teacher">Teacher</SelectItem>
+                <SelectItem value="student">Student</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <DialogFooter>
-            <Button type='submit' disabled={updateMutation.isPending}>
-              {updateMutation.isPending ? 'Updating...' : 'Update'}
+            <Button type="submit" disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? "Updating..." : "Update"}
             </Button>
           </DialogFooter>
         </form>
@@ -179,15 +179,15 @@ const FormInput = ({
   value: string;
   onChange: (val: string) => void;
 }) => (
-  <div className='grid grid-cols-4 items-center gap-4'>
-    <Label htmlFor={id} className=' '>
+  <div className="grid grid-cols-4 items-center gap-4">
+    <Label htmlFor={id} className=" ">
       {label}
     </Label>
     <Input
       id={id}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className='col-span-3'
+      className="col-span-3"
     />
   </div>
 );

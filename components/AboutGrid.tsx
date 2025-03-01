@@ -4,6 +4,7 @@ import Image from "next/image";
 import { AnimatedTooltip } from "./ui/animated-tooltip";
 import { tsc, vsc } from "@/data";
 import { Chip } from "@heroui/react";
+import Link from "next/link";
 
 export function AboutGrid() {
   return (
@@ -32,18 +33,26 @@ export function AboutGrid() {
           keeps me pushing boundaries and growing every day. 💡🚀 &quot;
         </p>
         <div className="mt-5 flex flex-col  items-end">
-          {" "}
           <div className="font-semibold">Vedant B. Bhor</div>
-          <div className="text-sm text-neutral-700 dark:text-white/70">
-            SYCM-LIN 2025
+          <div className="text-sm flex flex-col items-end text-neutral-700 dark:text-white/70">
+            SYCM-Lin 2025
+            <Link
+              className="hover:underline hover:underline-offset-4 text-neutral-900 dark:text-white/80"
+              href={"https://wa.me/919975278911"}
+            >
+              +91 9975278911
+            </Link>
           </div>
         </div>
         <div className="mt-5 flex flex-wrap flex-row gap-1">
           <Chip color="danger">Front End</Chip>
           <Chip color="warning">Back End</Chip>
-          <Chip color="success">Database Management</Chip>
+          <Chip color="success">Database</Chip>
           <Chip color="default">Auth</Chip>
           <Chip color="primary">S3 Storage</Chip>
+          <div className="bg-cyan-600/30 py-1 px-3 rounded-full font-semibold text-cyan-900 dark:text-cyan-200 text-sm">
+            Handled 90% of the coding
+          </div>
         </div>
       </div>
 
@@ -57,8 +66,14 @@ export function AboutGrid() {
         </p>
         <div className="mt-5 flex flex-col  items-end">
           <div className="font-semibold">Tanay K. Hingane</div>
-          <div className="text-sm text-neutral-700 dark:text-white/70">
-            SYCM-LIN 2025
+          <div className="text-sm flex flex-col items-end text-neutral-700 dark:text-white/70">
+            SYCM-Lin 2025
+            <Link
+              className="hover:underline hover:underline-offset-4 text-neutral-900 dark:text-white/80"
+              href={"https://wa.me/918446663807"}
+            >
+              +91 8446663807
+            </Link>
           </div>
         </div>
         <div className="mt-5 flex flex-wrap flex-row gap-1">
