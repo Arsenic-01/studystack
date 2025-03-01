@@ -168,10 +168,10 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <SelectTrigger className="">
+                        <SelectTrigger>
                           <SelectValue placeholder="Select Unit" />
                         </SelectTrigger>
-                        <SelectContent className="">
+                        <SelectContent>
                           {subjectUnit.map((unit, index) => (
                             <SelectItem key={index} value={unit} className="">
                               <span className="flex justify-start items-start w-[350px] lg:w-full truncate">
@@ -200,17 +200,16 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                         <SelectValue placeholder="Select the type of file" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="notes">Notes</SelectItem>
-                        <SelectItem value="ppts">PPTs</SelectItem>
-                        <SelectItem value="pyqs">PYQs</SelectItem>
-                        <SelectItem value="modal_ans">
-                          Modal Answer Key
+                        <SelectItem value="Notes">Notes</SelectItem>
+                        <SelectItem value="PPTs">PPTs</SelectItem>
+                        <SelectItem value="MSBTE_QP">MSBTE_QPs</SelectItem>
+                        <SelectItem value="Modal_Solutions">
+                          Modal Solutions
                         </SelectItem>
-                        <SelectItem value="videos">Videos</SelectItem>
-                        <SelectItem value="animation">Animation</SelectItem>
-                        <SelectItem value="sample_code">Sample Code</SelectItem>
-                        <SelectItem value="outputs">Outputs</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="Videos">Videos</SelectItem>
+                        <SelectItem value="Animations">Animation</SelectItem>
+                        <SelectItem value="Programs">Programs</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
