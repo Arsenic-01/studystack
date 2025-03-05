@@ -10,6 +10,11 @@ export interface User {
   loginData: string[];
   sessionStart: string[];
   sessionEnd?: string[];
+  resetTokenExpiry: string;
+  resetToken: string;
+  lastLogin: string;
+  sessionToken: string;
+  createdAt: Date;
 }
 
 interface AuthState {

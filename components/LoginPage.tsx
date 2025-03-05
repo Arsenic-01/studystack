@@ -79,8 +79,33 @@ export default function LoginPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      const { name, userId, role, email, loginData, sessionStart } = data;
-      setUser({ userId, name, email, prnNo, role, loginData, sessionStart });
+      const {
+        name,
+        userId,
+        role,
+        email,
+        loginData,
+        sessionStart,
+        resetTokenExpiry,
+        resetToken,
+        lastLogin,
+        sessionToken,
+        createdAt,
+      } = data;
+      setUser({
+        userId,
+        name,
+        email,
+        prnNo,
+        role,
+        loginData,
+        sessionStart,
+        resetTokenExpiry,
+        resetToken,
+        lastLogin,
+        sessionToken,
+        createdAt,
+      });
       toast.success(`Logged in as ${data.name} 🎉`);
       router.refresh();
       router.push(role === "admin" ? `/admin/${userId}` : "/home");
