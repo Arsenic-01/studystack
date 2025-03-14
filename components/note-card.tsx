@@ -76,8 +76,7 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
       <CardContent className="flex-grow">
         <div className="aspect-video relative mb-4">
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading preview...</p>
-          ) : fileType?.startsWith("image/") ? (
+            <Skeleton className="w-full h-full rounded-md" />) : fileType?.startsWith("image/") ? (
             <Suspense
               fallback={<Skeleton className="w-full h-full rounded-md" />}
             >
