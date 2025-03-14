@@ -101,8 +101,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
     queryKey: ["notes"],
     queryFn: fetchAllNotes,
     initialData: [],
-    staleTime: 1000 * 60 * 10,
-    refetchInterval: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
   });
 
   const deleteMutation = useMutation({
