@@ -119,7 +119,7 @@ export function ActiveUsersChart({ users }: { users: User[] }) {
             <MapPinCheck className="h-4 w-4" /> {visitors} Active Users of{" "}
             {totalUsers}
           </div>
-          <div className="flex items-center gap-2 font-medium leading-none">
+          <div className="flex items-center gap-2 font-medium leading-none text-neutral-500 dark:text-neutral-400">
             <TrendingUp className="h-4 w-4" />{" "}
             {((visitors / totalUsers) * 100).toFixed(2)}% of total users visited
             the website

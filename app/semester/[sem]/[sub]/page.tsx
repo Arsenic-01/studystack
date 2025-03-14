@@ -1,7 +1,6 @@
-import NotesFilter from "@/components/notes-filter";
+import NotesClient from "@/components/NotesClient";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { fetchNotesBySubject } from "@/lib/actions/Notes.actions";
 import { fetchSubject } from "@/lib/actions/Subjects.actions";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -9,29 +8,22 @@ import Link from "next/link";
 const Page = async ({ params }: { params: { sub: string } }) => {
   const { sub } = await params;
 
-  // Fetch subject first
+  // Fetch subject on the server to check if it exists
   const res = await fetchSubject({ subjectId: sub });
 
   if (!res) {
-    // If subject doesn't exist, return an error UI instead of fetching notes
     return <ErrorUI />;
   }
 
-  if (res) {
-    const notes = await fetchNotesBySubject({ sub });
-
-    return (
-      <NotesFilter
-        notes={notes}
-        subjectName={res?.name}
-        subjectId={res?.subjectId}
-        subjectUnits={res?.unit || []}
-        semester={res?.semester}
-      />
-    );
-  }
+  return (
+    <NotesClient
+      subjectId={res.subjectId}
+      subjectName={res.name}
+      subjectUnits={res.unit || []}
+      semester={res.semester}
+    />
+  );
 };
-// Fetch notes only if the subject exists
 
 export default Page;
 

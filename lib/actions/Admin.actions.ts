@@ -1,7 +1,15 @@
 "use server";
 
-import { db, DATABASE_ID, USER_COLLECTION_ID } from "@/lib/appwrite";
+import {
+  db,
+  DATABASE_ID,
+  USER_COLLECTION_ID,
+  Query,
+  SESSION_COLLECTION_ID,
+} from "@/lib/appwrite";
 import { updateUserData } from "../appwrite_types";
+import { Models } from "node-appwrite"; // Ensure you import Models from Appwrite SDK
+import { session } from "@/store/authStore";
 
 export async function fetchUsers() {
   try {
@@ -16,8 +24,7 @@ export async function fetchUsers() {
       email: doc.email,
       password: doc.password,
       loginHistory: doc.loginData,
-      sessionStart: doc.sessionStart,
-      sessionEnd: doc.sessionEnd,
+      // session: doc.session,
     }));
   } catch (error) {
     console.log("Error fetching users:", error);
@@ -52,5 +59,30 @@ export async function deleteUser(userId: string) {
   } catch (error) {
     console.log("Error deleting user:", error);
     return false;
+  }
+}
+
+export async function fetchSessions(userId: string): Promise<session[]> {
+  if (!userId) return [];
+
+  try {
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      SESSION_COLLECTION_ID!,
+      [Query.equal("userId", userId), Query.orderDesc("sessionStart")]
+    );
+    // console.log("response", response);
+
+    // Transform Appwrite documents into Session[]
+    return response.documents.map((doc: Models.Document) => ({
+      sessionId: doc.$id, // Assuming $id is the session ID
+      sessionStart: doc.sessionStart,
+      sessionEnd: doc.sessionEnd,
+      isActive: doc.isActive,
+      userId: doc.userId,
+    }));
+  } catch (error) {
+    console.error("Error fetching sessions:", error);
+    return [];
   }
 }

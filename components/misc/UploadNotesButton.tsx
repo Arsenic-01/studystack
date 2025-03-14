@@ -34,9 +34,10 @@ const UploadNotesButton = ({
           subjectUnit={subjectUnit}
           open={open}
           closeModal={() => setOpen(false)}
-          subjectId={subjectId}
-          sem={sem}
-          userId={user?.userId ?? null} // ✅ Pass `userId`
+          subjectId={subjectId!}
+          sem={sem!}
+          userId={user?.userId || ""}
+          userName={user?.name || ""}
         />
       )}
     </>

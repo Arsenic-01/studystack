@@ -14,7 +14,7 @@ export async function fetchNotesBySubject({ sub }: { sub: string }) {
 
   try {
     const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!, [
-      Query.equal("subject", sub),
+      Query.equal("subjectId", sub),
     ]);
 
     return response.documents.map((doc) => ({
@@ -28,11 +28,8 @@ export async function fetchNotesBySubject({ sub }: { sub: string }) {
       type_of_file: doc.type_of_file || "",
       unit: doc.unit || [],
       users: {
-        name: doc.users?.name || "Unknown User",
-        userId: doc.users?.userId || "",
-      },
-      subject: {
-        name: doc.subject?.name || "Unknown Subject",
+        name: doc.userName || "Unknown User",
+        userId: doc.userId || "",
       },
     }));
   } catch (error) {
@@ -64,11 +61,38 @@ export const fetchAllNotes = async () => {
       createdAt: doc.createdAt,
       title: doc.title,
       fileId: doc.fileId,
-      uploadedBy: doc.users.name,
-      subject: doc.subject.name,
+      uploadedBy: doc.userName,
+      subject: doc.subjectName,
     }));
   } catch (error) {
     console.error("Error fetching notes:", error);
     return [];
+  }
+};
+
+interface EditNotesModalProps {
+  noteId: string;
+  title: string;
+  description: string;
+  type_of_file: string;
+}
+
+export const editNotes = async (data: EditNotesModalProps) => {
+  try {
+    const res = await db.updateDocument(
+      DATABASE_ID!,
+      NOTE_COLLECTION_ID!,
+      data.noteId,
+      {
+        title: data.title,
+        description: data.description,
+        type_of_file: data.type_of_file,
+      }
+    );
+
+    return res;
+  } catch (error) {
+    console.error("Error updating note:", error);
+    return { error: error };
   }
 };

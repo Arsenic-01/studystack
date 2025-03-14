@@ -1,5 +1,4 @@
 "use client";
-import { NoteCard } from "@/components/note-card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -29,6 +28,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import DeleteYoutubeLink from "./DeleteYoutubeLink";
 import EditYoutubeLink from "./EditYoutubeLink";
+import NoteCard from "./note-card";
 const fileTypes = [
   "Notes",
   "PPTS",
@@ -95,7 +95,7 @@ const NotesFilter = ({
             <ArrowLeft /> Back
           </Link>
         </Button>
-        <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">
+        <h1 className="text-2xl font-bold tracking-tight">
           {subjectName ? `Notes for ${subjectName}` : "Invalid Subject URL"}
         </h1>
       </div>
@@ -246,6 +246,7 @@ const NotesFilter = ({
           </div>
         </div>
       )}
+
       {/* YouTube Videos */}
       {youtubeLinks && youtubeLinks.length > 0 && (
         <div className="mt-10">
@@ -264,12 +265,13 @@ const NotesFilter = ({
                       className="w-full h-full rounded-lg"
                       width="100%"
                       height="100%"
-                      src={`https://www.youtube.com/embed/${videoId}`}
+                      src={`https://www.youtube-nocookie.com/embed/${videoId}`}
                       title="YouTube video"
                       allowFullScreen
                     ></iframe>
                   </div>
-                  {user?.name === link.createdBy && (
+                  {(user?.name === link.createdBy ||
+                    user?.role === "admin") && (
                     <div className="flex gap-2 items-center justify-between">
                       <EditYoutubeLink url={link.url} id={link.id} />
                       <DeleteYoutubeLink id={link.id} />

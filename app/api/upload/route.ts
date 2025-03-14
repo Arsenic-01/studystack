@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
     const subjectId = formData.get("subjectId") as string;
     const sem = formData.get("sem") as string;
     const userId = formData.get("userId") as string;
+    const userName = formData.get("userName") as string;
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const fileType = formData.get("fileType") as string;
@@ -27,7 +28,8 @@ export async function POST(req: NextRequest) {
       !title ||
       !description ||
       !fileType ||
-      !unit
+      !unit ||
+      !userName
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -53,12 +55,13 @@ export async function POST(req: NextRequest) {
           noteId,
           {
             noteId: noteId,
-            users: userId,
+            userId,
+            userName,
             sem,
             title,
             description,
             fileId: uploadedFile.$id,
-            subject: subjectId,
+            subjectId,
             createdAt: new Date().toISOString(),
             type_of_file: fileType,
             unit,

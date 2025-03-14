@@ -19,6 +19,14 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { useState, useMemo } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ListFilter, Search, X } from "lucide-react"; // Import cross icon
 
 interface Note {
   createdAt: string;
@@ -30,15 +38,39 @@ interface Note {
 
 export function NotesTable({ notes }: { notes: Note[] }) {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Reverse sorting the notes based on createdAt (latest first)
+  // Get unique teacher names
+  const uniqueTeachers = useMemo(
+    () =>
+      Array.from(new Set(notes.map((note) => note.uploadedBy).filter(Boolean))),
+    [notes]
+  );
+
+  // Filter notes based on selected teachers and search query
+  const filteredNotes = useMemo(() => {
+    return notes.filter((note) => {
+      const matchesTeacher =
+        selectedTeachers.length === 0 ||
+        selectedTeachers.includes(note.uploadedBy || "Unknown");
+
+      const matchesSearch =
+        searchQuery === "" ||
+        note.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchesTeacher && matchesSearch;
+    });
+  }, [notes, selectedTeachers, searchQuery]);
+
+  // Reverse sorting based on createdAt (latest first)
   const sortedNotes = useMemo(
     () =>
-      [...notes].sort(
+      [...filteredNotes].sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       ),
-    [notes]
+    [filteredNotes]
   );
 
   const columns: ColumnDef<Note>[] = [
@@ -82,12 +114,83 @@ export function NotesTable({ notes }: { notes: Note[] }) {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  // Toggle teacher selection
+  const toggleTeacher = (teacher: string) => {
+    setSelectedTeachers((prev) =>
+      prev.includes(teacher)
+        ? prev.filter((t) => t !== teacher)
+        : [...prev, teacher]
+    );
+  };
+
   return (
     <div>
+      {/* Search & Filter */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+        {/* Search Input with Clear Button */}
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+
+          <Input
+            placeholder="Search by Notes by title..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-10"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
+
+        {/* Teacher Filter Popover */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full md:w-fit">
+              <ListFilter className="mr-1 h-4 w-4" />
+              Filter by Teacher{" "}
+              {selectedTeachers.length > 0 && `(${selectedTeachers.length})`}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-52 xl:w-40 py-3 px-2">
+            <div className="flex flex-col gap-2">
+              {uniqueTeachers.map((teacher) => (
+                <label
+                  key={teacher}
+                  className="flex items-center gap-2 text-sm cursor-pointer"
+                >
+                  <Checkbox
+                    checked={selectedTeachers.includes(teacher!)}
+                    onCheckedChange={() => toggleTeacher(teacher!)}
+                  />
+                  {teacher}
+                </label>
+              ))}
+              {selectedTeachers.length > 0 && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="mt-1"
+                  onClick={() => setSelectedTeachers([])}
+                >
+                  <X className="h-4 w-4" />
+                  Clear Filters
+                </Button>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      {/* Table */}
       {notes.length === 0 ? (
         <div>No notes available.</div>
       ) : (
-        <div className="rounded-md border border-neutral-200 dark:border-neutral-800">
+        <div className="rounded-md border border-neutral-300  dark:border-neutral-800">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -141,24 +244,33 @@ export function NotesTable({ notes }: { notes: Note[] }) {
         </div>
       )}
 
+      {/* Count */}
+
       {/* Pagination Controls */}
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+            Showing {table.getRowModel().rows.length} of {notes.length} notes.
+          </div>
+        </div>
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import { ThemeToggle } from "./ThemeSwitcher";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAuthStore } from "@/store/authStore";
 import { twMerge } from "tailwind-merge";
+import Heartbeat from "@/functions/Heartbeat";
 
 const ProfileCard = dynamic(() => import("./ProfileCard"), { ssr: false });
 
@@ -94,7 +95,7 @@ const Header = () => {
               {isLoggedIn && user && <ProfileCard user={user} />}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
+                width="20"
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -102,7 +103,7 @@ const Header = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="feather feather-menu hover:cursor-pointer"
+                className="feather feather-menu hover:cursor-pointer mr-1"
                 onClick={() => setIsOpen(!isOpen)}
               >
                 <line
@@ -111,7 +112,7 @@ const Header = () => {
                   x2="21"
                   y2="6"
                   className={twMerge(
-                    "origin-left transition duration-150",
+                    "origin-left transition duration-100",
                     isOpen && "rotate-45 -translate-y-1"
                   )}
                 ></line>
@@ -121,7 +122,7 @@ const Header = () => {
                   x2="21"
                   y2="12"
                   className={twMerge(
-                    "transition duration-150",
+                    "transition duration-100",
                     isOpen && "opacity-0"
                   )}
                 ></line>
@@ -131,7 +132,7 @@ const Header = () => {
                   x2="21"
                   y2="18"
                   className={twMerge(
-                    "origin-left transition duration-150",
+                    "origin-left transition duration-100",
                     isOpen && "-rotate-45 translate-y-1"
                   )}
                 ></line>
@@ -156,6 +157,7 @@ const Header = () => {
             <motion.div
               initial={{ height: 0 }}
               animate={{ height: "auto" }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               exit={{ height: 0 }}
               className="overflow-hidden"
             >
@@ -180,13 +182,12 @@ const Header = () => {
                     {item.name}
                   </Link>
                 ))}
-
-                {!isLoggedIn && <LoginButton text="Login" className="w-full" />}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      {user && <Heartbeat userId={user.userId} />}
     </nav>
   );
 };

@@ -53,9 +53,10 @@ const noteSchema = z.object({
 interface UploadNotesModalProps {
   open: boolean;
   closeModal: () => void;
-  subjectId: string | null;
-  sem: string | null;
-  userId: string | null;
+  subjectId: string;
+  sem: string;
+  userId: string;
+  userName: string;
   subjectUnit: string[];
 }
 
@@ -65,6 +66,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
   subjectId,
   sem,
   userId,
+  userName,
   subjectUnit,
 }) => {
   const [uploading, setUploading] = useState(false);
@@ -95,6 +97,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     formData.append("subjectId", subjectId);
     formData.append("sem", sem);
     formData.append("userId", userId);
+    formData.append("userName", userName);
     formData.append("unit", data.unit); // Sending selected unit
 
     try {
@@ -201,7 +204,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Notes">Notes</SelectItem>
-                        <SelectItem value="PPTs">PPTs</SelectItem>
+                        <SelectItem value="PPTS">PPTs</SelectItem>
                         <SelectItem value="MSBTE_QP">MSBTE_QPs</SelectItem>
                         <SelectItem value="Modal_Solutions">
                           Modal Solutions

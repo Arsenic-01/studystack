@@ -16,24 +16,46 @@ import { format, differenceInMinutes } from "date-fns";
 import { Terminal, Clock, Calendar, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSessions } from "@/lib/actions/Admin.actions";
+
+interface Session {
+  sessionId: string;
+  sessionStart: string;
+  sessionEnd?: string;
+  isActive: boolean;
+  userId: string;
+}
+
 interface UserLogDialogProps {
-  user: { sessionStart?: string[]; sessionEnd?: string[] };
+  user: {
+    id: string;
+  };
   open: boolean;
   onClose: () => void;
 }
+
 export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
-  const { sessionStart = [], sessionEnd = [] } = user;
-  const formatTime = (dateString: string) => {
+  const { data: sessions = [], isLoading } = useQuery<Session[]>({
+    queryKey: ["sessions", user.id],
+    queryFn: () => fetchSessions(user.id),
+    enabled: open && !!user.id,
+  });
+
+  const formatTimeIST = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, "HH:mm:ss");
   };
-  const formatDate = (dateString: string) => {
+
+  const formatDateIST = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, "MMM dd, yyyy");
   };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="bg-[#fafafa] dark:bg-[#111] border-0 shadow-lg rounded-xl p-0 overflow-hidden">
+        {/* Dialog Header */}
         <DialogHeader className="bg-[#f3f3f3] dark:bg-[#222] px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
           <div className="flex items-center gap-2">
             <Terminal className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
@@ -42,8 +64,15 @@ export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
             </DialogTitle>
           </div>
         </DialogHeader>
+
+        {/* Content Area */}
         <div className="overflow-y-auto max-h-[65vh]">
-          {sessionStart.length === 0 ? (
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-64 text-neutral-400 space-y-3">
+              <Clock className="w-10 h-10 opacity-30 animate-spin" />
+              <p className="text-sm">Loading session history...</p>
+            </div>
+          ) : sessions.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-neutral-400 space-y-3">
               <Clock className="w-10 h-10 opacity-30" />
               <p className="text-sm">No session history found</p>
@@ -51,33 +80,35 @@ export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
           ) : (
             <div className="p-4">
               <Table>
+                {/* Table Header */}
                 <TableHeader>
                   <TableRow className="border-b border-neutral-200 dark:border-neutral-800">
-                    <TableHead className="w-2/5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                    <TableHead className="w-1/3 text-xs font-medium text-neutral-500 dark:text-neutral-400">
                       SESSION
                     </TableHead>
-                    <TableHead className="w-2/5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                    <TableHead className="w-1/3 text-xs font-medium text-neutral-500 dark:text-neutral-400">
                       ENDED
                     </TableHead>
-                    <TableHead className="w-1/5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                    <TableHead className="w-2/5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
                       DURATION
                     </TableHead>
                   </TableRow>
                 </TableHeader>
+
+                {/* Table Body */}
                 <TableBody>
-                  {sessionStart.map((start, index) => {
-                    const startDate = new Date(start);
-                    const endDate = sessionEnd[index]
-                      ? new Date(sessionEnd[index])
+                  {sessions.map((sess, index) => {
+                    const { sessionStart, sessionEnd, isActive } = sess;
+                    const startDate = new Date(sessionStart);
+                    const endDate = sessionEnd ? new Date(sessionEnd) : null;
+
+                    const duration = endDate
+                      ? differenceInMinutes(endDate, startDate)
                       : null;
 
-                    const isActive = !endDate || isNaN(endDate.getTime());
-                    const duration = !isActive
-                      ? differenceInMinutes(endDate!, startDate)
-                      : null;
                     return (
                       <TableRow
-                        key={index}
+                        key={sess.sessionId}
                         className={cn(
                           "border-b border-neutral-100 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors",
                           index === 0
@@ -85,19 +116,22 @@ export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
                             : ""
                         )}
                       >
+                        {/* Session Start Date & Time */}
                         <TableCell className="py-4">
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2 mb-1">
                               <Calendar className="w-4 h-4 text-neutral-400" />
                               <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                                {formatDate(start)}
+                                {formatDateIST(sessionStart)}
                               </span>
                             </div>
                             <div className="text-xs text-neutral-500 dark:text-neutral-400 pl-6">
-                              Started at {formatTime(start)}
+                              Started at {formatTimeIST(sessionStart)}
                             </div>
                           </div>
                         </TableCell>
+
+                        {/* Session End Date & Status */}
                         <TableCell className="py-4">
                           {isActive ? (
                             <div className="flex items-center gap-2">
@@ -111,43 +145,57 @@ export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
                                 Current session
                               </span>
                             </div>
-                          ) : (
+                          ) : sessionEnd ? (
                             <div className="flex flex-col">
                               <div className="flex items-center gap-2 mb-1">
                                 <ArrowRight className="w-4 h-4 text-neutral-400" />
                                 <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                                  {formatDate(sessionEnd[index])}
+                                  {formatDateIST(sessionEnd)}
                                 </span>
                               </div>
                               <div className="text-xs text-neutral-500 dark:text-neutral-400 pl-6">
-                                Ended at {formatTime(sessionEnd[index])}
+                                Ended at {formatTimeIST(sessionEnd)}
                               </div>
                             </div>
+                          ) : (
+                            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                              Unknown
+                            </span>
                           )}
                         </TableCell>
+
+                        {/* Duration Calculation */}
                         <TableCell className="py-4">
                           {isActive ? (
-                            <div className="flex items-center">
-                              <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                                Ongoing
-                              </span>
-                            </div>
-                          ) : (
+                            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                              Ongoing
+                            </span>
+                          ) : duration !== null ? (
                             <div className="flex items-center gap-2">
                               <Clock className="w-4 h-4 text-neutral-400" />
                               <span
                                 className={cn(
                                   "text-sm font-medium",
-                                  duration! < 5
+                                  duration < 5
                                     ? "text-red-600 dark:text-red-400"
-                                    : duration! < 30
+                                    : duration < 30
                                     ? "text-yellow-600 dark:text-yellow-400"
                                     : "text-green-600 dark:text-green-400"
                                 )}
                               >
-                                {duration} {duration === 1 ? "min" : "mins"}
+                                {duration >= 60
+                                  ? `${Math.floor(duration / 60)} hrs ${
+                                      duration % 60
+                                    } min`
+                                  : `${duration} ${
+                                      duration === 1 ? "min" : "mins"
+                                    }`}
                               </span>
                             </div>
+                          ) : (
+                            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                              Unknown
+                            </span>
                           )}
                         </TableCell>
                       </TableRow>

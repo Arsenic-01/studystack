@@ -43,9 +43,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "../../store/authStore";
+import { ActiveUsersChart } from "../active-users-chart";
 import AdminSkeleton from "../AdminSkeleton";
 import { ActivityChart } from "../chart-bar-interactive";
 import RefreshButton from "../misc/RefreshButton";
+import { NotesTable } from "../note-table";
+import { TeacherNotesChart } from "../teacher-notes-chart";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,9 +61,6 @@ import {
 import { UpdateUserDialog } from "../update-user-dialog";
 import { UserLogDialog } from "../UserLogDialog";
 import StatCard from "./StatCard";
-import { NotesTable } from "../note-table";
-import { ActiveUsersChart } from "../active-users-chart";
-import { TeacherNotesChart } from "../teacher-notes-chart";
 
 type Role = "admin" | "teacher" | "student";
 
@@ -72,8 +72,7 @@ export type User = {
   name: string;
   password: string;
   loginHistory: string[];
-  sessionStart: string[];
-  sessionEnd: string[];
+  // session: session[];
 };
 
 interface UsersTableProps {
@@ -95,12 +94,15 @@ export function UsersTable({ initialData }: UsersTableProps) {
     queryFn: fetchUsers,
     initialData,
     staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 10,
   });
 
   const { data: notes = [] } = useQuery({
     queryKey: ["notes"],
     queryFn: fetchAllNotes,
     initialData: [],
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 10,
   });
 
   const deleteMutation = useMutation({
@@ -252,7 +254,7 @@ export function UsersTable({ initialData }: UsersTableProps) {
                   />
                 )}
               </div>
-              <div className="flex flex-col md:flex-row gap-3 md:gap-2 w-full justify-end">
+              <div className="flex flex-col md:flex-row gap-3 md:gap-2 w-full md:w-fit justify-end">
                 <Button
                   onClick={() => router.push("/admin/addsub")}
                   variant="secondary"
@@ -403,6 +405,12 @@ export function UsersTable({ initialData }: UsersTableProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <ActiveUsersChart users={users} />
               <TeacherNotesChart notes={notes} users={users} />
+            </div>
+
+            <div className="pt-10">
+              <h3 className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+                Data Refreshes Every 10 minutes, unless refreshed manually.
+              </h3>
             </div>
           </div>
         </>

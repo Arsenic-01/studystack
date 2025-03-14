@@ -5,11 +5,8 @@ interface UserProps {
   prnNo: string;
   role: string;
   loginData: string[];
-  sessionStart: string[];
-  sessionEnd?: string[];
   resetTokenExpiry: string;
   resetToken: string;
-  lastLogin: string;
   sessionToken: string;
   createdAt: Date;
 }
@@ -33,8 +30,15 @@ export type Note = {
   sem: string;
   subjectId: string;
   users: { name: string; userId: string };
-  subject: { name: string };
-  type_of_file?: string;
+  type_of_file:
+    | "Notes"
+    | "PPTS"
+    | "Modal_Solutions"
+    | "MSBTE_QP"
+    | "Videos"
+    | "Animations"
+    | "Programs"
+    | "Other";
   unit: string[];
 };
 

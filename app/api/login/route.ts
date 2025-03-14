@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { db, USER_COLLECTION_ID, DATABASE_ID } from "@/lib/appwrite";
-import { Query } from "node-appwrite";
+import {
+  db,
+  USER_COLLECTION_ID,
+  DATABASE_ID,
+  SESSION_COLLECTION_ID,
+} from "@/lib/appwrite";
+import { ID, Query } from "node-appwrite";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto"; // Generate a secure session token
 
@@ -36,34 +41,86 @@ export async function POST(req: Request) {
       );
     }
 
+    // Fetch user's latest session
+    const sessions = await db.listDocuments(
+      DATABASE_ID!,
+      SESSION_COLLECTION_ID!,
+      [
+        Query.equal("userId", user.$id),
+        Query.orderDesc("$createdAt"),
+        Query.limit(1),
+      ]
+    );
+
+    // If the last session is still active, mark it as inactive
+    if (sessions.total > 0) {
+      const lastSession = sessions.documents[0];
+
+      if (!lastSession.sessionEnd) {
+        await db.updateDocument(
+          DATABASE_ID!,
+          SESSION_COLLECTION_ID!,
+          lastSession.$id,
+          {
+            sessionEnd: new Date().toISOString(),
+            isActive: false,
+          }
+        );
+        // console.log("updated user session", res);
+      }
+    }
+
+    const sessionStartTime = new Date().toISOString();
+
+    // Create a new session
+    const sessionId = ID.unique();
+    await db.createDocument(DATABASE_ID!, SESSION_COLLECTION_ID!, sessionId, {
+      sessionStart: sessionStartTime,
+      sessionId: sessionId,
+      isActive: true,
+      userId: user.$id,
+    });
+
+    // console.log("newSession", newSession);
+
     // Generate a new session token
     const sessionToken = randomUUID();
 
-    // Update the user's sessionToken in the database
-    await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, user.$id, {
-      sessionToken,
-      // loginHistory: user.loginHistory.concat(new Date().toISOString()), // Ensure it's a string
-      loginData: user.loginData.concat(new Date()),
-      sessionStart: user.sessionStart.concat(new Date()),
-    });
+    // Update user document with sessionToken & lastSessionStart
+    const updateDoc = await db.updateDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      user.$id,
+      {
+        sessionToken,
+        loginData: [...(user.loginData || []), new Date().toISOString()], // Ensure it's an array
+        lastSessionStart: sessionStartTime,
+      }
+    );
+
+    // console.log("updateDoc", updateDoc);
 
     // Set session token in a secure cookie
     (await cookies()).set("sessionToken", sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 day
+      maxAge: 60 * 60 * 24 * 30, // 30 days
     });
 
     return NextResponse.json({
       message: "Login successful",
-      userId: user.userId,
-      role: user.role,
-      name: user.name,
-      email: user.email,
-      prnNo: user.prnNo,
-      loginData: user.loginData,
-      sessionStart: user.sessionStart,
+      userId: updateDoc.userId,
+      role: updateDoc.role,
+      name: updateDoc.name,
+      email: updateDoc.email,
+      prnNo: updateDoc.prnNo,
+      loginData: updateDoc.loginData,
+      lastSessionStart: updateDoc.lastSessionStart,
+      resetTokenExpiry: updateDoc.resetTokenExpiry,
+      resetToken: updateDoc.resetToken,
+      sessionToken: updateDoc.sessionToken,
+      createdAt: updateDoc.createdAt,
     });
   } catch (error) {
     console.error("Login error:", error);

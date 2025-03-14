@@ -8,13 +8,19 @@ export interface User {
   prnNo: string;
   role: string;
   loginData: string[];
-  sessionStart: string[];
-  sessionEnd?: string[];
   resetTokenExpiry: string;
   resetToken: string;
-  lastLogin: string;
   sessionToken: string;
   createdAt: Date;
+  lastSessionStart?: string;
+}
+
+export interface session {
+  sessionId: string;
+  sessionStart: string;
+  sessionEnd: string;
+  isActive: boolean;
+  userId: string;
 }
 
 interface AuthState {
@@ -30,6 +36,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isLoggedIn: false,
       setUser: (user) => set({ user, isLoggedIn: !!user }),
+
       logout: () => {
         set({ user: null, isLoggedIn: false });
         localStorage.setItem("logout", "true");
