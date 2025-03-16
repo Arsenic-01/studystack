@@ -51,7 +51,10 @@ export function AboutGrid() {
           <Chip color="default">Auth</Chip>
           <Chip color="primary">S3 Storage</Chip>
           <div className="bg-cyan-600/30 py-1 px-3 rounded-full font-semibold text-cyan-900 dark:text-cyan-200 text-sm">
-            Handled 90% of the coding
+            Handled 95% of the coding
+          </div>
+          <div className="bg-green-600/30 py-1 px-3 rounded-full font-semibold text-green-900 dark:text-green-200 text-sm">
+            Serverless Functions for Auto Session End
           </div>
         </div>
       </div>
@@ -78,9 +81,8 @@ export function AboutGrid() {
         </div>
         <div className="mt-5 flex flex-wrap flex-row gap-1">
           <Chip color="danger" className="w-fit">
-            Front End
+            Front End Designing
           </Chip>
-          <Chip color="primary">Designing</Chip>
           <Chip color="success">Data Filling</Chip>
         </div>
       </div>

@@ -1,7 +1,5 @@
 "use client";
 
-import { memo, Suspense } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,9 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, FileText } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { memo } from "react";
 import CardOwner from "./CardOwner";
 import { Skeleton } from "./ui/skeleton";
 
@@ -39,26 +39,30 @@ export interface NoteCardProps {
   };
 }
 
-const fetchFileType = async (fileId: string) => {
+const fetchFileDetails = async (fileId: string) => {
   try {
     const res = await fetch(
       `https://cloud.appwrite.io/v1/storage/buckets/67a6452c003b5b6b6502/files/${fileId}?project=679a700c0013ee3706ba`
     );
     if (!res.ok) throw new Error(`Failed to fetch: ${res.statusText}`);
     const data = await res.json();
-    console.log("Fetched file metadata:", data);
-    return data.mimeType;
+
+    return {
+      mimeType: data.mimeType,
+      fileName: data.name,
+      fileSize: (data.sizeOriginal / (1024 * 1024)).toFixed(2) + " MB", // Convert bytes to MB
+    };
   } catch (error) {
-    console.error("Error fetching file type:", error);
-    return null; // Return null instead of throwing
+    console.error("Error fetching file details:", error);
+    return { mimeType: null, fileName: "Unknown", fileSize: "Unknown" };
   }
 };
 
 const NoteCard = memo(({ note }: NoteCardProps) => {
-  const { data: fileType, isLoading } = useQuery({
-    queryKey: ["fileType", note.fileId],
-    queryFn: () => fetchFileType(note.fileId),
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  const { data: fileDetails, isLoading } = useQuery({
+    queryKey: ["fileDetails", note.fileId],
+    queryFn: () => fetchFileDetails(note.fileId),
+    staleTime: 1000 * 60 * 10, // Cache for 10 minutes
     retry: 2,
   });
 
@@ -74,6 +78,8 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
         <CardOwner
           note={note}
           formattedDate={new Date(note.createdAt).toLocaleString()}
+          fileName={fileDetails?.fileName}
+          fileSize={fileDetails?.fileSize}
         />
       </CardHeader>
 
@@ -81,19 +87,15 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
       <CardContent className="flex-grow">
         <div className="aspect-video relative mb-4">
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading preview...</p>
-          ) : fileType?.startsWith("image/") ? (
-            <Suspense
-              fallback={<Skeleton className="w-full h-full rounded-md" />}
-            >
-              <Image
-                src={filePreviewUrl}
-                alt={note.title}
-                fill
-                className="object-cover rounded-md pointer-events-none select-none"
-                loading="lazy"
-              />
-            </Suspense>
+            <Skeleton className="w-full h-full rounded-md" />
+          ) : fileDetails?.mimeType?.startsWith("image/") ? (
+            <Image
+              src={filePreviewUrl}
+              alt={note.title}
+              fill
+              className="object-cover rounded-md pointer-events-none select-none"
+              loading="lazy"
+            />
           ) : (
             <div className="flex flex-col gap-2 items-center justify-center w-full h-full border border-neutral-300 dark:border-neutral-800 rounded-md bg-neutral-100 dark:bg-neutral-900">
               <div className="flex items-center">
@@ -102,14 +104,15 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
                   Preview unavailable
                 </p>
               </div>
-              {fileType && (
+              {fileDetails && (
                 <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                  File Type: {fileType}
+                  File Type: {fileDetails.mimeType || "Unknown"}
                 </span>
               )}
             </div>
           )}
         </div>
+
         <p className="text-base text-muted-foreground mb-2 line-clamp-2">
           {note.description}
         </p>
@@ -118,7 +121,7 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
       {/* Card Footer */}
       <CardFooter>
         <Button className="w-full" asChild>
-          <Link href={filePreviewUrl} target="_blank">
+          <Link href={filePreviewUrl} target="_blank" rel="noopener noreferrer">
             View Online <ArrowUpRight className="ml-1 h-4 w-4" />
           </Link>
         </Button>

@@ -29,7 +29,13 @@ import { Button } from "./ui/button";
 const CardOwner = ({
   note,
   formattedDate,
-}: NoteCardProps & { formattedDate: string }) => {
+  fileName,
+  fileSize,
+}: NoteCardProps & {
+  formattedDate: string;
+  fileName?: string;
+  fileSize?: string;
+}) => {
   const { user } = useAuthStore();
   const [open, setOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -67,6 +73,14 @@ const CardOwner = ({
           <DropdownMenuLabel>Uploaded by {note.users.name}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Uploaded at {formattedDate}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>
+            File Name: {fileName || "Unknown"}
+          </DropdownMenuLabel>
+          <DropdownMenuLabel>
+            File Size: {fileSize || "Unknown"}
+          </DropdownMenuLabel>
+
           {(user?.userId === note.users.userId || user?.role === "admin") && (
             <>
               <DropdownMenuSeparator />

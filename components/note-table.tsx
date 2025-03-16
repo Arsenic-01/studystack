@@ -244,8 +244,6 @@ export function NotesTable({ notes }: { notes: Note[] }) {
         </div>
       )}
 
-      {/* Count */}
-
       {/* Pagination Controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-end space-x-2 py-4">
