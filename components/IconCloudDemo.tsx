@@ -1,43 +1,26 @@
 import { IconCloud } from "./magicui/icon-cloud";
 
-const slugs = [
-  "typescript",
-  "javascript",
-  //"dart",
-  //"java",
-  "react",
-  //"flutter",
-  //"android",
-  "html5",
-  "css3",
-  "nodedotjs",
-  "express",
-  "nextdotjs",
-  "prisma",
-  //"amazonaws",
-  "postgresql",
-  //"firebase",
-  //"nginx",
-  "vercel",
-  //"testinglibrary",
-  //"jest",
-  //"cypress",
-  //"docker",
-  "git",
-  //"jira",
-  "github",
-  "gitlab",
-  "visualstudiocode",
-  //"androidstudio",
-  //"sonarqube",
-  "figma",
-  "",
-];
-
 export function IconCloudDemo() {
-  const images = slugs.map(
-    (slug) => `https://cdn.simpleicons.org/${slug}/${slug}`
-  );
+  const images = [
+    "/skill/Typescript.svg",
+    "/skill/Appwrite.svg",
+    "/skill/Docker.svg",
+    "/skill/Figma.svg",
+    "/skill/Github.svg",
+    "/skill/Javascript.svg",
+    "/skill/Next.js.svg",
+    "/skill/Node.js.svg",
+    "/skill/Postman.svg",
+    "/skill/shadcn.svg",
+    "/skill/TailwindCSS.svg",
+    "/skill/Vercel.svg",
+    "/skill/visual-studio-code-icon.svg",
+    "/skill/React.svg",
+    "/skill/react-query.png",
+    "/skill/react-hook-form.svg",
+    "/skill/turbopack-hero-logo-light.svg",
+    // "/skill/api.png",
+  ];
 
   return (
     <div className="relative flex size-full items-center justify-center overflow-hidden">

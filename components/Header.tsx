@@ -1,15 +1,16 @@
 "use client";
 
+import Heartbeat from "@/functions/Heartbeat";
+import useSessionQuery from "@/hooks/useSessionQuery";
+import { useAuthStore } from "@/store/authStore";
+import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 import LoginButton from "./misc/Button";
 import { ThemeToggle } from "./ThemeSwitcher";
-import { AnimatePresence, motion } from "framer-motion";
-import { useAuthStore } from "@/store/authStore";
-import { twMerge } from "tailwind-merge";
-import Heartbeat from "@/functions/Heartbeat";
 
 const ProfileCard = dynamic(() => import("./ProfileCard"), { ssr: false });
 
@@ -24,19 +25,10 @@ const navLinks = [
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, user, setUser } = useAuthStore();
+  const { isLoggedIn, user } = useAuthStore();
 
-  useEffect(() => {
-    if (!user) {
-      fetch("/api/session", {
-        method: "POST", // Change to POST
-        credentials: "include",
-      })
-        .then((res) => (res.ok ? res.json() : Promise.reject()))
-        .then((data) => setUser(data.user))
-        .catch(() => setUser(null));
-    }
-  }, [user, setUser]);
+  useSessionQuery(); // Automatically updates user state
+
   return (
     <nav className="fixed top-0 w-full px-5 z-50">
       <div
@@ -187,7 +179,7 @@ const Header = () => {
           )}
         </AnimatePresence>
       </div>
-      {user && <Heartbeat userId={user.userId} />}
+      {isLoggedIn && user && <Heartbeat userId={user.userId} />}
     </nav>
   );
 };

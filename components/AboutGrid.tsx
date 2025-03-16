@@ -53,8 +53,11 @@ export function AboutGrid() {
           <div className="bg-cyan-600/30 py-1 px-3 rounded-full font-semibold text-cyan-900 dark:text-cyan-200 text-sm">
             Handled 95% of the coding
           </div>
-          <div className="bg-green-600/30 py-1 px-3 rounded-full font-semibold text-green-900 dark:text-green-200 text-sm">
-            Serverless Functions for Auto Session End
+          <div className="bg-green-600/30 py-1 px-3 rounded-full hidden md:block font-semibold text-green-900 dark:text-green-200 text-sm">
+            Serverless Functions for Auto Session Timeout
+          </div>
+          <div className="bg-green-600/30 py-1 px-3 rounded-full md:hidden font-semibold text-green-900 dark:text-green-200 text-sm">
+            Auto Session Timeout
           </div>
         </div>
       </div>
