@@ -30,6 +30,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useQueryClient } from "@tanstack/react-query";
 // Define validation schema using Zod
 const noteSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -71,6 +72,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const queryClient = useQueryClient();
 
   const form = useForm({
     resolver: zodResolver(noteSchema),
@@ -111,6 +113,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
         toast.success("File Uploaded Successfully! 🎉");
         closeModal();
         form.reset();
+        queryClient.invalidateQueries({ queryKey: ["subjectNotes"] });
       } else {
         console.error("Upload error:", result.error);
       }

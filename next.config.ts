@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ["cloud.appwrite.io"], // Add the Appwrite domain here
+    domains: ["cloud.appwrite.io"],
   },
   experimental: {
     serverActions: {

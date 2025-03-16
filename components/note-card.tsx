@@ -39,14 +39,19 @@ export interface NoteCardProps {
   };
 }
 
-// 🔥 Fetch file metadata (cached with React Query)
 const fetchFileType = async (fileId: string) => {
-  const res = await fetch(
-    `https://cloud.appwrite.io/v1/storage/buckets/67a6452c003b5b6b6502/files/${fileId}?project=679a700c0013ee3706ba`
-  );
-  if (!res.ok) throw new Error("Failed to fetch file metadata");
-  const data = await res.json();
-  return data.mimeType;
+  try {
+    const res = await fetch(
+      `https://cloud.appwrite.io/v1/storage/buckets/67a6452c003b5b6b6502/files/${fileId}?project=679a700c0013ee3706ba`
+    );
+    if (!res.ok) throw new Error(`Failed to fetch: ${res.statusText}`);
+    const data = await res.json();
+    console.log("Fetched file metadata:", data);
+    return data.mimeType;
+  } catch (error) {
+    console.error("Error fetching file type:", error);
+    return null; // Return null instead of throwing
+  }
 };
 
 const NoteCard = memo(({ note }: NoteCardProps) => {
@@ -54,7 +59,7 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
     queryKey: ["fileType", note.fileId],
     queryFn: () => fetchFileType(note.fileId),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    retry: 1,
+    retry: 2,
   });
 
   const filePreviewUrl = `https://cloud.appwrite.io/v1/storage/buckets/67a6452c003b5b6b6502/files/${note.fileId}/view?project=679a700c0013ee3706ba`;
@@ -76,7 +81,8 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
       <CardContent className="flex-grow">
         <div className="aspect-video relative mb-4">
           {isLoading ? (
-            <Skeleton className="w-full h-full rounded-md" />) : fileType?.startsWith("image/") ? (
+            <p className="text-sm text-muted-foreground">Loading preview...</p>
+          ) : fileType?.startsWith("image/") ? (
             <Suspense
               fallback={<Skeleton className="w-full h-full rounded-md" />}
             >
@@ -96,9 +102,11 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
                   Preview unavailable
                 </p>
               </div>
-              <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                File Type: {fileType}
-              </span>
+              {fileType && (
+                <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                  File Type: {fileType}
+                </span>
+              )}
             </div>
           )}
         </div>
