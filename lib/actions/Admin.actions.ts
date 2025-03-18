@@ -69,7 +69,11 @@ export async function fetchSessions(userId: string): Promise<session[]> {
     const response = await db.listDocuments(
       DATABASE_ID!,
       SESSION_COLLECTION_ID!,
-      [Query.equal("userId", userId), Query.orderDesc("sessionStart")]
+      [
+        Query.equal("userId", userId),
+        Query.orderDesc("sessionStart"),
+        Query.limit(100),
+      ]
     );
     // console.log("response", response);
 

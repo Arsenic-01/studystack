@@ -12,7 +12,7 @@ export function AboutGrid() {
       <div className=" sm:col-span-2 lg:col-span-1 flex flex-col justify-center items-center border border-neutral-200 dark:border-neutral-800 p-5 rounded-xl">
         <Image
           src="/pfp1.jpg"
-          alt="jerry"
+          alt="pfp for vedant bhor"
           width={200}
           height={200}
           priority
@@ -94,7 +94,7 @@ export function AboutGrid() {
       <div className="sm:col-span-2 lg:col-span-1 flex flex-col justify-center items-center border border-neutral-200 dark:border-neutral-800 p-5 rounded-xl">
         <Image
           src="/tpfp.jpg"
-          alt="jerry"
+          alt="pfp for tanay hingane"
           width={200}
           height={200}
           priority

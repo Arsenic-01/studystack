@@ -122,7 +122,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
+    <div className="w-full max-w-md md:max-w-sm xl:max-w-md rounded-xl px-6 py-8 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
       {isSessionLoading ? ( // Show a loading screen while session is being verified
         <>
           <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-100 dark:from-zinc-900/70 rounded-xl"></div>
@@ -176,15 +176,15 @@ export default function LoginPage() {
               </svg>
             </div>
           </div>
-          <div className="text-start mt-7 mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white/80">
+          <div className="text-start mt-7 md:mt-4">
+            <h2 className="text-xl 2xl:text-2xl font-bold text-gray-900 dark:text-white/80">
               Welcome to StudyStack
             </h2>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               Login to continue
             </span>
           </div>
-          <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-7 space-y-3">
             <div>
               <label
                 htmlFor="prn"
@@ -325,15 +325,15 @@ export default function LoginPage() {
               </svg>
             </div>
           </div>
-          <div className="text-start mt-7 mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white/80">
+          <div className="text-start mt-7 md:mt-4">
+            <h2 className="text-xl 2xl:text-2xl font-bold text-gray-900 dark:text-white/80">
               Welcome to StudyStack
             </h2>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               Login to continue
             </span>
           </div>
-          <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-7 space-y-3">
             <div>
               <label
                 htmlFor="prn"

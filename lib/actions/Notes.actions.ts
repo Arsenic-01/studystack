@@ -57,12 +57,17 @@ export async function deleteNote({
 export const fetchAllNotes = async () => {
   try {
     const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!);
+    // console.log("response", response);
+
     return response.documents.map((doc) => ({
+      noteId: doc.noteId,
       createdAt: doc.createdAt,
       title: doc.title,
       fileId: doc.fileId,
       uploadedBy: doc.userName,
       subject: doc.subjectName,
+      type_of_file: doc.type_of_file,
+      description: doc.description,
     }));
   } catch (error) {
     console.error("Error fetching notes:", error);
@@ -89,6 +94,7 @@ export const editNotes = async (data: EditNotesModalProps) => {
         type_of_file: data.type_of_file,
       }
     );
+    // console.log("res", res);
 
     return res;
   } catch (error) {

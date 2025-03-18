@@ -63,7 +63,7 @@ const Header = () => {
                 href={item.href}
                 className={twMerge(
                   !isLoggedIn && item.name === "FAQs" && "hidden",
-                  `text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50`
+                  `xl:text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50`
                 )}
               >
                 {item.name}

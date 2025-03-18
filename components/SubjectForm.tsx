@@ -1,23 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle, Plus, X } from "lucide-react";
 import { ID } from "node-appwrite";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import {
-  BookOpen,
-  CodeIcon,
-  Calendar,
-  Layers,
-  Plus,
-  X,
-  CheckCircle,
-} from "lucide-react";
+import { z } from "zod";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -25,16 +24,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 // ✅ Define Zod Schema
@@ -126,19 +117,19 @@ export default function SubjectForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
-                      <BookOpen className="h-4 w-4 text-purple-500" />
+                      {/* <BookOpen className="h-4 w-4 text-purple-500" /> */}
                       Subject Name
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Operating Systems"
-                        className="border-neutral-300 dark:border-neutral-800 focus:ring-purple-500 focus:border-purple-500"
+                        className="border-neutral-300 dark:border-neutral-800"
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
+                    {/* <FormDescription>
                       Enter the full name of the subject
-                    </FormDescription>
+                    </FormDescription> */}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -151,19 +142,19 @@ export default function SubjectForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
-                      <CodeIcon className="h-4 w-4 text-blue-500" />
+                      {/* <CodeIcon className="h-4 w-4 text-blue-500" /> */}
                       Subject Code
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="22516"
-                        className="border-neutral-300 dark:border-neutral-800 focus:ring-blue-500 focus:border-blue-500"
+                        className="border-neutral-300 dark:border-neutral-8000"
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
+                    {/* <FormDescription>
                       The unique code identifying this subject
-                    </FormDescription>
+                    </FormDescription> */}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -176,7 +167,7 @@ export default function SubjectForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-green-500" />
+                      {/* <Calendar className="h-4 w-4 text-green-500" /> */}
                       Semester
                     </FormLabel>
                     <FormControl>
@@ -185,27 +176,27 @@ export default function SubjectForm() {
                         min="1"
                         max="6"
                         placeholder="1"
-                        className="border-neutral-300 dark:border-neutral-800 focus:ring-green-500 focus:border-green-500"
+                        className="border-neutral-300 dark:border-neutral-800 "
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
+                    {/* <FormDescription>
                       Which semester is this subject taught in (1-6)
-                    </FormDescription>
+                    </FormDescription> */}
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
               {/* Units Section */}
-              <div className="space-y-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+              <div className="space-y-4 pt-4">
                 <FormLabel className="flex items-center gap-2 text-neutral-900 dark:text-white">
-                  <Layers className="h-4 w-4 text-orange-500" />
+                  {/* <Layers className="h-4 w-4 text-orange-500" /> */}
                   Units
                 </FormLabel>
-                <FormDescription className="mt-0">
+                {/* <FormDescription className="mt-0">
                   Add the units that make up this subject
-                </FormDescription>
+                </FormDescription> */}
 
                 <div className="space-y-3">
                   {fields.map((field, index) => (
@@ -220,7 +211,7 @@ export default function SubjectForm() {
                               <Input
                                 {...field}
                                 placeholder="Overview of Operating System"
-                                className="pr-10 h-10 border-neutral-300 dark:border-neutral-800 focus:ring-orange-500 focus:border-orange-500"
+                                className="pr-10 h-10 border-neutral-300 dark:border-neutral-800 "
                               />
                             </div>
                           </FormControl>
