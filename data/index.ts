@@ -94,7 +94,7 @@ export const creators = [
   },
   {
     name: "Tanay Hingane",
-    role: "UI/UX Designer",
+    role: "Frontend Developer & UI/UX Designer",
     avatar: "/tpfp.jpg",
   },
 ];

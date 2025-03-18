@@ -87,6 +87,7 @@ export function AboutGrid() {
             Front End Designing
           </Chip>
           <Chip color="success">Data Filling</Chip>
+          <Chip color="warning">Video Editing</Chip>
         </div>
       </div>
 
