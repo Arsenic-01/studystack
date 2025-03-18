@@ -7,14 +7,14 @@ export function HeroVideoDialogDemoTopInBottomOut() {
         className="block dark:hidden"
         animationStyle="top-in-bottom-out"
         videoSrc="/demo.mp4"
-        thumbnailSrc="/StudyStackdemowhite.png"
+        thumbnailSrc="/ssdw.png"
         thumbnailAlt="Hero Video"
       />
       <HeroVideoDialog
         className="hidden dark:block"
         animationStyle="top-in-bottom-out"
         videoSrc="demo.mp4"
-        thumbnailSrc="/StudyStackdemoblack.png"
+        thumbnailSrc="/ssdb.png"
         thumbnailAlt="Hero Video"
       />
     </div>
