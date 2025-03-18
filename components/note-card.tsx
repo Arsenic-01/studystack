@@ -44,7 +44,7 @@ const fetchFileDetails = async (fileId: string) => {
     const res = await fetch(
       `https://cloud.appwrite.io/v1/storage/buckets/67a6452c003b5b6b6502/files/${fileId}?project=679a700c0013ee3706ba`
     );
-    if (!res.ok) throw new Error(`Failed to fetch: ${res.statusText}`);
+    if (!res.ok) console.log(`Failed to fetch: ${res.statusText}`);
     const data = await res.json();
 
     return {

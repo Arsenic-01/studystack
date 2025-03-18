@@ -63,60 +63,15 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-5 py-32">
-      <div className="w-full max-w-md  rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-gray-100 dark:bg-neutral-900/70 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
-        <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-200 dark:from-zinc-900 rounded-xl"></div>
-        <div className=" bg-zinc-200 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
-          <div className="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 40 40"
-              className="w-8 h-8 left-1/2 top-1/2 -translate-x-1/2 translate-y-1/2 absolute  stroke-[#333537] text-[##d2d4d7]"
-            >
-              <rect
-                width="28"
-                height="38"
-                x="6"
-                y="1"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                rx="6"
-              ></rect>
-              <rect
-                width="20"
-                height="38"
-                x="6"
-                y="1"
-                stroke="currentColor"
-                strokeWidth="2"
-                rx="6"
-              ></rect>
-              <circle cx="21.5" cy="20.5" r="1.5" fill="currentColor"></circle>
-            </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 15 13"
-              className="absolute w-5 h-5 top-1/2 pt-1 left-1/2 translate-x-1/2 translate-y-full right-[5px] stroke-[#333537] text-[##d2d4d7]"
-            >
-              <path
-                fill="currentColor"
-                fillRule="evenodd"
-                d="M.5 6.648c0-.433.183-.823.476-1.097L5.608.937a1.5 1.5 0 0 1 2.117 2.126L5.632 5.147h7.321a1.5 1.5 0 1 1 0 3H5.631l2.094 2.085a1.5 1.5 0 1 1-2.117 2.126L.942 7.71A1.5 1.5 0 0 1 .5 6.649"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-          </div>
-        </div>
-        <div className="text-start mt-7 mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white/80">
+    <div className="flex min-h-screen items-center justify-center px-5 py-32 xl:py-36">
+      <div className="w-full max-w-md lg:max-w-sm xl:max-w-md rounded-xl px-6 py-8 shadow-lg bg-gray-100 dark:bg-neutral-900/70 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
+        <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-100 dark:from-zinc-900/70 rounded-xl"></div>
+        <div className="text-start mb-4">
+          <h2 className="text-2xl font-bold z-50 text-gray-900 dark:text-white/80">
             Reset Password
           </h2>
         </div>
-        <form onSubmit={handlePasswordReset} className="mt-10 space-y-6">
+        <form onSubmit={handlePasswordReset} className=" space-y-4">
           <div>
             <label
               htmlFor="password"

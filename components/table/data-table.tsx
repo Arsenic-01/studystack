@@ -36,6 +36,7 @@ import {
   MoreHorizontal,
   PlusCircle,
   Search,
+  Settings2,
   X,
 } from "lucide-react";
 import Image from "next/image";
@@ -72,7 +73,6 @@ export type User = {
   name: string;
   password: string;
   loginHistory: string[];
-  // session: session[];
 };
 
 interface UsersTableProps {
@@ -255,12 +255,12 @@ export function UsersTable({ initialData }: UsersTableProps) {
               </div>
               <div className="flex flex-col md:flex-row gap-3 md:gap-2 w-full md:w-fit justify-end">
                 <Button
-                  onClick={() => router.push("/admin/addsub")}
+                  onClick={() => router.push("/admin/subjects")}
                   variant="secondary"
                   className="w-full md:w-auto inline-flex justify-center items-center gap-2"
                 >
-                  Add new Subject
-                  <PlusCircle className="h-6 w-6 text-green-600" />
+                  Manage Subjects
+                  <Settings2 className="h-6 w-6 text-green-600" />
                 </Button>
                 <Button
                   onClick={() => router.push("/admin/register")}
@@ -406,11 +406,11 @@ export function UsersTable({ initialData }: UsersTableProps) {
               <TeacherNotesChart notes={notes} users={users} />
             </div>
 
-            <div className="pt-10">
+            {/* <div className="pt-10">
               <h3 className="text-center text-sm text-neutral-500 dark:text-neutral-400">
                 Data Refreshes Every 10 minutes, unless refreshed manually.
               </h3>
-            </div>
+            </div> */}
           </div>
         </>
       ) : (

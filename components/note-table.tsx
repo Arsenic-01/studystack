@@ -26,12 +26,36 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ListFilter, Search, X } from "lucide-react"; // Import cross icon
+import { Edit2, ListFilter, Search, Trash, X } from "lucide-react"; // Import cross icon
+import EditNotesModal from "./EditNotesModal";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
+import { deleteNote } from "@/lib/actions/Notes.actions";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Note {
+  noteId: string;
   createdAt: string;
   fileId: string;
   title: string;
+  description: string;
+  type_of_file:
+    | "Notes"
+    | "PPTS"
+    | "Modal_Solutions"
+    | "MSBTE_QP"
+    | "Videos"
+    | "Animations"
+    | "Programs"
+    | "Other";
   uploadedBy?: string;
   subjectName?: string;
 }
@@ -40,6 +64,11 @@ export function NotesTable({ notes }: { notes: Note[] }) {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [open, setOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+
+  const queryClient = useQueryClient();
 
   // Get unique teacher names
   const uniqueTeachers = useMemo(
@@ -73,6 +102,30 @@ export function NotesTable({ notes }: { notes: Note[] }) {
     [filteredNotes]
   );
 
+  const closeModal = () => {
+    setOpen(false);
+    setSelectedNote(null); // Reset selected note when modal closes
+  };
+
+  const handleEdit = (note: Note) => {
+    setSelectedNote(note);
+    setOpen(true);
+  };
+
+  const handleDelete = () => {
+    if (!selectedNote) return;
+    deleteNote({ noteId: selectedNote.noteId, fileId: selectedNote.fileId })
+      .then(() => {
+        toast.success("Note deleted successfully");
+        queryClient.invalidateQueries({ queryKey: ["notes"] });
+      })
+      .catch(() => toast.error("Error deleting note"))
+      .finally(() => {
+        setAlertOpen(false);
+        setSelectedNote(null); // Clear the selected note after delete
+      });
+  };
+
   const columns: ColumnDef<Note>[] = [
     { accessorKey: "title", header: "Title" },
     {
@@ -101,6 +154,34 @@ export function NotesTable({ notes }: { notes: Note[] }) {
             View
           </Link>
         </Button>
+      ),
+    },
+    {
+      accessorKey: "Action",
+      header: "Actions",
+      cell: ({ row }) => (
+        <div className="flex gap-2 items-center justify-center">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              handleEdit(row.original);
+            }}
+          >
+            <Edit2 className="h-4 w-4" />
+          </Button>
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              setSelectedNote(row.original);
+              setAlertOpen(true);
+            }}
+          >
+            <Trash className="h-4 w-4 text-red-500" />
+          </Button>
+        </div>
       ),
     },
   ];
@@ -158,6 +239,11 @@ export function NotesTable({ notes }: { notes: Note[] }) {
           </PopoverTrigger>
           <PopoverContent className="w-52 xl:w-40 py-3 px-2">
             <div className="flex flex-col gap-2">
+              {uniqueTeachers.length === 0 && (
+                <p className="text-sm text-center text-muted-foreground">
+                  No teachers found.
+                </p>
+              )}
               {uniqueTeachers.map((teacher) => (
                 <label
                   key={teacher}
@@ -170,6 +256,7 @@ export function NotesTable({ notes }: { notes: Note[] }) {
                   {teacher}
                 </label>
               ))}
+
               {selectedTeachers.length > 0 && (
                 <Button
                   variant="secondary"
@@ -186,63 +273,68 @@ export function NotesTable({ notes }: { notes: Note[] }) {
         </Popover>
       </div>
 
+      {open && selectedNote && (
+        <EditNotesModal
+          open={open}
+          closeModal={closeModal}
+          noteId={selectedNote.noteId}
+          title={selectedNote.title}
+          description={selectedNote.description}
+          type_of_file={selectedNote.type_of_file!}
+          fromAdmin
+        />
+      )}
+
       {/* Table */}
-      {notes.length === 0 ? (
-        <div>No notes available.</div>
-      ) : (
-        <div className="rounded-md border border-neutral-300  dark:border-neutral-800">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
+      <div className="rounded-md border border-neutral-300  dark:border-neutral-800">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="shad-table-row-header">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="whitespace-nowrap md:whitespace-normal"
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={headerGroup.id}
-                  className="shad-table-row-header"
+                  key={row.id}
+                  className="shad-table-row whitespace-nowrap md:whitespace-normal"
                 >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className="whitespace-nowrap md:whitespace-normal"
-                    >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
                       {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
+                        cell.column.columnDef.cell,
+                        cell.getContext()
                       )}
-                    </TableHead>
+                    </TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className="shad-table-row whitespace-nowrap md:whitespace-normal"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No notes found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No notes found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* Pagination Controls */}
       <div className="flex items-center justify-between">
@@ -270,6 +362,42 @@ export function NotesTable({ notes }: { notes: Note[] }) {
           </Button>
         </div>
       </div>
+
+      <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete the note.
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setAlertOpen(false);
+                setTimeout(() => {
+                  document.body.style.removeProperty("pointer-events");
+                }, 300);
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (selectedNote) {
+                  handleDelete();
+                  setAlertOpen(false);
+                }
+                setAlertOpen(false);
+                setSelectedNote(null); // Clear selection on cancel
+                setTimeout(() => {
+                  document.body.style.removeProperty("pointer-events");
+                }, 300);
+              }}
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

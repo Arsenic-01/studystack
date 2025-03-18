@@ -8,7 +8,6 @@ const FAQ = () => {
       id="faq"
     >
       <div className="flex flex-col gap-5  text-center">
-        {" "}
         <h1 className="text-5xl 2xl:text-6xl px-5 tracking-tighter font-bold bg-gradient-to-r dark:text-transparent  dark:from-white dark:to-neutral-400 light:from-black light:to-gray-700 bg-clip-text white:text-transparent">
           FAQs
         </h1>

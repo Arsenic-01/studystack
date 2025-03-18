@@ -55,6 +55,7 @@ interface UploadNotesModalProps {
   open: boolean;
   closeModal: () => void;
   subjectId: string;
+  subjectName: string;
   sem: string;
   userId: string;
   userName: string;
@@ -65,6 +66,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
   open,
   closeModal,
   subjectId,
+  subjectName,
   sem,
   userId,
   userName,
@@ -101,7 +103,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     formData.append("userId", userId);
     formData.append("userName", userName);
     formData.append("unit", data.unit); // Sending selected unit
-
+    formData.append("subjectName", subjectName); // Sending subject name
     try {
       const response = await fetch("/api/upload", {
         method: "POST",

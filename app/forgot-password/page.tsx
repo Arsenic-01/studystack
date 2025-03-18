@@ -48,10 +48,10 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-5  py-32">
-      <div className="w-full max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
+    <div className="flex min-h-screen items-center justify-center px-5 py-32 xl:py-36">
+      <div className="w-full max-w-md rounded-xl px-6 py-8 2xl:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
         <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-100 dark:from-zinc-900/70 rounded-xl"></div>
-        <div className=" bg-zinc-200 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
+        <div className="bg-neutral-100 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
           <div className="relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -96,19 +96,22 @@ export default function ForgotPassword() {
             </svg>
           </div>
         </div>
-        <div className="text-start mt-7 mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white/80">
+        <div className="text-start mt-7 md:mt-4">
+          <h2 className="text-xl 2xl:text-2xl font-bold text-gray-900 dark:text-white/80">
             Reset Password
           </h2>
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Help us find your account
+          </span>
         </div>
-        <form onSubmit={handlePasswordReset} className="mt-10">
-          <div className="space-y-6">
+        <form onSubmit={handlePasswordReset} className="mt-6">
+          <div className="space-y-3">
             <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 dark:text-white"
               >
-                Enter your email
+                Email
               </label>
               <div className="relative mt-1">
                 <Input
@@ -133,7 +136,7 @@ export default function ForgotPassword() {
                   htmlFor="prnNo"
                   className="block text-sm font-medium text-gray-700 dark:text-white"
                 >
-                  Enter your PRN number
+                  PRN number
                 </label>
                 <div className="relative mt-1">
                   <Input

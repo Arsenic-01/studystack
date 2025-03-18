@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const NotesFilterSkeleton = () => {
   return (
-    <div className="container mx-auto py-28 sm:py-32 xl:py-36 max-w-5xl px-5">
+    <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 mb-8">
         <Button variant="outline" className="w-fit" asChild>
@@ -28,7 +28,7 @@ const NotesFilterSkeleton = () => {
         </div>
 
         {/* Notes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array(6)
             .fill(0)
             .map((_, index) => (

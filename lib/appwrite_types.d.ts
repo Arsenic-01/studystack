@@ -47,6 +47,5 @@ export interface Subject {
   name: string;
   code: string;
   semester: string;
-  notes?: Note[];
-  unit?: string[];
+  unit: string[];
 }

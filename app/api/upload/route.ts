@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
     const description = formData.get("description") as string;
     const fileType = formData.get("fileType") as string;
     const unit = formData.get("unit") as string;
+    const subjectName = formData.get("subjectName") as string;
     if (
       !files.length ||
       !subjectId ||
@@ -29,7 +30,8 @@ export async function POST(req: NextRequest) {
       !description ||
       !fileType ||
       !unit ||
-      !userName
+      !userName ||
+      !subjectName
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -65,6 +67,7 @@ export async function POST(req: NextRequest) {
             createdAt: new Date().toISOString(),
             type_of_file: fileType,
             unit,
+            subjectName,
           }
         );
 

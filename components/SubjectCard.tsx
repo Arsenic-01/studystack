@@ -30,6 +30,7 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
             subjectId={subject.subjectId}
             sem={subject.semester}
             subjectUnit={subject.unit!}
+            subjectName={subject.name}
           />
 
           <Button

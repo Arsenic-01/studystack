@@ -65,6 +65,7 @@ interface EditNotesModalProps {
     | "Animations"
     | "Programs"
     | "Other";
+  fromAdmin?: boolean;
 }
 
 const EditNotesModal: React.FC<EditNotesModalProps> = ({
@@ -74,10 +75,10 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
   title,
   description,
   type_of_file,
+  fromAdmin,
 }) => {
   const [uploading, setUploading] = useState(false);
 
-  //   console.log(noteId, title, description, type_of_file);
   const queryClient = useQueryClient();
 
   const form = useForm({
@@ -105,7 +106,6 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
         description: data.description,
         type_of_file: data.type_of_file,
       });
-      //   console.log("response", response);
 
       if (!response || response.error) {
         throw new Error(response?.error || "Unknown error occurred");
@@ -113,7 +113,9 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
 
       toast.success("Note updated successfully!");
       closeModal();
-      queryClient.invalidateQueries({ queryKey: ["subjectNotes"] });
+      if (fromAdmin) {
+        queryClient.invalidateQueries({ queryKey: ["notes"] });
+      } else queryClient.invalidateQueries({ queryKey: ["subjectNotes"] });
     } catch (error) {
       console.error("Update failed", error);
       toast.error("Failed to update note.");
@@ -126,7 +128,7 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
     <>
       {open && (
         <AlertDialog open={open} onOpenChange={closeModal}>
-          <AlertDialogContent className="lg:max-w-xl">
+          <AlertDialogContent className="lg:max-w-md 2xl:max-w-lg">
             <AlertDialogHeader>
               <AlertDialogTitle className="mb-5 lg:mb-0">
                 Edit Note
@@ -206,7 +208,7 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full flex items-center gap-2"
+                  className="w-full flex items-center gap-2 mt-5"
                   disabled={uploading}
                 >
                   {uploading ? "Updating..." : "Update Note"}{" "}
