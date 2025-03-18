@@ -15,7 +15,7 @@ const FAQ = () => {
           Answers to Common Questions
         </span>
       </div>
-      <div className="w-full max-w-4xl  px-5">
+      <div className="w-full max-w-5xl  px-5">
         <Accordian />
       </div>
     </div>

@@ -35,7 +35,7 @@ export async function fetchAllSubjects() {
       semester: doc.semester,
       unit: doc.unit,
     }));
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching subjects:", error);
     return null;
   }
