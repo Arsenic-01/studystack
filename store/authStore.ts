@@ -7,7 +7,6 @@ export interface User {
   email: string;
   prnNo: string;
   role: string;
-  loginData: string[];
   resetTokenExpiry: string;
   resetToken: string;
   sessionToken: string;

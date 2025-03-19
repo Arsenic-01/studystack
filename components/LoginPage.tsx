@@ -88,7 +88,6 @@ export default function LoginPage() {
         userId,
         role,
         email,
-        loginData,
         resetTokenExpiry,
         resetToken,
         sessionToken,
@@ -101,7 +100,6 @@ export default function LoginPage() {
         email,
         prnNo,
         role,
-        loginData,
         resetTokenExpiry,
         resetToken,
         sessionToken,
@@ -264,7 +262,7 @@ export default function LoginPage() {
       ) : isLoggedIn && user ? ( // If session is confirmed, show "Already logged in"
         <div className="text-center">
           <p className="text-gray-800 dark:text-white/80 mb-4">
-            You are already logged in as {user.name}
+            You are logged in as {user.name}
           </p>
           <RainbowButton
             onClick={() =>

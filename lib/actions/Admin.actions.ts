@@ -6,6 +6,7 @@ import {
   USER_COLLECTION_ID,
   Query,
   SESSION_COLLECTION_ID,
+  LOGIN_COLLECTION_ID,
 } from "@/lib/appwrite";
 import { updateUserData } from "../appwrite_types";
 import { Models } from "node-appwrite"; // Ensure you import Models from Appwrite SDK
@@ -23,7 +24,7 @@ export async function fetchUsers() {
       role: doc.role as "admin" | "student" | "teacher",
       email: doc.email,
       password: doc.password,
-      loginHistory: doc.loginData,
+      // loginHistory: doc.loginData,
       // session: doc.session,
     }));
   } catch (error) {
@@ -88,5 +89,20 @@ export async function fetchSessions(userId: string): Promise<session[]> {
   } catch (error) {
     console.error("Error fetching sessions:", error);
     return [];
+  }
+}
+
+export async function getLoginHistory() {
+  try {
+    const res = await db.listDocuments(DATABASE_ID!, LOGIN_COLLECTION_ID!, [
+      Query.orderDesc("$createdAt"),
+    ]);
+    return res.documents.map((doc) => ({
+      userId: doc.userId,
+      loginTime: doc.loginTime,
+      userName: doc.userName,
+    }));
+  } catch (error) {
+    console.error("Error fetching login history:", error);
   }
 }
