@@ -110,7 +110,7 @@ export function ActiveUsersChart({
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-black dark:fill-white text-4xl font-bold"
+                          className="fill-black dark:fill-white text-3xl font-bold"
                         >
                           {activeUsers}
                         </tspan>

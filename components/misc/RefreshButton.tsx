@@ -16,6 +16,7 @@ const RefreshButton = () => {
     // Invalidate queries
     queryClient.invalidateQueries({ queryKey: ["users"] });
     queryClient.invalidateQueries({ queryKey: ["notes"] });
+    queryClient.invalidateQueries({ queryKey: ["loginHistory"] });
 
     // Stop spinning after 1 second (adjust as needed)
     setTimeout(() => setIsSpinning(false), 1000);
