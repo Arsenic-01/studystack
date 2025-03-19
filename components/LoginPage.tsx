@@ -208,7 +208,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            <div>
+            <div className="pb-3">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 dark:text-white"
@@ -252,7 +252,11 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <RainbowButton className="w-full" type="submit" disabled={loading}>
+            <RainbowButton
+              className="w-full mt-3"
+              type="submit"
+              disabled={loading}
+            >
               {loading ? "Signing In..." : "Sign In"}
             </RainbowButton>
           </form>
@@ -357,7 +361,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            <div>
+            <div className="pb-3">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 dark:text-white"

@@ -93,8 +93,10 @@ const Feature = ({
   return (
     <div
       className={cn(
-        "flex flex-col py-10 relative group/feature",
-        "border border-neutral-200 dark:border-neutral-900 "
+        "flex flex-col py-10 relative group/feature border border-neutral-200 dark:border-neutral-900 xl:dark:border-neutral-800",
+        "md:border-l-0 md:border-t-0", // Remove left border for first col, top border for first row (only on desktop)
+        index % 3 === 0 ? "md:border-l" : "", // Apply left border only for non-first columns (on desktop)
+        index < 3 ? "md:border-t" : "" // Apply top border only for non-first row (on desktop)
       )}
     >
       {index < 3 && (
