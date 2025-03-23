@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
-import "./globals.css";
+import "./app/global.css";
 import { Providers } from "./providers";
 import ReactQueryProvider from "./QueryProvider";
 

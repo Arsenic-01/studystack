@@ -6,14 +6,14 @@ export function HeroVideoDialogDemoTopInBottomOut() {
       <HeroVideoDialog
         className="block dark:hidden"
         animationStyle="top-in-bottom-out"
-        videoSrc="/demo.mp4"
+        videoSrc="https://youtu.be/bcyYHZSmW88"
         thumbnailSrc="/ssdw.png"
         thumbnailAlt="Hero Video"
       />
       <HeroVideoDialog
         className="hidden dark:block"
         animationStyle="top-in-bottom-out"
-        videoSrc="demo.mp4"
+        videoSrc="https://youtu.be/bcyYHZSmW88"
         thumbnailSrc="/ssdb.png"
         thumbnailAlt="Hero Video"
       />
