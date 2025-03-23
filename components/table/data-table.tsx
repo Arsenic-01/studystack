@@ -17,7 +17,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { deleteUser, fetchUsers } from "@/lib/actions/Admin.actions";
+import {
+  deleteUser,
+  fetchUsers,
+  getLoginHistory,
+} from "@/lib/actions/Admin.actions";
 import { fetchAllNotes } from "@/lib/actions/Notes.actions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -72,7 +76,7 @@ export type User = {
   email: string;
   name: string;
   password: string;
-  loginHistory: string[];
+  // loginHistory: string[];
 };
 
 interface UsersTableProps {
@@ -93,6 +97,13 @@ export function UsersTable({ initialData }: UsersTableProps) {
     queryKey: ["users"],
     queryFn: fetchUsers,
     initialData,
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 10,
+  });
+
+  const { data: loginHistory = [] } = useQuery({
+    queryKey: ["loginHistory"],
+    queryFn: getLoginHistory,
     staleTime: 1000 * 60 * 10,
     refetchInterval: 1000 * 60 * 10,
   });
@@ -210,12 +221,16 @@ export function UsersTable({ initialData }: UsersTableProps) {
 
   const studentCount = users.filter((user) => user.role === "student").length;
   const teacherCount = users.filter((user) => user.role === "teacher").length;
-  const activeUsers = users.filter((user) => {
-    const lastLogin = new Date(user.loginHistory[user.loginHistory.length - 1]);
-    const hoursSinceLastLogin =
-      (new Date().getTime() - lastLogin.getTime()) / (1000 * 60 * 60);
-    return hoursSinceLastLogin < 24;
-  }).length;
+  const now = new Date();
+  const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
+
+  const activeUsers = new Set(
+    loginHistory
+      .filter((entry) =>
+        entry.loginTime.some((time: string) => new Date(time) > last24Hours)
+      )
+      .map((entry) => entry.userId)
+  ).size;
 
   return (
     <div>
@@ -396,13 +411,13 @@ export function UsersTable({ initialData }: UsersTableProps) {
               </AlertDialogContent>
             </AlertDialog>
             <div className="py-5">
-              <ActivityChart notes={notes} users={users} />
+              <ActivityChart notes={notes} loginHistory={loginHistory} />
             </div>
             <div>
               <NotesTable notes={notes} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              <ActiveUsersChart users={users} />
+              <ActiveUsersChart users={users} loginHistory={loginHistory} />
               <TeacherNotesChart notes={notes} users={users} />
             </div>
 

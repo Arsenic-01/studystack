@@ -91,7 +91,7 @@ export default function HeroVideoDialog({
             alt={thumbnailAlt}
             width={1920}
             height={1080}
-            className="w-full rounded-md border border-neutral-200 shadow-lg transition-all duration-200 ease-out group-hover:brightness-[0.8] dark:border-neutral-800"
+            className="w-full rounded-md border border-neutral-300 shadow-lg transition-all duration-200 ease-out group-hover:brightness-[0.8] dark:border-neutral-800"
           />
           <div className="absolute inset-0 flex scale-[0.9] items-center justify-center rounded-2xl transition-all duration-200 ease-out group-hover:scale-100">
             <div className="flex size-28 items-center justify-center rounded-full bg-neutral-900/10 backdrop-blur-md dark:bg-neutral-50/10">
@@ -125,9 +125,9 @@ export default function HeroVideoDialog({
                 <motion.button className="absolute -top-16 right-0 rounded-full bg-neutral-900/50 p-2 text-xl text-white ring-1 backdrop-blur-md dark:bg-neutral-100/50 dark:text-black">
                   <XIcon className="size-5" />
                 </motion.button>
-                <div className="relative isolate z-[1] size-full overflow-hidden rounded-2xl border-2 border-white">
+                <div className="relative isolate z-[1] size-full overflow-hidden rounded-2xl border-2 border-neutral-200 dark:border-neutral-800">
                   <iframe
-                    src={videoSrc}
+                    src={`${videoSrc}?mute=1`} // Ensure the video starts muted
                     className="size-full rounded-2xl"
                     allowFullScreen
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

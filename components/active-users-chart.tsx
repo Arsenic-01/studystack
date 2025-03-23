@@ -18,7 +18,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-import { User } from "./table/data-table";
 
 const chartConfig = {
   visitors: {
@@ -30,19 +29,37 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ActiveUsersChart({ users }: { users: User[] }) {
-  const visitors = users.filter((user) => user.loginHistory.length > 0).length;
-  const totalUsers = users.length || 1; // Avoid division by zero
+interface User {
+  id: string;
+  name: string;
+}
+
+interface LoginHistory {
+  userId: string;
+  userName: string;
+  loginTime: string[];
+}
+
+export function ActiveUsersChart({
+  users,
+  loginHistory,
+}: {
+  users: User[];
+  loginHistory: LoginHistory[];
+}) {
+  // Count unique users who have logged in at least once
+  const activeUsers = new Set(loginHistory.map((entry) => entry.userId)).size;
+  const totalUsers = users.length || 1; // Ensure totalUsers is never zero to prevent division errors
 
   // Calculate the dynamic end angle
-  const visitorsPercentage = (visitors / totalUsers) * 360;
+  const activeUsersPercentage = (activeUsers / totalUsers) * 360;
   const startAngle = 0;
-  const endAngle = startAngle + visitorsPercentage;
+  const endAngle = startAngle + activeUsersPercentage;
 
   // Prepare the chart data
   const chartData = [
     {
-      visitors: visitors,
+      visitors: activeUsers,
       fill: "hsl(var(--chart-2))",
     },
   ];
@@ -58,7 +75,7 @@ export function ActiveUsersChart({ users }: { users: User[] }) {
             <ChartPie className="h-5 w-5" />
           </div>
         </div>
-        <CardDescription> Users who have visited the site </CardDescription>
+        <CardDescription>Users who have visited the site</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 p-5">
         <ChartContainer
@@ -93,16 +110,16 @@ export function ActiveUsersChart({ users }: { users: User[] }) {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-black dark:fill-white text-4xl font-bold"
+                          className="fill-black dark:fill-white text-3xl font-bold"
                         >
-                          {visitors}
+                          {activeUsers}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-black dark:fill-white text-sm"
                         >
-                          Visitors
+                          Active Users
                         </tspan>
                       </text>
                     );
@@ -116,13 +133,13 @@ export function ActiveUsersChart({ users }: { users: User[] }) {
       <CardFooter className="flex flex-col items-start gap-2 font-medium leading-none w-full">
         <div className="flex flex-col gap-1 mt-2 pt-3 border-t border-t-neutral-300 dark:border-t-neutral-800 text-sm w-full">
           <div className="flex items-center gap-2 font-medium leading-none">
-            <MapPinCheck className="h-4 w-4" /> {visitors} Active Users of{" "}
+            <MapPinCheck className="h-4 w-4" /> {activeUsers} Active Users of{" "}
             {totalUsers}
           </div>
           <div className="flex items-center gap-2 font-medium leading-none text-neutral-500 dark:text-neutral-400">
             <TrendingUp className="h-4 w-4" />{" "}
-            {((visitors / totalUsers) * 100).toFixed(2)}% of total users visited
-            the website
+            {((activeUsers / totalUsers) * 100).toFixed(2)}% of total users
+            visited the website
           </div>
         </div>
       </CardFooter>

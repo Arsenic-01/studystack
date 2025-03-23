@@ -20,12 +20,14 @@ import {
 } from "@/components/ui/card";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
-interface User {
-  loginHistory?: (string | { timestamp: string })[];
-}
-
 interface Note {
   createdAt: string;
+}
+
+interface LoginHistoryEntry {
+  loginTime: string[]; // Array of timestamps (strings)
+  userId: string;
+  userName: string;
 }
 
 interface ChartData {
@@ -33,26 +35,21 @@ interface ChartData {
   count: number;
 }
 
-// Helper function to get the last 7 days
+// Get last 7 days
 const getLast7Days = (): string[] => {
-  const result = [];
-  for (let i = 6; i >= 0; i--) {
+  return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
-    d.setDate(d.getDate() - i);
-    result.push(d.toISOString().split("T")[0]);
-  }
-  return result;
+    d.setDate(d.getDate() - (6 - i));
+    return d.toISOString().split("T")[0];
+  });
 };
 
-// Helper function to count items per day
-const countPerDay = (data: any[], dateKey: string): ChartData[] => {
-  const counts: { [key: string]: number } = {};
-  getLast7Days().forEach((day) => (counts[day] = 0));
+// Count items per day
+const countPerDay = (timestamps: string[]): ChartData[] => {
+  const counts = Object.fromEntries(getLast7Days().map((date) => [date, 0]));
 
-  data.forEach((item) => {
-    const dateObj = new Date(item[dateKey]);
-    if (isNaN(dateObj.getTime())) return;
-    const date = dateObj.toISOString().split("T")[0];
+  timestamps.forEach((timestamp) => {
+    const date = new Date(timestamp).toISOString().split("T")[0];
     if (counts[date] !== undefined) counts[date]++;
   });
 
@@ -60,45 +57,40 @@ const countPerDay = (data: any[], dateKey: string): ChartData[] => {
 };
 
 const chartConfig = {
-  logins: {
-    label: "User Logins",
-    color: "hsl(var(--chart-1))",
-  },
-  uploads: {
-    label: "Documents Uploaded",
-    color: "hsl(var(--chart-2))",
-  },
+  logins: { label: "User Logins", color: "hsl(var(--chart-1))" },
+  uploads: { label: "Documents Uploaded", color: "hsl(var(--chart-2))" },
 } as const;
 
 type ChartType = keyof typeof chartConfig;
 
 export function ActivityChart({
-  users,
   notes,
+  loginHistory,
 }: {
-  users: User[];
   notes: Note[];
+  loginHistory: LoginHistoryEntry[];
 }) {
   const [activeChart, setActiveChart] = React.useState<ChartType>("logins");
 
-  // Normalize loginHistory so every item is an object with a timestamp
-  const loginData = React.useMemo(() => {
-    const normalizedLogins = users.flatMap((user) =>
-      (user.loginHistory || []).map((item) =>
-        typeof item === "string" ? { timestamp: item } : item
-      )
-    );
-    return countPerDay(normalizedLogins, "timestamp");
-  }, [users]);
+  // Flatten all login timestamps from loginHistory
+  const loginTimestamps = React.useMemo(
+    () => loginHistory.flatMap((entry) => entry.loginTime),
+    [loginHistory]
+  );
 
+  const loginData = React.useMemo(
+    () => countPerDay(loginTimestamps),
+    [loginTimestamps]
+  );
   const uploadData = React.useMemo(
-    () => countPerDay(notes, "createdAt"),
+    () => countPerDay(notes.map((note) => note.createdAt)),
     [notes]
   );
 
-  // Totals independent of the active chart
-  const loginTotal = loginData.reduce((sum, item) => sum + item.count, 0);
-  const uploadTotal = uploadData.reduce((sum, item) => sum + item.count, 0);
+  const totalCounts = {
+    logins: loginData.reduce((sum, item) => sum + item.count, 0),
+    uploads: uploadData.reduce((sum, item) => sum + item.count, 0),
+  };
 
   const chartData = activeChart === "logins" ? loginData : uploadData;
 
@@ -108,34 +100,30 @@ export function ActivityChart({
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>
             {activeChart === "logins"
-              ? "Recent User Logins Overview"
-              : "Recently Uploaded Notes Overview"}
+              ? "Login Trends Overview"
+              : "Notes Upload Trends"}
           </CardTitle>
           <CardDescription>
-            Showing{" "}
-            {activeChart === "logins" ? "user logins" : "documents uploaded"}{" "}
-            for the last <span className="font-bold">7 days</span>{" "}
+            Showing {chartConfig[activeChart].label} for the last{" "}
+            <span className="font-bold">7 days</span>
           </CardDescription>
         </div>
         <div className="flex">
-          {(Object.keys(chartConfig) as ChartType[]).map((key) => {
-            const total = key === "logins" ? loginTotal : uploadTotal;
-            return (
-              <button
-                key={key}
-                data-active={activeChart === key}
-                onClick={() => setActiveChart(key)}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t dark:border-t-neutral-800 px-6 py-4 text-left even:border-l dark:border-l-neutral-800 data-[active=true]:bg-muted/50 sm:border-l sm:dark:border-l-neutral-800 sm:border-t-0 sm:px-8 sm:py-6"
-              >
-                <span className="text-xs text-muted-foreground">
-                  {chartConfig[key].label}
-                </span>
-                <span className="text-lg font-bold leading-none sm:text-3xl">
-                  {total}
-                </span>
-              </button>
-            );
-          })}
+          {(Object.keys(chartConfig) as ChartType[]).map((key) => (
+            <button
+              key={key}
+              data-active={activeChart === key}
+              onClick={() => setActiveChart(key)}
+              className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t dark:border-t-neutral-800 px-6 py-4 text-left even:border-l dark:border-l-neutral-800 data-[active=true]:bg-muted/50 sm:border-l sm:dark:border-l-neutral-800 sm:border-t-0 sm:px-8 sm:py-6"
+            >
+              <span className="text-xs text-muted-foreground">
+                {chartConfig[key].label}
+              </span>
+              <span className="text-lg font-bold leading-none sm:text-3xl">
+                {totalCounts[key]}
+              </span>
+            </button>
+          ))}
         </div>
       </CardHeader>
       <CardContent className="px-2 sm:p-6">
@@ -147,14 +135,13 @@ export function ActivityChart({
             data={chartData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
           >
-            {/* Using our custom class for grid stroke */}
             <CartesianGrid
               strokeDasharray="3 3"
               className="recharts-grid-light"
             />
             <XAxis
               dataKey="date"
-              tickFormatter={(value: string) =>
+              tickFormatter={(value) =>
                 new Date(value).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -167,15 +154,15 @@ export function ActivityChart({
                 <ChartTooltipContent
                   className="w-[150px]"
                   nameKey={activeChart}
-                  labelFormatter={(value: string) => {
-                    const date = new Date(value);
-                    return isNaN(date.getTime())
-                      ? value
-                      : date.toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        });
+                  labelFormatter={(value) => {
+                    if (!value || isNaN(new Date(value).getTime())) {
+                      return value; // Return the original value if it's invalid
+                    }
+                    return new Date(value).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    });
                   }}
                 />
               }
@@ -184,7 +171,7 @@ export function ActivityChart({
             <Legend />
             <Bar
               dataKey="count"
-              fill={`var(--color-${activeChart})`}
+              fill={chartConfig[activeChart].color}
               radius={[10, 10, 0, 0]}
               name={chartConfig[activeChart].label}
             />

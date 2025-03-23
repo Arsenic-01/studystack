@@ -49,7 +49,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-5 py-32 xl:py-36">
-      <div className="w-full max-w-md rounded-xl px-6 py-8 2xl:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
+      <div className="w-full max-w-md rounded-xl px-6 py-8 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
         <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-zinc-100 dark:from-zinc-900/70 rounded-xl"></div>
         <div className="bg-neutral-100 border border-zinc-300 dark:border-zinc-800 dark:bg-white/5 backdrop-blur-2xl rounded-full w-16 h-16 relative">
           <div className="relative">

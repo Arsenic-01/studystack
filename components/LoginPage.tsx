@@ -88,7 +88,6 @@ export default function LoginPage() {
         userId,
         role,
         email,
-        loginData,
         resetTokenExpiry,
         resetToken,
         sessionToken,
@@ -101,7 +100,6 @@ export default function LoginPage() {
         email,
         prnNo,
         role,
-        loginData,
         resetTokenExpiry,
         resetToken,
         sessionToken,
@@ -208,7 +206,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            <div>
+            <div className="pb-3">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 dark:text-white"
@@ -252,7 +250,11 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <RainbowButton className="w-full" type="submit" disabled={loading}>
+            <RainbowButton
+              className="w-full mt-3"
+              type="submit"
+              disabled={loading}
+            >
               {loading ? "Signing In..." : "Sign In"}
             </RainbowButton>
           </form>
@@ -260,7 +262,7 @@ export default function LoginPage() {
       ) : isLoggedIn && user ? ( // If session is confirmed, show "Already logged in"
         <div className="text-center">
           <p className="text-gray-800 dark:text-white/80 mb-4">
-            You are already logged in as {user.name}
+            You are logged in as {user.name}
           </p>
           <RainbowButton
             onClick={() =>
@@ -357,7 +359,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            <div>
+            <div className="pb-3">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 dark:text-white"

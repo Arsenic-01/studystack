@@ -108,7 +108,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
       accessorKey: "name",
       header: "Subject Name",
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("name")}</div>
+        <div className="font-medium truncate">{row.getValue("name")}</div>
       ),
     },
     {
@@ -131,7 +131,9 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
           <div className="flex flex-wrap gap-1 max-w-[200px]">
             {units.length > 0 ? (
               <>
-                <Badge variant="secondary">{units[0]}</Badge>
+                <Badge variant="secondary" className="truncate">
+                  {units[0]}
+                </Badge>
                 {units.length > 1 && (
                   <Badge variant="outline">+{units.length - 1} more</Badge>
                 )}
@@ -196,7 +198,9 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
       {/* Header with title and add button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Subjects</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Manage Subjects
+          </h2>
           <p className="text-neutral-700 dark:text-neutral-400 mt-1">
             Add, edit, and delete subjects
           </p>
@@ -341,7 +345,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
       {/* Pagination Controls */}
       <div className="flex items-center justify-between mt-4">
         <div className="text-sm text-muted-foreground">
-          Showing {table.getRowModel().rows.length} of {subjects.length}{" "}
+          Showing {table.getFilteredRowModel().rows.length} of {subjects.length}{" "}
           subjects
         </div>
         <div className="flex items-center space-x-2">

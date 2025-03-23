@@ -5,6 +5,7 @@ import {
   USER_COLLECTION_ID,
   DATABASE_ID,
   SESSION_COLLECTION_ID,
+  LOGIN_COLLECTION_ID,
 } from "@/lib/appwrite";
 import { ID, Query } from "node-appwrite";
 import bcrypt from "bcryptjs";
@@ -66,7 +67,6 @@ export async function POST(req: Request) {
             isActive: false,
           }
         );
-        // console.log("updated user session", res);
       }
     }
 
@@ -81,8 +81,6 @@ export async function POST(req: Request) {
       userId: user.$id,
     });
 
-    // console.log("newSession", newSession);
-
     // Generate a new session token
     const sessionToken = randomUUID();
 
@@ -93,12 +91,41 @@ export async function POST(req: Request) {
       user.$id,
       {
         sessionToken,
-        loginData: [...(user.loginData || []), new Date().toISOString()], // Ensure it's an array
         lastSessionStart: sessionStartTime,
       }
     );
 
-    // console.log("updateDoc", updateDoc);
+    // **Update Login History (Append to loginTime)**
+    const loginTimestamp = new Date().toISOString();
+
+    // Check if user already has a login history
+    const existingLoginDocs = await db.listDocuments(
+      DATABASE_ID!,
+      LOGIN_COLLECTION_ID!,
+      [Query.equal("userId", user.$id)]
+    );
+
+    if (existingLoginDocs.total > 0) {
+      // If login record exists, update it by appending the new login time
+      const loginDoc = existingLoginDocs.documents[0];
+      const updatedLoginTimes = [...(loginDoc.loginTime || []), loginTimestamp];
+
+      await db.updateDocument(
+        DATABASE_ID!,
+        LOGIN_COLLECTION_ID!,
+        loginDoc.$id,
+        {
+          loginTime: updatedLoginTimes,
+        }
+      );
+    } else {
+      // If no login record exists, create a new document
+      await db.createDocument(DATABASE_ID!, LOGIN_COLLECTION_ID!, ID.unique(), {
+        userId: user.$id,
+        loginTime: [loginTimestamp], // Initialize as array
+        userName: user.name,
+      });
+    }
 
     // Set session token in a secure cookie
     (await cookies()).set("sessionToken", sessionToken, {
@@ -115,7 +142,6 @@ export async function POST(req: Request) {
       name: updateDoc.name,
       email: updateDoc.email,
       prnNo: updateDoc.prnNo,
-      loginData: updateDoc.loginData,
       lastSessionStart: updateDoc.lastSessionStart,
       resetTokenExpiry: updateDoc.resetTokenExpiry,
       resetToken: updateDoc.resetToken,

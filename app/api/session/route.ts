@@ -27,7 +27,6 @@ export async function POST() {
     email: userData.email,
     prnNo: userData.prnNo,
     role: userData.role,
-    loginData: userData.loginData || [],
     resetTokenExpiry: userData.resetTokenExpiry || null,
     resetToken: userData.resetToken || null,
     sessionToken: userData.sessionToken,

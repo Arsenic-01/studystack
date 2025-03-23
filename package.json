@@ -6,9 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "email": "email dev"
   },
   "dependencies": {
+    "@react-email/components": "0.0.34",
+    "react-email": "3.0.7",
     "@heroui/accordion": "^2.2.8",
     "@heroui/react": "^2.6.14",
     "@heroui/select": "^2.4.10",

@@ -4,7 +4,6 @@ interface UserProps {
   email: string;
   prnNo: string;
   role: string;
-  loginData: string[];
   resetTokenExpiry: string;
   resetToken: string;
   sessionToken: string;
