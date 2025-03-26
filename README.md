@@ -7,6 +7,14 @@ A centralized platform for students and teachers to manage and share study mater
 
 ---
 
+## 🎥 Demo
+
+[![StudyStack Demo](https://img.youtube.com/vi/bcyYHZSmW88/0.jpg)](https://youtu.be/bcyYHZSmW88)
+
+Click the image above to watch the video.
+
+---
+
 ## 🚀 About StudyStack  
 
 StudyStack is a **notes storage platform** designed for colleges where:  
@@ -38,8 +46,8 @@ It provides a **fast, secure, and scalable** solution for academic content shari
 
 ### **Backend & Storage:**  
 - 📦 **Appwrite** (Database & Storage)  
-- 🔑 **Appwrite** (Authentication) 
-- ⚡ **Vercel** (Serverless/Edge Functions)
+- 🔑 **Appwrite** (Authentication)  
+- ⚡ **Vercel** (Serverless/Edge Functions)  
 - 🌐 **Vercel + Netlify** (Hosting)
 
 ### **State Management:**  
@@ -90,6 +98,7 @@ Visit `http://localhost:3000/` to view the app locally.
 ---
 
 
+
 ## 🤝 Contributing  
 
 1. **Fork the repository**  
@@ -112,5 +121,5 @@ This project is licensed under the **MIT License**.
 
 📧 **Email:** [vedbhor25@gmail.com](mailto:vedbhor25@gmail.com)  
 🐦 **Twitter:** [@arsenic_dev](https://x.com/arsenic_dev)  
-👨‍💻 **LinkedIn:** [Vedant Bhor](https://www.linkedin.com/in/vedant-bhor-39287828b/)  
+👨‍💻 **LinkedIn:** [Vedant Bhor](https://www.linkedin.com/in/vedant-bhor-39287828b/)
 
