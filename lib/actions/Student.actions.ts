@@ -22,7 +22,7 @@ export async function fetchSubjectsBySemester(semester: number) {
         Query.equal("semester", sem), // Filter by semester
       ]
     );
-
+    // console.log("response", response);
     return response.documents.map((doc) => ({
       subjectId: doc.$id,
       name: doc.name,

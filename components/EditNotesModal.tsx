@@ -34,11 +34,15 @@ const noteSchema = z.object({
     [
       "Notes",
       "PPTS",
+      "Assignments",
       "Modal_Solutions",
+      "SLA",
+      "Lab_Manuals",
       "MSBTE_QP",
       "Videos",
       "Animations",
       "Programs",
+      "Syllabus",
       "Other",
     ],
     { message: "Please select a file type" }
@@ -180,18 +184,24 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="Notes">Notes</SelectItem>
-                              <SelectItem value="PPTS">PPTs</SelectItem>
-                              <SelectItem value="MSBTE_QP">
-                                MSBTE_QPs
-                              </SelectItem>
+                              <SelectItem value="PPTS">PPT</SelectItem>
+                              <SelectItem value="MSBTE_QP">MSBTE_QP</SelectItem>
                               <SelectItem value="Modal_Solutions">
                                 Modal Solutions
+                              </SelectItem>
+                              <SelectItem value="SLA">SLA</SelectItem>
+                              <SelectItem value="Assignments">
+                                Assignment
+                              </SelectItem>
+                              <SelectItem value="Lab_Manuals">
+                                Lab Manual
                               </SelectItem>
                               <SelectItem value="Videos">Videos</SelectItem>
                               <SelectItem value="Animations">
                                 Animation
                               </SelectItem>
                               <SelectItem value="Programs">Programs</SelectItem>
+                              <SelectItem value="Syllabus">Syllabus</SelectItem>
                               <SelectItem value="Other">Other</SelectItem>
                             </SelectContent>
                           </Select>
@@ -201,23 +211,17 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
                     )}
                   />
 
-                  {/* Submit Button */}
-                  <Button
-                    type="submit"
-                    className="w-full flex items-center gap-2 mt-3"
-                    disabled={uploading}
-                  >
-                    {uploading ? "Updating..." : "Update Note"} <FilePen />
-                  </Button>
+                  <div className="flex w-full items-center justify-end mt-3">
+                    <Button
+                      type="submit"
+                      className="w-fit flex items-center justify-center gap-2"
+                      disabled={uploading}
+                    >
+                      {uploading ? "Updating..." : "Update Note"} <FilePen />
+                    </Button>
+                  </div>
                 </form>
               </Form>
-              <Button
-                className="w-full mt-2"
-                variant="secondary"
-                onClick={closeModal}
-              >
-                Close
-              </Button>
             </div>
           </DialogContent>
         </Dialog>

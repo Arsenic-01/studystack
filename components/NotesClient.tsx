@@ -26,6 +26,7 @@ const NotesClient = ({
     queryKey: ["subjectNotes", subjectId],
     queryFn: () => fetchNotesBySubject({ sub: subjectId }),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchInterval: 1000 * 60 * 5, // 5 minutes
   });
 
   if (isLoading) {

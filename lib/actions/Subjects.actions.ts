@@ -9,8 +9,9 @@ export async function fetchSubject({ subjectId }: { subjectId: string }) {
       NEW_SUBJECT_COLLECTION_ID!,
       subjectId
     );
+    // console.log("response", response);
     return response;
-  } catch (error: any) {
+  } catch (error) {
     if (error.code === 404) {
       console.warn("Subject not found, returning null.");
       return null; // Return null instead of throwing an error
@@ -27,7 +28,7 @@ export async function fetchAllSubjects() {
       NEW_SUBJECT_COLLECTION_ID!,
       [Query.orderAsc("semester"), Query.limit(100)]
     );
-
+    // console.log("response", response);
     return response.documents.map((doc) => ({
       subjectId: doc.$id,
       name: doc.name,

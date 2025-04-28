@@ -107,6 +107,32 @@ export default function ForgotPassword() {
         <form onSubmit={handlePasswordReset} className="mt-6">
           <div className="space-y-3">
             <div>
+              <div>
+                <label
+                  htmlFor="prnNo"
+                  className="block text-sm font-medium text-gray-700 dark:text-white"
+                >
+                  PRN Number
+                </label>
+                <div className="relative mt-1">
+                  <Input
+                    id="prnNo"
+                    name="prnNo"
+                    required
+                    value={prnNo}
+                    onChange={(e) => setPrnNo(e.target.value)}
+                    className="pr-10 "
+                    placeholder="Enter your PRN number"
+                  />
+                  {errors.prnNo && (
+                    <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
+                      {errors.prnNo}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 dark:text-white"
@@ -128,32 +154,6 @@ export default function ForgotPassword() {
                     {errors.email}
                   </p>
                 )}
-              </div>
-            </div>
-            <div>
-              <div>
-                <label
-                  htmlFor="prnNo"
-                  className="block text-sm font-medium text-gray-700 dark:text-white"
-                >
-                  PRN number
-                </label>
-                <div className="relative mt-1">
-                  <Input
-                    id="prnNo"
-                    name="prnNo"
-                    required
-                    value={prnNo}
-                    onChange={(e) => setPrnNo(e.target.value)}
-                    className="pr-10 "
-                    placeholder="Enter your PRN number"
-                  />
-                  {errors.prnNo && (
-                    <p className="text-red-500 font-semibold ml-1 text-sm mt-1">
-                      {errors.prnNo}
-                    </p>
-                  )}
-                </div>
               </div>
             </div>
           </div>

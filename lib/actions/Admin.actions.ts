@@ -9,13 +9,12 @@ import {
   LOGIN_COLLECTION_ID,
 } from "@/lib/appwrite";
 import { updateUserData } from "../appwrite_types";
-import { Models } from "node-appwrite"; // Ensure you import Models from Appwrite SDK
-import { session } from "@/store/authStore";
+import { Models } from "node-appwrite";
 
 export async function fetchUsers() {
   try {
     const response = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!);
-    // console.log("response", response);
+    // ("response", response);
 
     return response.documents.map((doc) => ({
       id: doc.$id,
@@ -63,7 +62,47 @@ export async function deleteUser(userId: string) {
   }
 }
 
-export async function fetchSessions(userId: string): Promise<session[]> {
+// export async function fetchSessions(userId: string): Promise<session[]> {
+//   if (!userId) return [];
+
+//   try {
+//     const response = await db.listDocuments(
+//       DATABASE_ID!,
+//       SESSION_COLLECTION_ID!,
+//       [
+//         Query.equal("userId", userId),
+//         Query.orderDesc("sessionStart"),
+//         Query.limit(100),
+//       ]
+//     );
+//     console.log("response", response);
+
+//     // Transform Appwrite documents into Session[]
+//     return response.documents.map((doc: Models.Document) => ({
+//       sessionId: doc.$id, // Assuming $id is the session ID
+//       sessionStart: doc.sessionStart,
+//       sessionEnd: doc.sessionEnd,
+//       isActive: doc.isActive,
+//       userId: doc.userId,
+//     }));
+//   } catch (error) {
+//     console.error("Error fetching sessions:", error);
+//     return [];
+//   }
+// }
+
+interface Session {
+  sessionId: string;
+  sessionStart: string;
+  sessionEnd?: string;
+  isActive: boolean;
+  userId: string;
+}
+
+export async function fetchSessions(
+  userId: string,
+  offset = 0
+): Promise<Session[]> {
   if (!userId) return [];
 
   try {
@@ -73,14 +112,14 @@ export async function fetchSessions(userId: string): Promise<session[]> {
       [
         Query.equal("userId", userId),
         Query.orderDesc("sessionStart"),
-        Query.limit(100),
+        Query.limit(25),
+        Query.offset(offset),
       ]
     );
     // console.log("response", response);
 
-    // Transform Appwrite documents into Session[]
     return response.documents.map((doc: Models.Document) => ({
-      sessionId: doc.$id, // Assuming $id is the session ID
+      sessionId: doc.$id,
       sessionStart: doc.sessionStart,
       sessionEnd: doc.sessionEnd,
       isActive: doc.isActive,

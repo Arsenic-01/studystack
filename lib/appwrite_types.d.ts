@@ -32,11 +32,15 @@ export type Note = {
   type_of_file:
     | "Notes"
     | "PPTS"
+    | "Assignments"
+    | "SLA"
+    | "Lab_Manuals"
     | "Modal_Solutions"
     | "MSBTE_QP"
     | "Videos"
     | "Animations"
     | "Programs"
+    | "Syllabus"
     | "Other";
   unit: string[];
 };

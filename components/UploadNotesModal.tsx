@@ -3,26 +3,11 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FileUpload } from "@/components/ui/file-upload";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Upload } from "lucide-react";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -30,7 +15,22 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { Upload } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+
 // Define validation schema using Zod
 const noteSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -39,11 +39,15 @@ const noteSchema = z.object({
     [
       "Notes",
       "PPTS",
+      "Assignments",
       "Modal_Solutions",
+      "SLA",
+      "Lab_Manuals",
       "MSBTE_QP",
       "Videos",
       "Animations",
       "Programs",
+      "Syllabus",
       "Other",
     ],
     { message: "Please select a file type" }
@@ -209,14 +213,18 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Notes">Notes</SelectItem>
-                        <SelectItem value="PPTS">PPTs</SelectItem>
-                        <SelectItem value="MSBTE_QP">MSBTE_QPs</SelectItem>
+                        <SelectItem value="PPTS">PPT</SelectItem>
+                        <SelectItem value="MSBTE_QP">MSBTE_QP</SelectItem>
                         <SelectItem value="Modal_Solutions">
                           Modal Solutions
                         </SelectItem>
+                        <SelectItem value="SLA">SLA</SelectItem>
+                        <SelectItem value="Assignments">Assignment</SelectItem>
+                        <SelectItem value="Lab_Manuals">Lab Manual</SelectItem>
                         <SelectItem value="Videos">Videos</SelectItem>
                         <SelectItem value="Animations">Animation</SelectItem>
                         <SelectItem value="Programs">Programs</SelectItem>
+                        <SelectItem value="Syllabus">Syllabus</SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
@@ -232,23 +240,25 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
             </div>
 
             {/* Upload Button */}
-            <Button
-              type="submit"
-              className="w-full flex items-center gap-2"
-              disabled={uploading || !selectedFiles.length}
-            >
-              {uploading ? "Uploading..." : "Upload Notes"}
-              <Upload />
-            </Button>
+            <div className="flex w-full justify-end items-center mt-4">
+              <Button
+                type="submit"
+                className="w-full sm:w-fit flex items-center gap-2"
+                disabled={uploading || !selectedFiles.length}
+              >
+                {uploading ? "Uploading..." : "Upload Notes"}
+                <Upload />
+              </Button>
+            </div>
           </form>
         </Form>
 
         {/* Close Button */}
-        <DialogClose asChild>
+        {/* <DialogClose asChild>
           <Button className="w-full mt-2 lg:mt-0" variant="secondary">
             Close
           </Button>
-        </DialogClose>
+        </DialogClose> */}
       </DialogContent>
     </Dialog>
   );

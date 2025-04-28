@@ -119,7 +119,7 @@ export function ActiveUsersChart({
                           y={(viewBox.cy || 0) + 24}
                           className="fill-black dark:fill-white text-sm"
                         >
-                          Active Users
+                          Users Visited
                         </tspan>
                       </text>
                     );
@@ -133,8 +133,8 @@ export function ActiveUsersChart({
       <CardFooter className="flex flex-col items-start gap-2 font-medium leading-none w-full">
         <div className="flex flex-col gap-1 mt-2 pt-3 border-t border-t-neutral-300 dark:border-t-neutral-800 text-sm w-full">
           <div className="flex items-center gap-2 font-medium leading-none">
-            <MapPinCheck className="h-4 w-4" /> {activeUsers} Active Users of{" "}
-            {totalUsers}
+            <MapPinCheck className="h-4 w-4" /> {activeUsers} of {totalUsers}{" "}
+            users visited the website
           </div>
           <div className="flex items-center gap-2 font-medium leading-none text-neutral-500 dark:text-neutral-400">
             <TrendingUp className="h-4 w-4" />{" "}

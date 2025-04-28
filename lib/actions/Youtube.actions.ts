@@ -13,7 +13,7 @@ export async function fetchYoutubeLinks({ subjectId }: { subjectId: string }) {
       YOUTUBE_COLLECTION_ID!,
       [Query.equal("subjectId", subjectId)]
     );
-
+    // console.log("response", response);
     return response.documents.map((doc) => ({
       id: doc.$id,
       url: doc.url,

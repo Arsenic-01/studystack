@@ -20,6 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   FileQuestion,
+  Home,
   ListFilter,
   ListFilterPlus,
 } from "lucide-react";
@@ -29,12 +30,17 @@ import { toast } from "sonner";
 import DeleteYoutubeLink from "./DeleteYoutubeLink";
 import EditYoutubeLink from "./EditYoutubeLink";
 import NoteCard from "./note-card";
+
 const fileTypes = [
   "Notes",
   "PPTS",
   "Modal_Solutions",
   "MSBTE_QP",
   "Videos",
+  "Assignments",
+  "SLA",
+  "Lab_Manuals",
+  "Syllabus",
   "Animations",
   "Programs",
   "Other",
@@ -90,9 +96,22 @@ const NotesFilter = ({
   return (
     <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 mb-8">
-        <Button variant="outline" className="w-fit" asChild>
-          <Link href={`${semester ? `/semester/${semester}` : "/home"}`}>
+        <Button
+          variant="outline"
+          className={`${!semester && "hidden"} w-fit`}
+          asChild
+        >
+          <Link href={`/semester/${semester}`}>
             <ArrowLeft /> Back
+          </Link>
+        </Button>
+        <Button
+          variant="outline"
+          className={`${semester && "hidden"} w-fit`}
+          asChild
+        >
+          <Link href="/home">
+            <Home /> Home
           </Link>
         </Button>
         <h1 className="text-2xl font-bold tracking-tight">

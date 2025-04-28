@@ -1,3 +1,5 @@
+import { FaGlobe, FaInstagram, FaYoutube } from "react-icons/fa6";
+
 export const semester = [
   {
     key: "1",
@@ -112,19 +114,19 @@ export const guide = [
 
 export const footerIcons = [
   {
-    name: "instagram",
     href: "https://www.instagram.com/study_stack02/",
-    icon: "/instagram.svg",
+    icon: FaInstagram,
+    label: "Instagram",
   },
   {
-    name: "youtube",
     href: "https://www.youtube.com/@StudyStack01",
-    icon: "/youtube.svg",
+    icon: FaYoutube,
+    label: "Youtube",
   },
   {
-    name: "kkwp main website",
     href: "https://poly.kkwagh.edu.in/",
-    icon: "/globe.svg",
+    icon: FaGlobe,
+    label: "Website",
   },
 ];
 

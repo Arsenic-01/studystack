@@ -1,14 +1,16 @@
 "use client";
 
 import { footerLinks } from "@/data";
+import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import { footerIcons } from "../data/index";
-import { useAuthStore } from "@/store/authStore";
 
 const Footer = () => {
   const { user } = useAuthStore();
+  const iconClass =
+    "text-neutral-900/80 transition-all ease-in-out duration-300 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200";
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center gap-16  pt-16 pb-10 border-t-1 light:border-[#B4B4B4]/50 dark:border-neutral-800">
@@ -43,22 +45,23 @@ const Footer = () => {
             ))}
           </div>
           <div className="flex items-center gap-4">
-            {footerIcons.map((item, _) => (
-              <Link href={item.href} target="_blank" key={_}>
-                <Image
-                  src={item.icon}
-                  alt={item.name}
-                  width={25}
-                  height={25}
-                  className="opacity-80 dark:invert hover:opacity-100 transition-all ease-in-out duration-300 select-none pointer-events-none"
-                />
-              </Link>
+            {footerIcons.map(({ href, icon: Icon, label }) => (
+              <div key={label}>
+                <a
+                  href={href}
+                  rel="noreferrer"
+                  target="_blank"
+                  className={iconClass}
+                >
+                  <span className="sr-only">{label}</span>
+                  <Icon className="size-6 select-none pointer-events-none" />
+                </a>
+              </div>
             ))}
           </div>
         </div>
         <div>
           <div className="font-normal text-sm text-black/60 dark:text-white/60 text-center">
-            {" "}
             &copy; {new Date().getFullYear()} StudyStack by{" "}
             <Link
               className="hover:underline hover:underline-offset-4 text-black/80 dark:text-white/80 transition-all ease-in-out duration-300"

@@ -1,32 +1,42 @@
 "use client";
 
-import { Subject } from "@/lib/appwrite_types";
-import { useState } from "react";
-import SubjectCard from "./SubjectCard";
-import BreadcrumbWithDropdown from "./BreadCrumb";
+import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
+import { useQuery } from "@tanstack/react-query";
 import { Library, Search, X } from "lucide-react";
-import { Input } from "./ui/input";
+import { useState } from "react";
+import BreadcrumbWithDropdown from "./BreadCrumb";
+import SubjectCard from "./SubjectCard";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import SubjectCardSkeleton from "./SubjectCardSkeleton";
 
 interface Props {
-  subjects: Subject[];
   sem: string;
 }
 
-const SubjectSearch = ({ subjects, sem }: Props) => {
+const SubjectSearch = ({ sem }: Props) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter subjects based on search input
+  const {
+    data: subjects = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["subjects", sem],
+    queryFn: () => fetchSubjectsBySemester(Number(sem)),
+    staleTime: 1000 * 60 * 5, // cache for 5 minutes
+    retry: 2, // retry twice on failure
+  });
+
   const filteredSubjects = subjects.filter((subject) =>
     subject.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="w-full">
-      {/* Search Input */}
       <div className="w-full flex flex-col gap-7 md:flex-row md:justify-between md:items-center">
         <BreadcrumbWithDropdown sem={sem} />
-
         <div className="relative md:w-1/3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -44,9 +54,21 @@ const SubjectSearch = ({ subjects, sem }: Props) => {
         </div>
       </div>
 
-      {/* Subject List */}
       <div className="mt-4">
-        {filteredSubjects.length > 0 ? (
+        {isLoading ? (
+          <>
+            {Array.from({ length: 4 }).map((_, index) => (
+              <SubjectCardSkeleton key={index} />
+            ))}
+          </>
+        ) : isError ? (
+          <div className="text-center py-10 text-red-500">
+            Failed to load subjects.
+            <Button variant="outline" onClick={() => refetch()}>
+              Retry
+            </Button>
+          </div>
+        ) : filteredSubjects.length > 0 ? (
           filteredSubjects.map((subject) => (
             <SubjectCard key={subject.subjectId} subject={subject} />
           ))
@@ -62,12 +84,7 @@ const SubjectSearch = ({ subjects, sem }: Props) => {
                 query or reset the search filters.
               </p>
               <div className="flex gap-3 mt-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSearchQuery("");
-                  }}
-                >
+                <Button variant="outline" onClick={() => setSearchQuery("")}>
                   Reset search filters
                 </Button>
               </div>

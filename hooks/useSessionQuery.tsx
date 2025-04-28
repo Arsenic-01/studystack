@@ -7,7 +7,10 @@ const fetchSession = async () => {
     method: "POST",
     credentials: "include",
   });
-  if (!res.ok) throw new Error("Unauthorized");
+  if (!res.ok) {
+    console.log("User not authenticated"); // 👈 just logging now
+    return null; // return null instead of throwing
+  }
   return res.json();
 };
 
