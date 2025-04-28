@@ -10,19 +10,27 @@ import {
   SESSION_COLLECTION_ID,
 } from "@/lib/appwrite";
 import { session } from "../../store/authStore";
+import { Models } from "node-appwrite";
+import { Subject } from "../appwrite_types";
 
-// Fetch subjects for a given semester
-export async function fetchSubjectsBySemester(semester: number) {
+export async function fetchSubjectsBySemester(
+  semester: number
+): Promise<Subject[] | null> {
   const sem = String(semester);
+
   try {
-    const response = await db.listDocuments(
-      DATABASE_ID!,
-      NEW_SUBJECT_COLLECTION_ID!,
-      [
-        Query.equal("semester", sem), // Filter by semester
-      ]
-    );
-    // console.log("response", response);
+    const response: Models.DocumentList<Models.Document> =
+      await db.listDocuments(DATABASE_ID!, NEW_SUBJECT_COLLECTION_ID!, [
+        Query.equal("semester", sem),
+      ]);
+
+    // console.log("📚 Subjects fetched:", response.total);
+
+    if (response.total === 0) {
+      console.warn("No subjects found for this semester, returning null.");
+      return null;
+    }
+
     return response.documents.map((doc) => ({
       subjectId: doc.$id,
       name: doc.name,
@@ -31,8 +39,8 @@ export async function fetchSubjectsBySemester(semester: number) {
       unit: doc.unit,
     }));
   } catch (error) {
-    console.log("Error fetching subjects:", error);
-    throw new Error("Failed to fetch subjects");
+    console.error("❌ Unexpected error fetching subjects:", error);
+    return null;
   }
 }
 
@@ -70,3 +78,35 @@ export const sessionStopLog = async (sessions: session[]) => {
     throw new Error("Failed to stop session");
   }
 };
+
+// @archive
+
+// Fetch subjects for a given semester
+
+// export async function fetchSubjectsBySemester(semester: number) {
+//   const sem = String(semester);
+//   try {
+//     const response = await db.listDocuments(
+//       DATABASE_ID!,
+//       NEW_SUBJECT_COLLECTION_ID!,
+//       [
+//         Query.equal("semester", sem), // Filter by semester
+//       ]
+//     );
+//     console.log("response", response);
+
+//     return response.documents.map((doc) => ({
+//       subjectId: doc.$id,
+//       name: doc.name,
+//       code: doc.code,
+//       semester: doc.semester,
+//       unit: doc.unit,
+//     }));
+//   } catch (error: any) {
+//     console.log("Error fetching subjects:", error);
+//     if (error.message === "NO_SUBJECTS_FOUND") {
+//       throw new Error("No subjects found for the entered semester.");
+//     }
+//     throw new Error("Failed to fetch subjects");
+//   }
+// }

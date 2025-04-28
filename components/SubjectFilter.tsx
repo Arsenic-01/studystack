@@ -9,6 +9,7 @@ import SubjectCard from "./SubjectCard";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import SubjectCardSkeleton from "./SubjectCardSkeleton";
+import { ErrorUI } from "@/app/semester/[sem]/[sub]/page";
 
 interface Props {
   sem: string;
@@ -21,17 +22,25 @@ const SubjectSearch = ({ sem }: Props) => {
     data: subjects = [],
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ["subjects", sem],
-    queryFn: () => fetchSubjectsBySemester(Number(sem)),
+    queryFn: async () => {
+      const res = await fetchSubjectsBySemester(Number(sem));
+      if (!res) {
+        throw new Error("NO_SUBJECTS_FOUND"); // trigger error UI
+      }
+      return res;
+    },
     staleTime: 1000 * 60 * 5, // cache for 5 minutes
     retry: 2, // retry twice on failure
+    refetchOnWindowFocus: false, // do not refetch on window focus
   });
 
-  const filteredSubjects = subjects.filter((subject) =>
-    subject.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredSubjects = subjects
+    ? subjects.filter((subject) =>
+        subject.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="w-full">
@@ -62,12 +71,12 @@ const SubjectSearch = ({ sem }: Props) => {
             ))}
           </>
         ) : isError ? (
-          <div className="text-center py-10 text-red-500">
-            Failed to load subjects.
-            <Button variant="outline" onClick={() => refetch()}>
-              Retry
-            </Button>
-          </div>
+          <ErrorUI
+            title="Invalid Semester URL"
+            message="No subjects found for this semester"
+            actionLabel="Go Back"
+            actionHref="/home"
+          />
         ) : filteredSubjects.length > 0 ? (
           filteredSubjects.map((subject) => (
             <SubjectCard key={subject.subjectId} subject={subject} />

@@ -34,14 +34,14 @@ interface ErrorUIProps {
   actionHref?: string;
 }
 
-const ErrorUI = ({
+export const ErrorUI = ({
   title = "Invalid Subject URL",
   message = "The subject you are looking for does not exist.",
   actionLabel = "Go Back",
   actionHref = "/home",
 }: ErrorUIProps) => {
   return (
-    <div className="container min-h-screen mx-auto py-28 xl:py-40 px-4 flex items-center justify-center">
+    <div className="container  mx-auto py-28 xl:py-40 px-4 flex items-center justify-center">
       <Card className="max-w-md w-full p-8 bg-white/50 dark:bg-black/20 backdrop-blur-sm border border-neutral-200 dark:border-neutral-800 shadow-lg">
         <div className="flex flex-col items-center text-center space-y-6">
           <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
