@@ -6,6 +6,7 @@ const fetchSession = async () => {
   const res = await fetch("/api/session", {
     method: "POST",
     credentials: "include",
+    cache: "no-store", // Ensure fresh check but prevent duplicate calls
   });
   if (!res.ok) {
     console.log("User not authenticated"); // 👈 just logging now
@@ -23,6 +24,8 @@ const useSessionQuery = () => {
     staleTime: 1000 * 60 * 5, // 5 minutes
     retry: false, // Don't retry on 401 errors
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Only refetch when explicitly called
+    refetchOnReconnect: false,
   });
 
   // Update the auth store based on query results

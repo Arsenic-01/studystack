@@ -18,7 +18,8 @@ const navLinks = [
   { name: "About", href: "/about" },
   {
     name: "Contact",
-    href: "https://docs.google.com/forms/d/e/1FAIpQLSeCgACy0cfy08L_CGsxputmIIqvh-aD4uUE7B-sX1oIzqwZ9g/viewform?usp=sharing",
+    // href: "https://docs.google.com/forms/d/e/1FAIpQLSeCgACy0cfy08L_CGsxputmIIqvh-aD4uUE7B-sX1oIzqwZ9g/viewform?usp=sharing",
+    href: "/contact",
   },
   { name: "FAQs", href: "/home#faq" },
 ];

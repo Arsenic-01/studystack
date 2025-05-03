@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 
-const useHeartbeatQuery = (userId: string) => {
+interface HeartbeatOptions {
+  enabled?: boolean;
+  refetchInterval?: number;
+}
+
+const useHeartbeatQuery = (userId: string, options?: HeartbeatOptions) => {
   return useQuery({
     queryKey: ["heartbeat", userId],
     queryFn: async () => {
@@ -17,21 +22,21 @@ const useHeartbeatQuery = (userId: string) => {
       const data = await response.json();
 
       console.log(
-        "Heartbeat response received at :",
+        "Heartbeat response received at:",
         new Date().toLocaleString()
       );
 
-      // ✅ If a new session is created, fetch updated user data
       if (data.message === "NEW_SESSION_CREATED") {
         console.log("🔄 New session detected. Fetching updated user data...");
       }
 
       return data;
     },
-    refetchInterval: 3 * 60 * 1000, // ✅ Fetch every 3 minutes after first fetch
+    refetchInterval: options?.refetchInterval ?? 3 * 60 * 1000,
     refetchIntervalInBackground: true,
     refetchOnWindowFocus: false,
     staleTime: 3 * 60 * 1000,
+    enabled: options?.enabled ?? true,
   });
 };
 

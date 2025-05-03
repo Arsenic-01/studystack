@@ -7,9 +7,9 @@ const SubjectCardSkeleton = () => {
   const authorized = user?.role === "admin" || user?.role === "teacher";
 
   return (
-    <div className="flex flex-col items-start rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 my-5 gap-3 justify-center w-full py-5 md:py-10 px-4 md:px-10">
+    <div className="flex flex-col items-start overflow-x-clip rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 my-5 gap-3 justify-center w-full py-5 md:py-10 px-4 md:px-10">
       <div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-clip">
           <Skeleton className="h-7 md:h-8 w-32" />
           <Skeleton className="h-7 md:h-8 w-52" />
         </div>
