@@ -180,7 +180,7 @@ export default function ContactForm() {
 
   return (
     <Card
-      className="border sm:border-neutral-300 shadow-sm max-w-2xl mx-auto w-full bg-white dark:bg-neutral-950"
+      className="border sm:border-neutral-300 shadow-sm max-w-5xl pt-3 sm:pt-0 mx-auto w-full bg-white dark:bg-neutral-950"
       suppressHydrationWarning
     >
       <CardHeader className="pb-4">
@@ -296,29 +296,108 @@ export default function ContactForm() {
             </div>
 
             {userType === "student" && (
+              <div className="flex flex-col sm:flex-row justify-center items-center w-full gap-4 md:gap-6">
+                <FormField
+                  control={form.control}
+                  name="class"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Class</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder="Select your class"
+                              className="w-full"
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+
+                        <SelectContent>
+                          <SelectItem value="FYCM-Lin">FYCM-Lin</SelectItem>
+                          <SelectItem value="FYCM-Win">FYCM-Win</SelectItem>
+                          <SelectItem value="FYCM-Mac">FYCM-Mac</SelectItem>
+                          <SelectItem value="SYCM-Lin">SYCM-Lin</SelectItem>
+                          <SelectItem value="SYCM-Win">SYCM-Win</SelectItem>
+                          <SelectItem value="SYCM-Mac">SYCM-Mac</SelectItem>
+                          <SelectItem value="TYCM-Lin">TYCM-Lin</SelectItem>
+                          <SelectItem value="TYCM-Win">TYCM-Win</SelectItem>
+                          <SelectItem value="TYCM-Mac">TYCM-Mac</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="messageType"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Message Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select message type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="error">
+                            <div className="flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4 text-red-500" />
+                              <span>Error/Bug Found</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="suggestion">
+                            <div className="flex items-center gap-2">
+                              <Lightbulb className="h-4 w-4 text-amber-500" />
+                              <span>Improvement/Suggestion</span>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+
+            {userType === "staff" && (
               <FormField
                 control={form.control}
-                name="class"
+                name="messageType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Class</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <FormLabel>Message Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select your class" />
+                          <SelectValue placeholder="Select message type" />
                         </SelectTrigger>
                       </FormControl>
-
                       <SelectContent>
-                        <SelectItem value="FYCM-Lin">FYCM-Lin</SelectItem>
-                        <SelectItem value="FYCM-Win">FYCM-Win</SelectItem>
-                        <SelectItem value="FYCM-Mac">FYCM-Mac</SelectItem>
-                        <SelectItem value="SYCM-Lin">SYCM-Lin</SelectItem>
-                        <SelectItem value="SYCM-Win">SYCM-Win</SelectItem>
-                        <SelectItem value="SYCM-Mac">SYCM-Mac</SelectItem>
-                        <SelectItem value="TYCM-Lin">TYCM-Lin</SelectItem>
-                        <SelectItem value="TYCM-Win">TYCM-Win</SelectItem>
-                        <SelectItem value="TYCM-Mac">TYCM-Mac</SelectItem>
+                        <SelectItem value="error">
+                          <div className="flex items-center gap-2">
+                            <AlertCircle className="h-4 w-4 text-red-500" />
+                            <span>Error/Bug Found</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="suggestion">
+                          <div className="flex items-center gap-2">
+                            <Lightbulb className="h-4 w-4 text-amber-500" />
+                            <span>Improvement/Suggestion</span>
+                          </div>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -326,41 +405,6 @@ export default function ContactForm() {
                 )}
               />
             )}
-
-            <FormField
-              control={form.control}
-              name="messageType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Message Type</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select message type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="error">
-                        <div className="flex items-center gap-2">
-                          <AlertCircle className="h-4 w-4 text-red-500" />
-                          <span>Error/Bug Found</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="suggestion">
-                        <div className="flex items-center gap-2">
-                          <Lightbulb className="h-4 w-4 text-amber-500" />
-                          <span>Improvement/Suggestion</span>
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <FormField
               control={form.control}
@@ -389,7 +433,7 @@ export default function ContactForm() {
                           ? "Please describe the issue or bug in detail..."
                           : "Please share your suggestion or improvement idea..."
                       }
-                      className="min-h-[150px] resize-none"
+                      className="min-h-[100px] resize-none"
                       {...field}
                     />
                   </FormControl>
