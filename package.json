@@ -36,6 +36,7 @@
     "@tsparticles/engine": "^3.8.0",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.8.0",
+    "@vercel/speed-insights": "^1.2.0",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

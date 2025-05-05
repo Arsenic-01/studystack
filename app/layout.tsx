@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { Providers } from "./providers";
 import ReactQueryProvider from "./QueryProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <Header />
             {children}
+            <SpeedInsights />
             <Toaster richColors />
             <Footer />
           </ReactQueryProvider>
