@@ -180,34 +180,38 @@ export default function ContactForm() {
 
   return (
     <Card
-      className="border sm:border-neutral-300 shadow-sm max-w-5xl pt-3 sm:pt-0 mx-auto w-full bg-white dark:bg-neutral-950"
+      className="border rounded-lg sm:border-neutral-300 shadow-sm max-w-5xl  mx-auto w-full bg-white dark:bg-neutral-950"
       suppressHydrationWarning
     >
       <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-start gap-4 md:items-center justify-between">
           <div className="flex flex-col space-y-2 sm:space-y-1">
-            <h1 className="text-3xl tracking-tighter font-bold">Contact Us</h1>
+            <h1 className="text-2xl tracking-tighter font-bold">Contact Us</h1>
             <h2 className="text-sm text-neutral-500 dark:text-neutral-400">
               Have a question or suggestion? We&apos;d love to hear from you!
             </h2>
           </div>
-          <Mail className="hidden sm:block h-5 w-5 text-muted-foreground" />
-        </div>
-        <div className="text-sm text-muted-foreground mt-4 sm:mt-2 flex items-center">
-          <span>Email: {email}</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 ml-2 active:scale-95 transition-transform"
-            onClick={copyToClipboard}
-            aria-label="Copy email address"
-          >
-            {copied ? (
-              <Check className="h-4 w-4" />
-            ) : (
-              <Copy className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-2">
+              <Mail className="hidden sm:block h-5 w-5 text-muted-foreground" />
+              <div className="text-sm text-muted-foreground flex items-center">
+                <span>Email: {email}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 ml-2 active:scale-95 transition-transform"
+                  onClick={copyToClipboard}
+                  aria-label="Copy email address"
+                >
+                  {copied ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </CardHeader>
       <Separator />

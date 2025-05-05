@@ -105,7 +105,7 @@ const Header = () => {
                   x2="21"
                   y2="6"
                   className={twMerge(
-                    "origin-left transition duration-100",
+                    "origin-left transition duration-75",
                     isOpen && "rotate-45 -translate-y-1"
                   )}
                 ></line>
@@ -115,7 +115,7 @@ const Header = () => {
                   x2="21"
                   y2="12"
                   className={twMerge(
-                    "transition duration-100",
+                    "transition duration-75",
                     isOpen && "opacity-0"
                   )}
                 ></line>
@@ -125,7 +125,7 @@ const Header = () => {
                   x2="21"
                   y2="18"
                   className={twMerge(
-                    "origin-left transition duration-100",
+                    "origin-left transition duration-75",
                     isOpen && "-rotate-45 translate-y-1"
                   )}
                 ></line>
@@ -150,7 +150,7 @@ const Header = () => {
             <motion.div
               initial={{ height: 0 }}
               animate={{ height: "auto" }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
+              transition={{ duration: 0.01, ease: "easeInOut" }}
               exit={{ height: 0 }}
               className="overflow-hidden"
             >
