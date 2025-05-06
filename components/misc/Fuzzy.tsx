@@ -45,7 +45,7 @@ export const ExampleContent = () => {
         404-Not Found
       </p>
       <p className="text-center text-neutral-600 dark:text-neutral-400">
-        Uh this is awkaward. This page doesn&apos;t exist
+        Uh this is awkward. This page doesn&apos;t exist
       </p>
       <div className="flex items-center justify-center gap-3">
         <Link
