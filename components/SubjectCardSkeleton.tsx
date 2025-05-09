@@ -11,7 +11,7 @@ const SubjectCardSkeleton = () => {
       <div>
         <div className="flex items-center gap-2 overflow-x-clip">
           <Skeleton className="h-7 md:h-8 w-32" />
-          <Skeleton className="h-7 md:h-8 w-52" />
+          <Skeleton className="h-7 md:h-8 w-40 md:w-52" />
         </div>
         <div className="flex items-center gap-2 mt-2">
           <Skeleton className="h-6 w-28" />

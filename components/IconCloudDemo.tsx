@@ -19,12 +19,11 @@ export function IconCloudDemo() {
     "/skill/react-query.png",
     "/skill/react-hook-form.svg",
     "/skill/turbopack-hero-logo-light.svg",
-    // "/skill/api.png",
   ];
 
   return (
-    <div className="relative flex size-full items-center justify-center overflow-hidden">
-      <IconCloud images={images} />
+    <div className="relative flex size-full items-center justify-center overflow-hidden rounded-lg">
+      <IconCloud images={images} className="size-full" />
     </div>
   );
 }
