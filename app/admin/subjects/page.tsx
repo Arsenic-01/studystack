@@ -1,10 +1,10 @@
 "use client";
 
-import SubjectsTable from "@/components/SubjectsTable";
+import SubjectsTable from "@/components/admin_components/visual/SubjectsTable";
 import { fetchAllSubjects } from "@/lib/actions/Subjects.actions";
 import { useQuery } from "@tanstack/react-query";
 
-const Index = () => {
+const SubjectPage = () => {
   const { data: subjects } = useQuery({
     queryKey: ["subjects"],
     queryFn: fetchAllSubjects,
@@ -19,4 +19,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default SubjectPage;

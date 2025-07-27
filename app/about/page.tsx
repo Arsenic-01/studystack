@@ -1,8 +1,8 @@
-import { AboutGrid } from "@/components/AboutGrid";
-import Created from "@/components/Created";
-import GuidedBy from "@/components/GuidedBy";
+import { AboutGrid } from "@/components/about_components/AboutGrid";
+import Created from "@/components/about_components/Created";
+import GuidedBy from "@/components/about_components/about_helper_components/GuidedBy";
 import React from "react";
-import { VelocityScroll } from "@/components/magicui/scroll-based-velocity";
+import { VelocityScroll } from "@/components/ui/magicui/scroll-based-velocity";
 
 const AboutPage = () => {
   return (

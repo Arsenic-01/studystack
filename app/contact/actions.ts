@@ -2,7 +2,8 @@
 
 import { z } from "zod";
 import { Resend } from "resend";
-import ContactFormEmail from "@/emails/contact-form-email";
+import ContactFormEmail from "@/emails/ContactFormEmail";
+import { contactFormSchema } from "@/components/validation_schema/validation";
 
 // Check if API key exists, otherwise use a placeholder for development
 const resendApiKey = process.env.RESEND_API_KEY || "";
@@ -42,29 +43,12 @@ const resend = (() => {
   }
 })();
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  phone: z
-    .string()
-    .min(10, { message: "Phone number must be at least 10 digits." }),
-  userType: z.enum(["student", "staff"]),
-  class: z.string().optional(),
-  messageType: z.enum(["error", "suggestion"]),
-  subject: z
-    .string()
-    .min(5, { message: "Subject must be at least 5 characters." }),
-  message: z
-    .string()
-    .min(10, { message: "Message must be at least 10 characters." }),
-});
-
-export type ContactFormValues = z.infer<typeof formSchema>;
+export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 export async function submitContactForm(formData: ContactFormValues) {
   try {
     // Validate the form data
-    const validatedData = formSchema.parse(formData);
+    const validatedData = contactFormSchema.parse(formData);
 
     // Log form submission for debugging
     console.log("Processing contact form submission:", {
@@ -111,8 +95,6 @@ export async function submitContactForm(formData: ContactFormValues) {
           "Your message was received, but we encountered an issue with our email service.",
       };
     }
-
-    // Here you could also save to a database if needed
 
     return { success: true, message: "Contact form submitted successfully" };
   } catch (error) {

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { forgotPasswordSchema } from "@/components/validation";
+import { forgotPasswordSchema } from "@/components/validation_schema/validation";
 import Link from "next/link";
 
 export default function ForgotPassword() {
@@ -28,7 +28,7 @@ export default function ForgotPassword() {
       return;
     }
 
-    setErrors({}); // Clear errors if validation passes
+    setErrors({});
 
     try {
       const res = await fetch("/api/requestReset", {

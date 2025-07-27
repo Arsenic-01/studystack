@@ -17,10 +17,10 @@ export const semester = [
     key: "4",
     label: "Semester 4",
   },
-  // {
-  //   key: '5',
-  //   label: 'Semester 5',
-  // },
+  {
+    key: "5",
+    label: "Semester 5",
+  },
   // {
   //   key: '6',
   //   label: 'Semester 6',
@@ -93,12 +93,12 @@ export const creators = [
   {
     name: "Vedant Bhor",
     role: "Lead Developer",
-    avatar: "/pfp1.jpg",
+    avatar: "/vedantpfp.jpg",
   },
   {
     name: "Tanay Hingane",
     role: "Frontend Developer & UI/UX Designer",
-    avatar: "/tpfp.jpg",
+    avatar: "/tanaypfp.jpg",
   },
 ];
 
@@ -136,7 +136,7 @@ export const tsc = [
     id: 1,
     name: "tanay.h03",
     designation: "Discord",
-    image: "/about_logos/discord.png",
+    image: "/about_logos/Discord.png",
     href: "https://discord.com/users/1198554997386915880",
   },
   {
@@ -157,21 +157,21 @@ export const tsc = [
     id: 4,
     name: "Tanay Hingane",
     designation: "Linkedin",
-    image: "/about_logos/linkedin.webp",
+    image: "/about_logos/Linkedin.webp",
     href: "http://www.linkedin.com/in/TanayHingane",
   },
   {
     id: 5,
     name: "Victus03",
     designation: "Portfolio",
-    image: "/about_logos/website.png",
+    image: "/about_logos/Website.png",
     href: "#",
   },
   {
     id: 6,
     name: "tanay.h03",
     designation: "Snapchat",
-    image: "/about_logos/snapchat.webp",
+    image: "/about_logos/Snapchat.webp",
     href: "https://www.snapchat.com/add/tanay.h03?share_id=L1uzTRlecFo&locale=en-IN",
   },
 ];
@@ -181,7 +181,7 @@ export const vsc = [
     id: 1,
     name: "itsmehomie",
     designation: "Discord",
-    image: "/about_logos/discord.png",
+    image: "/about_logos/Discord.png",
     href: "https://discord.com/users/862682607162359819",
   },
   {
@@ -202,21 +202,21 @@ export const vsc = [
     id: 4,
     name: "Vedant Bhor",
     designation: "Linkedin",
-    image: "/about_logos/linkedin.webp",
+    image: "/about_logos/Linkedin.webp",
     href: "https://www.linkedin.com/in/vedant-bhor-39287828b/",
   },
   {
     id: 5,
     name: "Arsenic",
     designation: "Portfolio",
-    image: "/about_logos/website.png",
+    image: "/about_logos/Website.png",
     href: "https://vedantbhor.vercel.app/",
   },
   {
     id: 6,
     name: "arsenic_vedant",
     designation: "Snapchat",
-    image: "/about_logos/snapchat.webp",
+    image: "/about_logos/Snapchat.webp",
     href: "https://www.snapchat.com/add/arsenic_vedant?share_id=U01iwIWZbqQ&locale=en-IN",
   },
 ];

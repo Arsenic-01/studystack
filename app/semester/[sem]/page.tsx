@@ -1,4 +1,4 @@
-import SubjectSearch from "@/components/SubjectFilter";
+import SubjectSearch from "@/components/semester_page_components/SubjectFilter";
 
 const page = async ({ params }: { params: { sem: string } }) => {
   const { sem } = await params;

@@ -1,17 +1,17 @@
-import FAQ from "@/components/FAQ";
-import Hero from "@/components/Hero";
-import { HeroVideoDialogDemoTopInBottomOut } from "@/components/HeroVideoDialogDemo";
-import { InfiniteMovingCardsDemo } from "@/components/InfiniteMovingCardsDemo";
+import FAQ from "@/components/home_components/FAQ";
+import Hero from "@/components/home_components/Hero";
 import React from "react";
-import FeaturesSection from "../../components/FeaturesSection";
+import { Testimonials } from "@/components/home_components/Testimonials";
+import { HeroYouTubeVideo } from "@/components/home_components/home_helper_components/HeroYouTubeVideo";
+import Features from "../../components/home_components/Features";
 
 const page = () => {
   return (
     <div className="overflow-x-clip">
       <Hero />
-      <HeroVideoDialogDemoTopInBottomOut />
-      <FeaturesSection />
-      <InfiniteMovingCardsDemo />
+      <HeroYouTubeVideo />
+      <Features />
+      <Testimonials />
       <FAQ />
     </div>
   );

@@ -9,21 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { signUpFormSchema } from "@/components/validation_schema/validation";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const formSchema = z.object({
-  prnNo: z
-    .string()
-    .length(10, "PRN No must be exactly 10 digits")
-    .regex(/^[0-9]{10}$/, "PRN No must be numeric"),
-  name: z.string().min(6, "Full Name must be at least 6 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.enum(["admin", "teacher", "student"]),
-});
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -47,7 +36,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
 
-    const validation = formSchema.safeParse(form);
+    const validation = signUpFormSchema.safeParse(form);
     if (!validation.success) {
       setError(validation.error.errors[0].message);
       setLoading(false);

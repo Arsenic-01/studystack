@@ -1,10 +1,12 @@
-import { ExampleContent, FuzzyOverlay } from "@/components/misc/Fuzzy";
+import {
+  NotFoundErrorMessage,
+  FuzzyOverlay,
+} from "@/components/not_found_components/Fuzzy";
 
 export default function NotFound() {
-  // Updated function name to PascalCase
   return (
     <div className="relative overflow-hidden">
-      <ExampleContent />
+      <NotFoundErrorMessage />
       <FuzzyOverlay />
     </div>
   );

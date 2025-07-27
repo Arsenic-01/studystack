@@ -1,4 +1,4 @@
-import NotesClient from "@/components/NotesClient";
+import NotesClient from "@/components/notes_page_components/NotesClient";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { fetchSubject } from "@/lib/actions/Subjects.actions";

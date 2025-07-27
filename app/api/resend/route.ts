@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import ContactFormEmail from "@/emails/contact-form-email";
+import ContactFormEmail from "@/emails/ContactFormEmail";
 
 // Check if API key exists, otherwise use a placeholder for development
 const resendApiKey = process.env.RESEND_API_KEY || "";

@@ -1,15 +1,14 @@
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import Footer from "@/components/core/Footer";
+import Header from "@/components/core/navbar/Header";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { Providers } from "./providers";
-import ReactQueryProvider from "./QueryProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import ReactQueryProvider from "./queryProvider";
 
 // const inter = Inter({ subsets: ["latin"] });
-
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
 export const metadata: Metadata = {

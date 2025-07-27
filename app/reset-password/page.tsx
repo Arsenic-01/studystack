@@ -6,7 +6,7 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { resetPasswordSchema } from "@/components/validation";
+import { resetPasswordSchema } from "@/components/validation_schema/validation";
 
 export default function ResetPassword() {
   const router = useRouter();

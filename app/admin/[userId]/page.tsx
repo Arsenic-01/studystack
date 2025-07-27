@@ -1,14 +1,17 @@
-// pages/dashboard.tsx (or similar)
-import { UsersTable } from "@/components/table/data-table";
+import { AdminDataTable } from "@/components/admin_components/visual/AdminDataTable";
 import { fetchUsers } from "@/lib/actions/Admin.actions";
-import AdminSkeleton from "@/components/AdminSkeleton";
+import AdminSkeleton from "@/components/admin_components/skeleton/AdminSkeleton";
 
 export default async function DashboardPage() {
-  const users = await fetchUsers(); // Server-side fetching
+  const users = await fetchUsers();
 
   return (
     <div className="py-28 sm:py-32 lg:py-36 px-5 max-w-5xl mx-auto">
-      {users.length ? <UsersTable initialData={users} /> : <AdminSkeleton />}
+      {users.length ? (
+        <AdminDataTable initialData={users} />
+      ) : (
+        <AdminSkeleton />
+      )}
     </div>
   );
 }

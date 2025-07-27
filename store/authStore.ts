@@ -17,7 +17,7 @@ export interface User {
 export interface session {
   sessionId: string;
   sessionStart: string;
-  sessionEnd: string;
+  sessionEnd?: string;
   isActive: boolean;
   userId: string;
 }

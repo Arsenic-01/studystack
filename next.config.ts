@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -9,7 +8,12 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ["cloud.appwrite.io"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cloud.appwrite.io",
+      },
+    ],
   },
   experimental: {
     serverActions: {
