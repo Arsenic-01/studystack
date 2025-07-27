@@ -65,7 +65,8 @@ const NotesFilter = ({
   const { data: youtubeLinks = [], isError } = useQuery({
     queryKey: ["youtubeLinks", subjectId], // Ensure re-fetch when subjectId changes
     queryFn: () => fetchYoutubeLinks({ subjectId }), // ✅ Correct: function reference
-    staleTime: 0,
+    staleTime: 5,
+    refetchInterval: 5
   });
   if (isError) {
     toast.error("Failed to fetch YouTube videos.");
