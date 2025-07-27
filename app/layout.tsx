@@ -6,7 +6,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import ReactQueryProvider from "./queryProvider";
+import ReactQueryProvider from "./QueryProvider";
 
 // const inter = Inter({ subsets: ["latin"] });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
