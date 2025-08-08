@@ -137,3 +137,13 @@ export const youtubeSchema = z.object({
       "Invalid YouTube URL"
     ),
 });
+
+export const googleFormSchema = z.object({
+  googleFormLink: z
+    .string()
+    .min(1, "Google Form link is required")
+    .regex(
+      /^(https?:\/\/)?(www\.)?docs\.google\.com\/forms\/d\/e\/[a-zA-Z0-9_-]+\/viewform/,
+      "Invalid Google Form URL"
+    ),
+});

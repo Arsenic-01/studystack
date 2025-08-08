@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import UploadNotesButton from "./crud_notes/UploadNotesButton";
 import { Button } from "../ui/button";
 import YoutubeModal from "./youtube_components/YoutubeModal";
+import GoogleFormModal from "./google_form_components/FormModal";
 
 const SubjectCard = ({ subject }: { subject: Subject }) => {
   const router = useRouter();
@@ -24,6 +25,8 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
       </div>
       <div className="flex flex-col sm:inline-flex gap-3 justify-end pt-5  w-full">
         <div className="flex flex-col md:flex-row justify-end w-full gap-2">
+          <GoogleFormModal subjectId={subject.subjectId} />
+
           <YoutubeModal subjectId={subject.subjectId} />
 
           <UploadNotesButton
