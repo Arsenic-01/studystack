@@ -23,6 +23,7 @@ import {
   Home,
   ListFilter,
   ListFilterPlus,
+  SquareArrowOutUpRight,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -30,6 +31,17 @@ import { toast } from "sonner";
 import DeleteYoutubeLink from "./youtube_components/DeleteYoutubeLink";
 import EditYoutubeLink from "./youtube_components/EditYoutubeLink";
 import NoteCard from "./notes_helper_components/NoteCard";
+import { fetchFormLinks } from "@/lib/actions/Form.actions";
+import EditFormLink from "./google_form_components/EditFormLink";
+import DeleteFormLink from "./google_form_components/DeleteFormLink";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const fileTypes = [
   "Notes",
@@ -66,7 +78,7 @@ const NotesFilter = ({
     queryKey: ["youtubeLinks", subjectId], // Ensure re-fetch when subjectId changes
     queryFn: () => fetchYoutubeLinks({ subjectId }), // ✅ Correct: function reference
     staleTime: 5,
-    refetchInterval: 5
+    refetchInterval: 5,
   });
   if (isError) {
     toast.error("Failed to fetch YouTube videos.");
@@ -94,6 +106,20 @@ const NotesFilter = ({
     return matchesFileType && matchesUnit && matchesUser;
   });
   const uniqueUsers = Array.from(new Set(notes.map((note) => note.users.name)));
+
+  const { data: googleFormLinks = [], isError: isGoogleFormError } = useQuery({
+    queryKey: ["googleFormLinks", subjectId],
+    queryFn: () => fetchFormLinks({ subjectId }),
+    staleTime: 5,
+    refetchInterval: 5,
+  });
+
+  if (isGoogleFormError) {
+    toast.error("Failed to fetch Google Forms.");
+  }
+
+  console.log("Google Form Links:", googleFormLinks);
+
   return (
     <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 mb-8">
@@ -303,6 +329,62 @@ const NotesFilter = ({
                 </div>
               ) : null;
             })}
+          </div>
+        </div>
+      )}
+
+      {googleFormLinks && googleFormLinks.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4">Google Forms Quiz</h2>
+          <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+            <Table className="shad-table">
+              <TableHeader>
+                <TableRow className="shad-table-row-header items-center">
+                  <TableHead>Quiz Name</TableHead>
+                  <TableHead>Created By</TableHead>
+                  <TableHead className="w-[100px] pr-3">Visit</TableHead>
+                  {(user?.role === "admin" || user?.name === "teacher") && (
+                    <TableHead className="w-[70px] items-center">
+                      Actions
+                    </TableHead>
+                  )}
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {googleFormLinks.map((form) => (
+                  <TableRow key={form.id} className="shad-table-row">
+                    <TableCell>{form.quizName}</TableCell>
+                    <TableCell>{form.createdBy}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center justify-center gap-2">
+                        <a
+                          href={form.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button variant="outline" className="w-fit">
+                            Open
+                            <SquareArrowOutUpRight className="h-4 w-4" />
+                          </Button>
+                        </a>
+                      </div>
+                    </TableCell>
+                    {(user?.name === form.createdBy ||
+                      user?.role === "admin") && (
+                      <TableCell className="flex gap-2 items-center justify-center">
+                        <EditFormLink
+                          url={form.url}
+                          id={form.id}
+                          quizName={form.quizName}
+                        />
+                        <DeleteFormLink id={form.id} />
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

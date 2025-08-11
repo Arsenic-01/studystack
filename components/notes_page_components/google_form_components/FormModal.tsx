@@ -21,7 +21,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { googleFormSchema } from "@/components/validation_schema/validation";
+import {
+  googleFormSchema,
+  GoogleFormSchemaType,
+} from "@/components/validation_schema/validation";
 import { useAuthStore } from "@/store/authStore";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -32,36 +35,32 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
   console.log(subjectId);
 
   // Initialize form with react-hook-form and Zod validation
-  const form = useForm({
+  const form = useForm<GoogleFormSchemaType>({
     resolver: zodResolver(googleFormSchema),
     defaultValues: {
+      quizName: "",
       googleFormLink: "",
     },
   });
 
   // Handle form submission
-  const handleGoogleFormEmbed = async (values: { googleFormLink: string }) => {
+  const handleGoogleFormEmbed = async (values: GoogleFormSchemaType) => {
     if (!user?.name) {
       toast.error("You must be logged in to embed a Google Form.");
       return;
     }
-    try {
-      const payload = {
-        googleFormLink: values.googleFormLink,
-        createdBy: user.name, // Ensure user name is included
-        subjectId: subjectId,
-      };
 
-      console.log(payload);
+    const payload = {
+      quizName: values.quizName,
+      googleFormLink: values.googleFormLink,
+      createdBy: user.name,
+      subjectId,
+    };
 
-      const response = await createFormLink(payload);
-      console.log(response);
-
+    const response = await createFormLink(payload);
+    if (response) {
       toast.success("Google Form link uploaded successfully");
-      form.reset(); // Reset form on success
-    } catch (error) {
-      console.error("Error uploading Google Form link:", error);
-      toast.error("Something went wrong. Please try again.");
+      form.reset();
     }
   };
 
@@ -89,6 +88,23 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
               >
                 <FormField
                   control={form.control}
+                  name="quizName"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input
+                          placeholder="Enter Quiz Name"
+                          {...field}
+                          className="w-full"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="googleFormLink"
                   render={({ field }) => (
                     <FormItem className="w-full">
@@ -97,13 +113,14 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
                           id="link"
                           placeholder="Enter Your Google Form Link"
                           {...field}
+                          className="w-full"
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" size="sm" className="px-3">
+                <Button type="submit" size="sm" className="px-3 w-fit">
                   <span className="sr-only">Embed</span>
                   <Link />
                 </Button>

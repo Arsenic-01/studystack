@@ -8,16 +8,19 @@ export async function createFormLink({
   subjectId,
   googleFormLink,
   createdBy,
+  quizName,
 }: {
   subjectId: string;
   googleFormLink: string;
   createdBy: string;
+  quizName: string;
 }) {
   try {
     await db.createDocument(DATABASE_ID!, FORM_COLLECTION_ID!, ID.unique(), {
       subjectId,
       url: googleFormLink,
       createdBy,
+      quizName,
     });
     return true;
   } catch (error) {
@@ -40,6 +43,7 @@ export async function fetchFormLinks({ subjectId }: { subjectId: string }) {
       id: doc.$id,
       url: doc.url,
       createdBy: doc.createdBy,
+      quizName: doc.quizName,
     }));
   } catch (error) {
     console.error("Error fetching Google Form links:", error);
@@ -51,13 +55,16 @@ export async function fetchFormLinks({ subjectId }: { subjectId: string }) {
 export async function editFormLink({
   id,
   googleFormLink,
+  quizName,
 }: {
   id: string;
   googleFormLink: string;
+  quizName: string;
 }) {
   try {
     await db.updateDocument(DATABASE_ID!, FORM_COLLECTION_ID!, id, {
       url: googleFormLink,
+      quizName,
     });
     return true;
   } catch (error) {

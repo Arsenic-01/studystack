@@ -27,20 +27,36 @@ import { Link, Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-const EditFormLink = ({ id, url }: { id: string; url: string }) => {
+const EditFormLink = ({
+  id,
+  url,
+  quizName,
+}: {
+  id: string;
+  url: string;
+  quizName: string;
+}) => {
   const { user, isLoggedIn } = useAuthStore();
   const queryClient = useQueryClient();
 
   const form = useForm({
     resolver: zodResolver(googleFormSchema),
     defaultValues: {
-      googleFormLink: url,
+      googleFormLink: url ?? "",
+      quizName: quizName ?? "",
     },
   });
 
-  const handleFormLinkUpdate = async (values: { googleFormLink: string }) => {
+  const handleFormLinkUpdate = async (values: {
+    googleFormLink: string;
+    quizName: string;
+  }) => {
     try {
-      await editFormLink({ googleFormLink: values.googleFormLink, id });
+      await editFormLink({
+        googleFormLink: values.googleFormLink,
+        quizName: values.quizName,
+        id,
+      });
       toast.success("Google Form link updated successfully");
 
       queryClient.invalidateQueries({ queryKey: ["formLinks"] });
@@ -56,9 +72,9 @@ const EditFormLink = ({ id, url }: { id: string; url: string }) => {
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" className="mt-2 w-full">
+            <Button variant="outline" className="mt-2 w-fit">
+              Edit
               <Pencil />
-              Edit Form
             </Button>
           </DialogTrigger>
           <DialogContent className="lg:max-w-md">
@@ -74,6 +90,19 @@ const EditFormLink = ({ id, url }: { id: string; url: string }) => {
                 onSubmit={form.handleSubmit(handleFormLinkUpdate)}
                 className="flex gap-2 justify-between items-center"
               >
+                <FormField
+                  control={form.control}
+                  name="quizName"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input placeholder="Enter Quiz Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="googleFormLink"

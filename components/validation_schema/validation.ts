@@ -139,6 +139,7 @@ export const youtubeSchema = z.object({
 });
 
 export const googleFormSchema = z.object({
+  quizName: z.string().min(1, "Quiz name is required"),
   googleFormLink: z
     .string()
     .min(1, "Google Form link is required")
@@ -147,3 +148,5 @@ export const googleFormSchema = z.object({
       "Invalid Google Form URL"
     ),
 });
+
+export type GoogleFormSchemaType = z.infer<typeof googleFormSchema>;
