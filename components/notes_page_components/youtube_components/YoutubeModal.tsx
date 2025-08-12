@@ -25,9 +25,11 @@ import { youtubeSchema } from "@/components/validation_schema/validation";
 import { useAuthStore } from "@/store/authStore";
 import { IconBrandYoutube } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const YoutubeModal = ({ subjectId }: { subjectId: string }) => {
   const { user, isLoggedIn } = useAuthStore();
+  const queryClient = useQueryClient();
 
   // Initialize form with react-hook-form and Zod validation
   const form = useForm({
@@ -60,6 +62,9 @@ const YoutubeModal = ({ subjectId }: { subjectId: string }) => {
       } else {
         toast.success("YouTube video embedded successfully");
         form.reset(); // Reset form on success
+        queryClient.invalidateQueries({
+          queryKey: ["youtubeLinks", subjectId],
+        });
       }
     } catch (error) {
       console.error("Error uploading YouTube link:", error);
@@ -72,8 +77,12 @@ const YoutubeModal = ({ subjectId }: { subjectId: string }) => {
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="rounded-full" size="icon" variant="outline">
+            <Button
+              className="rounded-full w-full md:w-fit p-2"
+              variant="outline"
+            >
               <IconBrandYoutube />
+              <span className="md:hidden inline">Youtube Video</span>
             </Button>
           </DialogTrigger>
           <DialogContent className="lg:max-w-md">

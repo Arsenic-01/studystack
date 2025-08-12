@@ -26,7 +26,10 @@ const SubjectCardSkeleton = () => {
         )}
         {authorized && (
           <div className="flex flex-col md:flex-row justify-end w-full gap-2">
-            <Skeleton className="size-9 rounded-full" />
+            <div className="flex items-center justify-center gap-2">
+              <Skeleton className="size-9 rounded-full w-full sm:w-9" />
+              <Skeleton className="size-9 rounded-full w-full sm:w-9" />
+            </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <Skeleton className="h-9 w-full sm:w-36 rounded-full" />
               <Skeleton className="h-9 w-full sm:w-36 rounded-full" />

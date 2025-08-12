@@ -74,15 +74,34 @@ const NotesFilter = ({
   const [selectedUnit, setSelectedUnit] = useState<string>("All");
   const [selectedUser, setSelectedUser] = useState<string[]>([]);
   const { user } = useAuthStore();
+
+  // Fetch YouTube links and Google Forms for the subject
+
   const { data: youtubeLinks = [], isError } = useQuery({
-    queryKey: ["youtubeLinks", subjectId], // Ensure re-fetch when subjectId changes
-    queryFn: () => fetchYoutubeLinks({ subjectId }), // ✅ Correct: function reference
-    staleTime: 5,
-    refetchInterval: 5,
+    queryKey: ["youtubeLinks", subjectId],
+    queryFn: () => fetchYoutubeLinks({ subjectId }),
+    enabled: !!subjectId,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    refetchOnWindowFocus: false,
   });
   if (isError) {
     toast.error("Failed to fetch YouTube videos.");
   }
+
+  const { data: googleFormLinks = [], isError: isGoogleFormError } = useQuery({
+    queryKey: ["googleFormLinks", subjectId],
+    queryFn: () => fetchFormLinks({ subjectId }),
+    enabled: !!subjectId,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    refetchOnWindowFocus: false,
+  });
+
+  if (isGoogleFormError) {
+    toast.error("Failed to fetch Google Forms.");
+  }
+
+  console.log("Google Form Links:", googleFormLinks);
+
   const toggleFilter = (type: string) => {
     setSelectedFilters((prev) =>
       prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
@@ -106,19 +125,6 @@ const NotesFilter = ({
     return matchesFileType && matchesUnit && matchesUser;
   });
   const uniqueUsers = Array.from(new Set(notes.map((note) => note.users.name)));
-
-  const { data: googleFormLinks = [], isError: isGoogleFormError } = useQuery({
-    queryKey: ["googleFormLinks", subjectId],
-    queryFn: () => fetchFormLinks({ subjectId }),
-    staleTime: 5,
-    refetchInterval: 5,
-  });
-
-  if (isGoogleFormError) {
-    toast.error("Failed to fetch Google Forms.");
-  }
-
-  console.log("Google Form Links:", googleFormLinks);
 
   return (
     <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
@@ -354,8 +360,12 @@ const NotesFilter = ({
               <TableBody>
                 {googleFormLinks.map((form) => (
                   <TableRow key={form.id} className="shad-table-row">
-                    <TableCell>{form.quizName}</TableCell>
-                    <TableCell>{form.createdBy}</TableCell>
+                    <TableCell className="whitespace-nowrap md:whitespace-normal">
+                      {form.quizName}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap md:whitespace-normal">
+                      {form.createdBy}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-2">
                         <a
@@ -372,7 +382,7 @@ const NotesFilter = ({
                     </TableCell>
                     {(user?.name === form.createdBy ||
                       user?.role === "admin") && (
-                      <TableCell className="flex gap-2 items-center justify-center">
+                      <TableCell className="flex gap-2">
                         <EditFormLink
                           url={form.url}
                           id={form.id}

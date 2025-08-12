@@ -29,10 +29,11 @@ import { useAuthStore } from "@/store/authStore";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { createFormLink } from "@/lib/actions/Form.actions";
+import { useQueryClient } from "@tanstack/react-query";
 
 const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
   const { user, isLoggedIn } = useAuthStore();
-  console.log(subjectId);
+  const queryClient = useQueryClient();
 
   // Initialize form with react-hook-form and Zod validation
   const form = useForm<GoogleFormSchemaType>({
@@ -61,6 +62,9 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
     if (response) {
       toast.success("Google Form link uploaded successfully");
       form.reset();
+      queryClient.invalidateQueries({
+        queryKey: ["googleFormLinks", subjectId],
+      });
     }
   };
 
@@ -69,8 +73,12 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="rounded-full" size="icon" variant="outline">
+            <Button
+              className="rounded-full w-full md:w-fit p-2"
+              variant="outline"
+            >
               <IconBrandGoogle />
+              <span className="md:hidden inline">Google Form</span>
             </Button>
           </DialogTrigger>
           <DialogContent className="lg:max-w-md">
@@ -84,7 +92,7 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleGoogleFormEmbed)}
-                className="flex gap-2 justify-between items-center"
+                className="flex flex-col md:flex-row gap-2 justify-between items-center"
               >
                 <FormField
                   control={form.control}
@@ -120,7 +128,12 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" size="sm" className="px-3 w-fit">
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="mt-2 px-3 w-full md:w-fit"
+                >
+                  <span className="md:hidden block">Embed Google Form</span>
                   <span className="sr-only">Embed</span>
                   <Link />
                 </Button>

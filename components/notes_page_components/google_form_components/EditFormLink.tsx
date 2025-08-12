@@ -23,7 +23,7 @@ import { editFormLink } from "@/lib/actions/Form.actions";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { Link, Pencil } from "lucide-react";
+import { Edit, Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -72,7 +72,7 @@ const EditFormLink = ({
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" className="mt-2 w-fit">
+            <Button variant="outline" className="w-fit">
               Edit
               <Pencil />
             </Button>
@@ -88,7 +88,7 @@ const EditFormLink = ({
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleFormLinkUpdate)}
-                className="flex gap-2 justify-between items-center"
+                className="flex flex-col md:flex-row gap-2 justify-between items-center"
               >
                 <FormField
                   control={form.control}
@@ -119,9 +119,14 @@ const EditFormLink = ({
                     </FormItem>
                   )}
                 />
-                <Button type="submit" size="sm" className="px-3">
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="mt-2 px-3 w-full md:w-fit"
+                >
                   <span className="sr-only">Update Link</span>
-                  <Link />
+                  <span className="md:hidden">Update Form Link</span>
+                  <Edit />
                 </Button>
               </form>
             </Form>

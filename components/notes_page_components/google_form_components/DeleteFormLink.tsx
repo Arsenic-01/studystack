@@ -21,7 +21,7 @@ const DeleteFormLink = ({ id }: { id: string }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" className="mt-2 w-fit">
+        <Button variant="outline" className="w-fit">
           Delete
           <Trash />
         </Button>
