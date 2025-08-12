@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { createSubject } from "@/lib/actions/Subjects.actions";
 import { z } from "zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, FieldArrayPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -43,16 +43,19 @@ const CreateSubjectModal = ({ open, closeModal }: CreateSubjectModalProps) => {
     resolver: zodResolver(subjectSchema),
     defaultValues: {
       name: "",
+      abbreviation: "",
       code: "",
       semester: 1,
       units: [],
     },
   });
 
-  // Set up field array for units
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<
+    SubjectFormData,
+    FieldArrayPath<SubjectFormData>
+  >({
     control: form.control,
-    name: "units",
+    name: "units" as FieldArrayPath<SubjectFormData>,
   });
 
   const handleSubmit = async (data: SubjectFormData) => {
@@ -63,6 +66,7 @@ const CreateSubjectModal = ({ open, closeModal }: CreateSubjectModalProps) => {
         subjectId: ID.unique(),
         name: data.name,
         code: data.code,
+        abbreviation: data.abbreviation,
         semester: data.semester.toString(),
         unit: data.units,
       });
@@ -120,44 +124,63 @@ const CreateSubjectModal = ({ open, closeModal }: CreateSubjectModalProps) => {
                 </FormItem>
               )}
             />
+            <div className="flex justify-center items-center gap-2 w-full">
+              {/* Subject Abbreviation */}
+              <FormField
+                control={form.control}
+                name="abbreviation"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Subject Abbr.</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. bms"
+                        className="transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Subject Code */}
+              <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Subject Code</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. 311302"
+                        className="transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Subject Code */}
-            <FormField
-              control={form.control}
-              name="code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Subject Code</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g. 311302"
-                      className="transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Semester */}
-            <FormField
-              control={form.control}
-              name="semester"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Semester</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g. 1"
-                      className="transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              {/* Semester */}
+              <FormField
+                control={form.control}
+                name="semester"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Semester</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. 1"
+                        className="transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* Units */}
             <div className="space-y-2">

@@ -48,6 +48,7 @@ export type Note = {
 export interface Subject {
   subjectId: string;
   name: string;
+  abbreviation: string;
   code: string;
   semester: string;
   unit: string[];

@@ -32,6 +32,7 @@ export async function fetchAllSubjects() {
     return response.documents.map((doc) => ({
       subjectId: doc.$id,
       name: doc.name,
+      abbreviation: doc.abbreviation,
       code: doc.code,
       semester: doc.semester,
       unit: doc.unit,

@@ -106,6 +106,7 @@ export const apiContactForm = z.object({
 
 export const subjectSchema = z.object({
   name: z.string().min(3, "Subject name must be at least 3 characters"),
+  abbreviation: z.string().min(2, "Abbreviation must be at least 2 characters"),
   code: z.string().min(2, "Code must be at least 2 characters"),
   semester: z.coerce
     .number()
@@ -120,6 +121,7 @@ export const subjectSchema = z.object({
 export const editSubjectSchema = z.object({
   subjectId: z.string(),
   name: z.string().min(3, "Subject name must be at least 3 characters"),
+  abbreviation: z.string().min(2, "Abbreviation must be at least 2 characters"),
   code: z.string().min(2, "Code must be at least 2 characters"),
   semester: z
     .string()

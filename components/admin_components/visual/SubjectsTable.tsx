@@ -112,6 +112,10 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
       ),
     },
     {
+      accessorKey: "abbreviation",
+      header: "Subject Abbr.",
+    },
+    {
       accessorKey: "code",
       header: "Subject Code",
     },

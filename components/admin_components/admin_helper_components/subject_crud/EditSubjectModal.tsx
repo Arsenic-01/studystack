@@ -5,6 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,7 @@ import { X, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, FieldArrayPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -50,16 +51,19 @@ const EditSubjectModal = ({
     defaultValues: {
       subjectId: subject.subjectId,
       name: subject.name,
+      abbreviation: subject.abbreviation,
       code: subject.code,
       semester: subject.semester,
       units: subject.unit,
     },
   });
 
-  // Set up field array for units
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<
+    SubjectFormData,
+    FieldArrayPath<SubjectFormData>
+  >({
     control: form.control,
-    name: "units",
+    name: "units" as FieldArrayPath<SubjectFormData>,
   });
 
   const addNewUnit = () => {
@@ -78,6 +82,7 @@ const EditSubjectModal = ({
       await updateSubject({
         subjectId: data.subjectId,
         name: data.name,
+        abbreviation: data.abbreviation,
         code: data.code,
         semester: data.semester,
         unit: data.units,
@@ -100,6 +105,9 @@ const EditSubjectModal = ({
           <DialogTitle className="text-xl font-semibold">
             Edit Subject
           </DialogTitle>
+          <DialogDescription className="text-sm text-neutral-500 dark:text-neutral-400">
+            Update the details of the subject.
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -126,44 +134,63 @@ const EditSubjectModal = ({
               )}
             />
 
-            {/* Subject Code */}
-            <FormField
-              control={form.control}
-              name="code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Subject Code</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g. CS101"
-                      className="transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex justify-center items-center gap-2 w-full">
+              {/* Subject Abbreviation */}
+              <FormField
+                control={form.control}
+                name="abbreviation"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Subject Abbr.</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. bms"
+                        className="transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Subject Code */}
+              <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Subject Code</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. 311302"
+                        className="transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Semester */}
-            <FormField
-              control={form.control}
-              name="semester"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Semester</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g. Fall 2023"
-                      className="transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+              {/* Semester */}
+              <FormField
+                control={form.control}
+                name="semester"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Semester</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. 1"
+                        className="transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             {/* Units */}
             <div className="space-y-2">
               <FormLabel className="text-sm font-medium">Units</FormLabel>

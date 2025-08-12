@@ -23,7 +23,7 @@ const SubjectSearch = ({ sem }: Props) => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["subjects", sem],
+    queryKey: ["subjects"],
     queryFn: async () => {
       const res = await fetchSubjectsBySemester(Number(sem));
       if (!res) {
@@ -31,7 +31,7 @@ const SubjectSearch = ({ sem }: Props) => {
       }
       return res;
     },
-    staleTime: 1000 * 60 * 5, // cache for 5 minutes
+    staleTime: Infinity, // cache for 5 minutes
     retry: 2, // retry twice on failure
     refetchOnWindowFocus: false, // do not refetch on window focus
   });
