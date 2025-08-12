@@ -17,6 +17,7 @@ const Page = async ({ params }: { params: { sub: string } }) => {
 
   return (
     <NotesClient
+      // abbr={res.abbr}
       subjectId={res.subjectId}
       subjectName={res.name}
       subjectUnits={res.unit || []}
