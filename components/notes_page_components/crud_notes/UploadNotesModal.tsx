@@ -40,6 +40,7 @@ interface UploadNotesModalProps {
   userId: string;
   userName: string;
   subjectUnit: string[];
+  abbreviation: string;
 }
 
 const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
@@ -51,6 +52,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
   userId,
   userName,
   subjectUnit,
+  abbreviation,
 }) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -84,6 +86,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     formData.append("userName", userName);
     formData.append("unit", data.unit); // Sending selected unit
     formData.append("subjectName", subjectName); // Sending subject name
+    formData.append("abbreviation", abbreviation); // Sending subject abbreviation
     try {
       const response = await fetch("/api/upload", {
         method: "POST",

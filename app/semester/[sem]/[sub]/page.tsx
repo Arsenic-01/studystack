@@ -9,7 +9,7 @@ const Page = async ({ params }: { params: { sub: string } }) => {
   const { sub } = await params;
 
   // Fetch subject on the server to check if it exists
-  const res = await fetchSubject({ subjectId: sub });
+  const res = await fetchSubject({ abbreviation: sub });
 
   if (!res) {
     return <ErrorUI />;
@@ -17,7 +17,7 @@ const Page = async ({ params }: { params: { sub: string } }) => {
 
   return (
     <NotesClient
-      // abbr={res.abbr}
+      abbreviation={res.abbreviation}
       subjectId={res.subjectId}
       subjectName={res.name}
       subjectUnits={res.unit || []}

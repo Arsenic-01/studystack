@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import NotesFilterSkeleton from "./skeleton/NotesFilterSkeleton";
 
 interface NotesClientProps {
+  abbreviation: string;
   subjectId: string;
   subjectName: string;
   subjectUnits: string[];
@@ -13,6 +14,7 @@ interface NotesClientProps {
 }
 
 const NotesClient = ({
+  abbreviation,
   subjectId,
   subjectName,
   subjectUnits,
@@ -24,7 +26,7 @@ const NotesClient = ({
     error,
   } = useQuery({
     queryKey: ["subjectNotes", subjectId],
-    queryFn: () => fetchNotesBySubject({ sub: subjectId }),
+    queryFn: () => fetchNotesBySubject({ sub: abbreviation }),
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchInterval: 1000 * 60 * 5, // 5 minutes
   });

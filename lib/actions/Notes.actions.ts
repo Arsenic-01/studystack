@@ -14,7 +14,7 @@ export async function fetchNotesBySubject({ sub }: { sub: string }) {
 
   try {
     const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!, [
-      Query.equal("subjectId", sub),
+      Query.equal("abbreviation", sub),
     ]);
     // console.log("response", response);
     return response.documents.map((doc) => ({

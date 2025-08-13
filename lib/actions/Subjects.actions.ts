@@ -2,15 +2,14 @@
 import { DATABASE_ID, db, NEW_SUBJECT_COLLECTION_ID, Query } from "../appwrite";
 import { Subject } from "../appwrite_types";
 
-export async function fetchSubject({ subjectId }: { subjectId: string }) {
+export async function fetchSubject({ abbreviation }: { abbreviation: string }) {
   try {
-    const response = await db.getDocument(
+    const response = await db.listDocuments(
       DATABASE_ID!,
       NEW_SUBJECT_COLLECTION_ID!,
-      subjectId
+      [Query.equal("abbreviation", abbreviation)]
     );
-    // console.log("response", response);
-    return response;
+    return response.documents[0];
   } catch (error) {
     if (error.code === 404) {
       console.warn("Subject not found, returning null.");

@@ -11,11 +11,13 @@ const UploadNotesButton = ({
   sem,
   subjectName,
   subjectUnit,
+  abbreviation,
 }: {
   subjectId: string;
   sem: string;
   subjectName: string;
   subjectUnit: string[];
+  abbreviation: string;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
   const [open, setOpen] = useState(false);
@@ -41,6 +43,7 @@ const UploadNotesButton = ({
           sem={sem!}
           userId={user?.userId || ""}
           userName={user?.name || ""}
+          abbreviation={abbreviation}
         />
       )}
     </>

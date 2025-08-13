@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     const fileType = formData.get("fileType") as string;
     const unit = formData.get("unit") as string;
     const subjectName = formData.get("subjectName") as string;
+    const abbreviation = formData.get("abbreviation") as string;
     if (
       !files.length ||
       !subjectId ||
@@ -31,7 +32,8 @@ export async function POST(req: NextRequest) {
       !fileType ||
       !unit ||
       !userName ||
-      !subjectName
+      !subjectName ||
+      !abbreviation
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -68,6 +70,7 @@ export async function POST(req: NextRequest) {
             type_of_file: fileType,
             unit,
             subjectName,
+            abbreviation,
           }
         );
 

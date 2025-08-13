@@ -34,12 +34,15 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
             sem={subject.semester}
             subjectUnit={subject.unit!}
             subjectName={subject.name}
+            abbreviation={subject.abbreviation}
           />
 
           <Button
             className="rounded-full px-5 py-2 items-self-end w-full sm:w-auto"
             onClick={() =>
-              router.push(`/semester/${subject.semester}/${subject.subjectId}`)
+              router.push(
+                `/semester/${subject.semester}/${subject.abbreviation}`
+              )
             }
           >
             View Notes <ArrowUpRight />
