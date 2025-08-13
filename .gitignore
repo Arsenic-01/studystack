@@ -131,3 +131,5 @@ dist
 
 # Directory used by Appwrite CLI for local development
 .appwrite
+# Sentry Config File
+.env.sentry-build-plugin
