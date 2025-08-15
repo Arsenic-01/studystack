@@ -11,6 +11,7 @@ import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import LoginButton from "../Button";
 import { ThemeToggle } from "./navbar_helper_components/ThemeSwitcher";
+import SearchBar from "@/components/SearchBar"; // ✅ SearchBar import
 
 const ProfileCard = dynamic(
   () => import("./navbar_helper_components/ProfileCard"),
@@ -19,11 +20,7 @@ const ProfileCard = dynamic(
 
 const navLinks = [
   { name: "About", href: "/about" },
-  {
-    name: "Contact",
-    // href: "https://docs.google.com/forms/d/e/1FAIpQLSeCgACy0cfy08L_CGsxputmIIqvh-aD4uUE7B-sX1oIzqwZ9g/viewform?usp=sharing",
-    href: "/contact",
-  },
+  { name: "Contact", href: "/contact" },
   { name: "FAQs", href: "/home#faq" },
 ];
 
@@ -31,7 +28,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isLoggedIn, user } = useAuthStore();
 
-  useSessionQuery(); // Automatically updates user state
+  useSessionQuery();
 
   return (
     <nav className="fixed top-0 w-full px-5 z-50">
@@ -40,7 +37,8 @@ const Header = () => {
         className="backdrop-blur-lg max-w-5xl mx-auto bg-white/80 dark:bg-neutral-950/50 border-[0.1px] border-neutral-300 sm:border-neutral-300 dark:border-neutral-800 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3"
       >
         <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
-          {/* Logo */}
+          
+          {/* LEFT: Logo */}
           <div className="flex items-center gap-7">
             <Link
               href={user ? "/home" : "/"}
@@ -59,7 +57,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* ✅ CENTER: Navigation links (desktop only) */}
           <div className="hidden md:flex justify-center items-center gap-7">
             {navLinks.map((item) => (
               <Link
@@ -83,12 +81,25 @@ const Header = () => {
             )}
           </div>
 
-          {/* Auth & Theme Toggle */}
+          {/* ✅ RIGHT: Search + Theme toggle + Profile */}
           <div className="flex items-center gap-2 sm:gap-3 justify-end">
-            {/* Mobile Menu Toggle */}
-            <div className="md:hidden flex items-center gap-2">
-              <ThemeToggle />
-              {isLoggedIn && user && <ProfileCard user={user} />}
+            {/* 🔹 SearchBar now here, visible in both mobile & desktop */}
+            <div className="w-40 sm:w-56 lg:w-64">
+              <SearchBar />
+            </div>
+
+            {/* Theme toggle */}
+            <ThemeToggle />
+
+            {/* Profile / Login */}
+            {!isLoggedIn ? (
+              <LoginButton text="Login" />
+            ) : (
+              <ProfileCard user={user!} />
+            )}
+
+            {/* Mobile menu toggle */}
+            <div className="md:hidden flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -99,7 +110,7 @@ const Header = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="feather feather-menu hover:cursor-pointer mr-1"
+                className="feather feather-menu hover:cursor-pointer ml-1"
                 onClick={() => setIsOpen(!isOpen)}
               >
                 <line
@@ -134,20 +145,10 @@ const Header = () => {
                 ></line>
               </svg>
             </div>
-
-            {/* Desktop Profile/Login */}
-            <div className="hidden md:flex items-center gap-2 md:gap-3">
-              <ThemeToggle />
-              {!isLoggedIn ? (
-                <LoginButton text="Login" />
-              ) : (
-                <ProfileCard user={user!} />
-              )}
-            </div>
           </div>
         </div>
 
-        {/* Mobile Navigation Dropdown */}
+        {/* Mobile menu dropdown */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -158,12 +159,11 @@ const Header = () => {
               className="overflow-hidden"
             >
               <div className="flex flex-col items-center gap-4 md:hidden pb-5 pt-7">
-                {isLoggedIn && user && user.role === "admin" && (
+                {isLoggedIn && user?.role === "admin" && (
                   <Link
                     href={`/admin/${user.userId}`}
                     className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
                   >
-                    Admin
                   </Link>
                 )}
                 {navLinks.map((item) => (
@@ -189,3 +189,4 @@ const Header = () => {
 };
 
 export default Header;
+
