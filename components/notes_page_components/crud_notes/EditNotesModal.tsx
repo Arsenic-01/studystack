@@ -60,7 +60,6 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
   noteId,
   title,
   description,
-  fromAdmin,
   semester,
   abbreviation,
   type_of_file,
@@ -93,7 +92,6 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
         type_of_file: data.type_of_file,
         semester,
         abbreviation,
-        fromAdmin,
       });
 
       if (!response || response.error) {

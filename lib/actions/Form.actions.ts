@@ -116,3 +116,24 @@ export async function deleteFormLink({
     return { success: false, error: "Failed to delete link." };
   }
 }
+
+export async function fetchAllFormLinks() {
+  try {
+    const response = await db.listDocuments(DATABASE_ID!, FORM_COLLECTION_ID!, [
+      Query.orderDesc("$createdAt"),
+    ]);
+    return response.documents.map((doc) => ({
+      id: doc.$id,
+      url: doc.url,
+      createdBy: doc.createdBy,
+      quizName: doc.title,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
+      formType: doc.formType,
+      createdAt: doc.$createdAt,
+    }));
+  } catch (error) {
+    console.error("Error fetching all form links:", error);
+    return [];
+  }
+}

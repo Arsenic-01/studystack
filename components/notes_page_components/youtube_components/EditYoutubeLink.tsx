@@ -7,7 +7,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -21,18 +20,24 @@ import { youtubeSchema } from "@/components/validation_schema/validation";
 import { editYoutubeLink } from "@/lib/actions/Youtube.actions";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit, Pencil } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const EditYoutubeLink = ({
+  open,
+  onOpenChange,
+
   id,
   url,
   title,
   semester,
   abbreviation,
 }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+
   id: string;
   url: string;
   title: string;
@@ -69,6 +74,7 @@ const EditYoutubeLink = ({
       });
       toast.success("YouTube video embed updated successfully");
       form.reset({ youtubeLink: values.youtubeLink, title: values.title });
+      onOpenChange(false);
     } catch (error) {
       console.error("Error updating YouTube link:", error);
       toast.error("Something went wrong. Please try again.");
@@ -78,13 +84,7 @@ const EditYoutubeLink = ({
   return (
     <>
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="mt-2 w-full">
-              <Pencil />
-              Edit Video
-            </Button>
-          </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
           <DialogContent className="lg:max-w-md">
             <DialogHeader>
               <DialogTitle>Edit Embed Link</DialogTitle>

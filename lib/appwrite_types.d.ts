@@ -76,3 +76,23 @@ export interface Form {
   semester: string;
   formType: "googleForm" | "assignment" | "other";
 }
+export interface YoutubeLink {
+  id: string;
+  title: string;
+  youtubeLink: string;
+  abbreviation: string;
+  semester: string;
+  createdBy: string;
+  createdAt: string;
+}
+
+export interface FormLink {
+  id: string;
+  createdBy: string;
+  url: string;
+  quizName: string;
+  abbreviation: string;
+  semester: string;
+  formType: "googleForm" | "assignment" | "other";
+  createdAt: string;
+}

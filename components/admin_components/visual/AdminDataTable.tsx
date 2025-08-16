@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { deleteUser } from "@/lib/actions/Admin.actions";
-import { Note } from "@/lib/appwrite_types";
+import { Note, FormLink, YoutubeLink } from "@/lib/appwrite_types";
 import { useMutation } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -62,6 +62,8 @@ import { ActivityChart, LoginHistoryEntry } from "./AdminBarChart";
 import { NotesTable } from "./AdminNotesTable";
 import StatCard from "./StatCard";
 import { TeacherNotesChart } from "./TeacherNotesChart";
+import { YoutubeLinksTable } from "./YoutubeLinksTable";
+import { FormLinksTable } from "./FormLinksTable";
 
 type Role = "admin" | "teacher" | "student";
 
@@ -78,12 +80,16 @@ interface AdminDataTableProps {
   initialUsers: User[];
   initialLoginHistory: LoginHistoryEntry[];
   initialNotes: Note[];
+  initialYoutubeLinks: YoutubeLink[];
+  initialFormLinks: FormLink[];
 }
 
 export function AdminDataTable({
   initialUsers,
   initialLoginHistory,
   initialNotes,
+  initialYoutubeLinks,
+  initialFormLinks,
 }: AdminDataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -96,6 +102,8 @@ export function AdminDataTable({
   const users = initialUsers;
   const loginHistory = initialLoginHistory;
   const notes = initialNotes;
+  const youtubeLinks = initialYoutubeLinks;
+  const formLinks = initialFormLinks;
 
   const deleteMutation = useMutation({
     mutationFn: deleteUser,
@@ -203,7 +211,7 @@ export function AdminDataTable({
   const studentCount = users.filter((user) => user.role === "student").length;
   const teacherCount = users.filter((user) => user.role === "teacher").length;
   const now = new Date();
-  const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
+  const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
   const activeUsers = new Set(
     loginHistory
@@ -391,14 +399,28 @@ export function AdminDataTable({
               </AlertDialogContent>
             </AlertDialog>
             <div className="py-5">
-              <ActivityChart notes={notes} loginHistory={loginHistory} />
+              <ActivityChart
+                notes={notes}
+                loginHistory={loginHistory}
+                formLinks={formLinks}
+                youtubeLinks={youtubeLinks}
+              />
             </div>
-            <div>
-              <NotesTable notes={notes} />
-            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <ActiveUsersChart users={users} loginHistory={loginHistory} />
               <TeacherNotesChart notes={notes} users={users} />
+            </div>
+            <div className="mt-8">
+              <NotesTable notes={notes} />
+            </div>
+
+            <div className="mt-8">
+              <YoutubeLinksTable initialLinks={youtubeLinks} />
+            </div>
+
+            <div className="mt-8">
+              <FormLinksTable initialLinks={formLinks} />
             </div>
           </div>
         </>

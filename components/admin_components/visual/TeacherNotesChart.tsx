@@ -138,7 +138,7 @@ export function TeacherNotesChart({
   };
 
   return (
-    <Card className="col-span-1 overflow-hidden border-border/40 shadow-sm transition-all duration-200 hover:shadow-md hover:border-border/80">
+    <Card className="col-span-1 overflow-hidden border-border/40 shadow-sm  hover:shadow-md hover:border-border/80">
       <CardHeader className="pb-2 space-y-1">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold tracking-tight">

@@ -54,7 +54,6 @@ export async function deleteNote({
   fileId,
   semester,
   abbreviation,
-  fromAdmin,
 }: DeleteNoteParams) {
   try {
     const drive = await getDriveClient();
@@ -62,11 +61,9 @@ export async function deleteNote({
       fileId: fileId,
     });
     await db.deleteDocument(DATABASE_ID!, NOTE_COLLECTION_ID!, noteId);
-    if (fromAdmin) {
-      revalidatePath(`/admin`);
-    } else {
-      revalidatePath(`/semester/${semester}/${abbreviation}`);
-    }
+    revalidatePath(`/semester/${semester}/${abbreviation}`);
+    revalidatePath("/admin");
+
     return { success: true };
   } catch (error) {
     console.error("Error deleting note:", error);
@@ -110,7 +107,6 @@ interface EditNotesModalProps {
   type_of_file: string;
   semester: string;
   abbreviation: string;
-  fromAdmin?: boolean;
 }
 
 export const editNotes = async (data: EditNotesModalProps) => {
@@ -120,11 +116,9 @@ export const editNotes = async (data: EditNotesModalProps) => {
       description: data.description,
       type_of_file: data.type_of_file,
     });
-    if (data.fromAdmin) {
-      revalidatePath(`/admin`);
-    } else {
-      revalidatePath(`/semester/${data.semester}/${data.abbreviation}`);
-    }
+
+    revalidatePath(`/semester/${data.semester}/${data.abbreviation}`);
+    revalidatePath("/admin");
     return { success: true };
   } catch (error) {
     console.error("Error updating note:", error);

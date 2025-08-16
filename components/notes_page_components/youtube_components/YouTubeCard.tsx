@@ -1,17 +1,16 @@
-// components/youtube_components/YouTubeCard.tsx
-
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { PlayCircle, User } from "lucide-react";
+import { Pencil, PlayCircle, User } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 // Assuming you have these components already
 import DeleteYoutubeLink from "./DeleteYoutubeLink";
 import EditYoutubeLink from "./EditYoutubeLink";
+import { Button } from "@/components/ui/button";
 
 // Define the shape of the 'link' and 'user' props
 interface YouTubeLink {
@@ -44,6 +43,7 @@ export const YouTubeCard: React.FC<YouTubeCardProps> = ({
   abbreviation,
 }) => {
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <Card className="flex flex-col h-full overflow-hidden group">
@@ -76,19 +76,31 @@ export const YouTubeCard: React.FC<YouTubeCardProps> = ({
       </CardContent>
       {(user?.name === link.createdBy || user?.role === "admin") && (
         <CardFooter className="p-4 pt-0 flex justify-end gap-2">
-          <EditYoutubeLink
-            id={link.id}
-            url={link.youtubeLink}
-            title={link.title}
-            semester={semester}
-            abbreviation={abbreviation}
-          />
+          <Button
+            variant="outline"
+            className="mt-2 w-full"
+            onClick={() => setIsEditing(true)}
+          >
+            <Pencil />
+            Edit Video
+          </Button>
           <DeleteYoutubeLink
             id={link.id}
             semester={semester}
             abbreviation={abbreviation}
           />
         </CardFooter>
+      )}
+      {isEditing && (
+        <EditYoutubeLink
+          open={isEditing}
+          onOpenChange={setIsEditing}
+          id={link.id}
+          url={link.youtubeLink}
+          title={link.title}
+          semester={semester}
+          abbreviation={abbreviation}
+        />
       )}
     </Card>
   );

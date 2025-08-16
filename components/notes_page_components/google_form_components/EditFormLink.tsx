@@ -7,7 +7,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -32,13 +31,14 @@ import {
 import { editFormLink } from "@/lib/actions/Form.actions";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 // --- CHANGE 1: Update props to include formType ---
 const EditFormLink = ({
+  open,
+  onOpenChange,
   id,
   url,
   quizName,
@@ -46,6 +46,9 @@ const EditFormLink = ({
   semester,
   abbreviation,
 }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+
   id: string;
   url: string;
   quizName: string;
@@ -54,7 +57,6 @@ const EditFormLink = ({
   abbreviation: string;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
-  const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm<LinkSchemaType>({
     resolver: zodResolver(linkSchema),
@@ -109,7 +111,7 @@ const EditFormLink = ({
         abbreviation,
       });
       toast.success("Link updated successfully");
-      setIsOpen(false); // Close dialog on success
+      onOpenChange(false);
     } catch (error) {
       console.error("Error updating link:", error);
       toast.error("Something went wrong. Please try again.");
@@ -119,13 +121,7 @@ const EditFormLink = ({
   return (
     <>
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="w-full md:w-fit">
-              <Pencil className="h-4 w-4" />
-              Edit Link
-            </Button>
-          </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{currentContent.title}</DialogTitle>

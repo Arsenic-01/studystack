@@ -52,6 +52,7 @@ export async function editYoutubeLink({
       title: title,
     });
     revalidatePath(`/semester/${semester}/${abbreviation}`);
+    revalidatePath("/admin");
     return { success: true };
   } catch (error) {
     console.error("Error updating YouTube link:", error);
@@ -71,9 +72,32 @@ export async function deleteYoutubeLink({
   try {
     await db.deleteDocument(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, id);
     revalidatePath(`/semester/${semester}/${abbreviation}`);
+    revalidatePath("/admin");
     return { success: true };
   } catch (error) {
     console.error("Error deleting YouTube link:", error);
     return { success: false, error: "Failed to delete link." };
+  }
+}
+
+export async function fetchAllYoutubeLinks() {
+  try {
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      YOUTUBE_COLLECTION_ID!,
+      [Query.orderDesc("$createdAt")]
+    );
+    return response.documents.map((doc) => ({
+      id: doc.$id,
+      title: doc.title,
+      youtubeLink: doc.url,
+      createdBy: doc.createdBy,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
+      createdAt: doc.$createdAt,
+    }));
+  } catch (error) {
+    console.error("Error fetching all YouTube links:", error);
+    return [];
   }
 }

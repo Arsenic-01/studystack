@@ -6,10 +6,11 @@ import {
   ClipboardCheck,
   FilePenLine,
   Link as LinkIcon,
+  Pencil,
   SquareArrowOutUpRight,
   User,
 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import DeleteFormLink from "./DeleteFormLink";
 import EditFormLink from "./EditFormLink";
 
@@ -20,6 +21,8 @@ interface FormLink {
   quizName: string;
   createdBy: string;
   formType: "googleForm" | "assignment" | "other";
+  semester: string;
+  abbreviation: string;
 }
 
 interface User {
@@ -64,6 +67,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
 }) => {
   const config = linkTypeConfig[form.formType] || linkTypeConfig.other;
   const Icon = config.icon;
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg transition-colors hover:bg-muted/50">
@@ -85,20 +89,32 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
       <div className="flex items-center gap-2 w-full sm:w-fit self-end sm:self-center">
         {(user?.name === form.createdBy || user?.role === "admin") && (
           <>
-            <EditFormLink
-              formType={form.formType}
-              semester={semester}
-              abbreviation={abbreviation}
-              url={form.url}
-              id={form.id}
-              quizName={form.quizName}
-            />
+            <Button
+              variant="outline"
+              className="w-full md:w-fit"
+              onClick={() => setIsEditing(true)}
+            >
+              <Pencil className="h-4 w-4" />
+              Edit Link
+            </Button>{" "}
             <DeleteFormLink
               id={form.id}
               semester={semester}
               abbreviation={abbreviation}
             />
           </>
+        )}
+        {isEditing && (
+          <EditFormLink
+            open={isEditing}
+            onOpenChange={setIsEditing}
+            id={form.id}
+            url={form.url}
+            quizName={form.quizName}
+            formType={form.formType}
+            semester={form.semester}
+            abbreviation={form.abbreviation}
+          />
         )}
         <Button asChild variant="outline" className="w-full sm:w-fit">
           <a href={form.url} target="_blank" rel="noopener noreferrer">
