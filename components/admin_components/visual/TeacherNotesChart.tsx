@@ -20,10 +20,7 @@ import {
 import { BarChart3Icon } from "lucide-react";
 import { User } from "./AdminDataTable";
 import { LegendProps } from "recharts";
-
-interface Note {
-  uploadedBy: string;
-}
+import { Note } from "@/lib/appwrite_types";
 
 interface TeacherContribution {
   name: string;
@@ -67,14 +64,14 @@ export function TeacherNotesChart({
   });
 
   notes.forEach((note) => {
-    if (contributionMap.has(note.uploadedBy)) {
+    if (contributionMap.has(note.users.name)) {
       contributionMap.set(
-        note.uploadedBy,
-        (contributionMap.get(note.uploadedBy) || 0) + 1
+        note.users.name,
+        (contributionMap.get(note.users.name) || 0) + 1
       );
-    } else if (note.uploadedBy) {
+    } else if (note.users.name) {
       // In case there's a mismatch between teacher names in notes and users
-      contributionMap.set(note.uploadedBy, 1);
+      contributionMap.set(note.users.name, 1);
     }
   });
 

@@ -15,7 +15,15 @@ import { Button } from "../../ui/button";
 
 import { useQueryClient } from "@tanstack/react-query";
 
-const DeleteYoutubeLink = ({ id }: { id: string }) => {
+const DeleteYoutubeLink = ({
+  id,
+  semester,
+  abbreviation,
+}: {
+  id: string;
+  semester: string;
+  abbreviation: string;
+}) => {
   const queryClient = useQueryClient();
 
   return (
@@ -38,7 +46,7 @@ const DeleteYoutubeLink = ({ id }: { id: string }) => {
           <AlertDialogAction
             onClick={async () => {
               try {
-                await deleteYoutubeLink(id);
+                await deleteYoutubeLink({ id, semester, abbreviation });
                 toast.success("YouTube link deleted successfully");
                 queryClient.invalidateQueries({ queryKey: ["youtubeLinks"] });
               } catch (error) {

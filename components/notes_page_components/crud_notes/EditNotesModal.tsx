@@ -20,7 +20,7 @@ import { editNoteSchema } from "@/components/validation_schema/validation";
 import { editNotes } from "@/lib/actions/Notes.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { FilePen } from "lucide-react";
+import { Edit } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -200,10 +200,12 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
                   <div className="flex w-full items-center justify-end mt-3">
                     <Button
                       type="submit"
-                      className="w-fit flex items-center justify-center gap-2"
+                      className="mt-2 px-3 w-full md:w-fit"
                       disabled={uploading}
                     >
-                      {uploading ? "Updating..." : "Update Note"} <FilePen />
+                      <span className="sr-only">Update Link</span>
+                      <span>Update Note</span>
+                      <Edit />
                     </Button>
                   </div>
                 </form>

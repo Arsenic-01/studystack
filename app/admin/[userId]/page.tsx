@@ -1,17 +1,21 @@
 import { AdminDataTable } from "@/components/admin_components/visual/AdminDataTable";
-import { fetchUsers } from "@/lib/actions/Admin.actions";
-import AdminSkeleton from "@/components/admin_components/skeleton/AdminSkeleton";
+import { fetchUsers, getLoginHistory } from "@/lib/actions/Admin.actions";
+import { fetchAllNotes } from "@/lib/actions/Notes.actions";
 
 export default async function DashboardPage() {
-  const users = await fetchUsers();
+  const [users, loginHistory, notes] = await Promise.all([
+    fetchUsers(),
+    getLoginHistory(),
+    fetchAllNotes(),
+  ]);
 
   return (
     <div className="py-28 sm:py-32 lg:py-36 px-5 max-w-5xl mx-auto">
-      {users.length ? (
-        <AdminDataTable initialData={users} />
-      ) : (
-        <AdminSkeleton />
-      )}
+      <AdminDataTable
+        initialUsers={users}
+        initialLoginHistory={loginHistory!}
+        initialNotes={notes!}
+      />
     </div>
   );
 }

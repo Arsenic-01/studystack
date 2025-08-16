@@ -4,7 +4,8 @@ import { ID } from "node-appwrite";
 
 export async function POST(req: NextRequest) {
   try {
-    const { youtubeLink, user, subjectId } = await req.json();
+    const { youtubeLink, user, subjectId, abbreviation, semester, title } =
+      await req.json();
 
     // Validate input
     if (!youtubeLink) {
@@ -18,7 +19,14 @@ export async function POST(req: NextRequest) {
       DATABASE_ID!,
       YOUTUBE_COLLECTION_ID!,
       ID.unique(),
-      { url: youtubeLink, createdBy: user, subjectId: subjectId }
+      {
+        url: youtubeLink,
+        createdBy: user,
+        subjectId: subjectId,
+        abbreviation,
+        semester,
+        title,
+      }
     );
 
     return NextResponse.json(

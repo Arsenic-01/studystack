@@ -1,30 +1,6 @@
-import { useState, useMemo } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getPaginationRowModel,
-  type ColumnDef,
-  flexRender,
-} from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Badge } from "@/components/ui/badge";
-import { Edit2, ListFilter, Plus, Search, Trash, X } from "lucide-react";
-import { toast } from "sonner";
+"use client";
+
+import { useState, useMemo, useTransition } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,13 +10,46 @@ import {
   AlertDialogFooter,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useQueryClient } from "@tanstack/react-query";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  createSubject,
+  deleteSubject,
+  updateSubject,
+} from "@/lib/actions/Subjects.actions";
 import { Subject } from "@/lib/appwrite_types";
-import { deleteSubject } from "@/lib/actions/Subjects.actions";
-import EditSubjectModal from "../admin_helper_components/subject_crud/EditSubjectModal";
+import {
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+  type ColumnDef,
+} from "@tanstack/react-table";
+import { Edit2, ListFilter, Plus, Search, Trash, X } from "lucide-react";
+import { toast } from "sonner";
 import CreateSubjectModal from "../admin_helper_components/subject_crud/CreateSubjectModal";
+import EditSubjectModal from "../admin_helper_components/subject_crud/EditSubjectModal";
 
-export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
+interface SubjectsTableProps {
+  initialSubjects: Subject[];
+}
+
+export function SubjectsTable({ initialSubjects }: SubjectsTableProps) {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [selectedSemesters, setSelectedSemesters] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,8 +57,9 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const queryClient = useQueryClient();
+  const subjects = initialSubjects;
 
   // Get unique semesters
   const uniqueSemesters = useMemo(
@@ -87,20 +97,45 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
     setEditModalOpen(true);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selectedSubject) return;
 
-    try {
-      await deleteSubject({ subjectId: selectedSubject.subjectId });
-      toast.success("Subject deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["subjects"] });
-    } catch (error) {
-      toast.error("Error deleting subject");
-      console.error(error);
-    } finally {
+    startTransition(async () => {
+      const result = await deleteSubject({
+        subjectId: selectedSubject.subjectId,
+      });
+      if (result.success) {
+        toast.success("Subject deleted successfully");
+      } else {
+        toast.error(result.error || "Failed to delete subject");
+      }
       setAlertOpen(false);
       setSelectedSubject(null);
-    }
+    });
+  };
+
+  const handleCreate = (subjectData: Subject) => {
+    startTransition(async () => {
+      const result = await createSubject(subjectData);
+      if (result.success) {
+        toast.success("Subject created successfully!");
+        closeCreateModal();
+      } else {
+        toast.error(result.error || "Failed to create subject.");
+      }
+    });
+  };
+
+  const handleUpdate = (subjectData: Subject) => {
+    startTransition(async () => {
+      const result = await updateSubject(subjectData);
+      if (result.success) {
+        toast.success("Subject updated successfully!");
+        closeEditModal();
+      } else {
+        toast.error(result.error || "Failed to update subject.");
+      }
+    });
   };
 
   const columns: ColumnDef<Subject>[] = [
@@ -198,7 +233,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-5 space-y-2 md:space-y-6">
+    <div className="w-full max-w-5xl mx-auto px-5 space-y-2 md:space-y-6">
       {/* Header with title and add button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -380,6 +415,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
           open={editModalOpen}
           closeModal={closeEditModal}
           subject={selectedSubject}
+          onSubjectUpdate={handleUpdate}
         />
       )}
 
@@ -387,6 +423,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
       <CreateSubjectModal
         open={createModalOpen}
         closeModal={closeCreateModal}
+        onSubjectCreate={handleCreate}
       />
 
       {/* Delete Confirmation Dialog */}
@@ -415,9 +452,10 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
+              disabled={isPending}
               className="bg-red-500 transition-all duration-200"
             >
-              Delete Subject
+              {isPending ? "Deleting..." : "Delete Subject"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

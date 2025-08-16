@@ -40,25 +40,7 @@ import {
 } from "../../ui/alert-dialog";
 import { deleteNote } from "@/lib/actions/Notes.actions";
 import { useQueryClient } from "@tanstack/react-query";
-
-interface Note {
-  noteId: string;
-  createdAt: string;
-  fileId: string;
-  title: string;
-  description: string;
-  type_of_file:
-    | "Notes"
-    | "PPTS"
-    | "Modal_Solutions"
-    | "MSBTE_QP"
-    | "Videos"
-    | "Animations"
-    | "Programs"
-    | "Other";
-  uploadedBy?: string;
-  subjectName?: string;
-}
+import { Note } from "@/lib/appwrite_types";
 
 export function NotesTable({ notes }: { notes: Note[] }) {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
@@ -73,7 +55,7 @@ export function NotesTable({ notes }: { notes: Note[] }) {
   // Get unique teacher names
   const uniqueTeachers = useMemo(
     () =>
-      Array.from(new Set(notes.map((note) => note.uploadedBy).filter(Boolean))),
+      Array.from(new Set(notes.map((note) => note.users.name).filter(Boolean))),
     [notes]
   );
 
@@ -82,7 +64,7 @@ export function NotesTable({ notes }: { notes: Note[] }) {
     return notes.filter((note) => {
       const matchesTeacher =
         selectedTeachers.length === 0 ||
-        selectedTeachers.includes(note.uploadedBy || "Unknown");
+        selectedTeachers.includes(note.users.name || "Unknown");
 
       const matchesSearch =
         searchQuery === "" ||
@@ -114,7 +96,12 @@ export function NotesTable({ notes }: { notes: Note[] }) {
 
   const handleDelete = () => {
     if (!selectedNote) return;
-    deleteNote({ noteId: selectedNote.noteId, fileId: selectedNote.fileId })
+    deleteNote({
+      noteId: selectedNote.noteId,
+      fileId: selectedNote.fileId,
+      semester: "currentSemester",
+      abbreviation: "currentAbbreviation",
+    })
       .then(() => {
         toast.success("Note deleted successfully");
         queryClient.invalidateQueries({ queryKey: ["notes"] });

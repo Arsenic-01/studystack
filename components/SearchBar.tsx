@@ -1,186 +1,255 @@
-// "use client"
-
-// import * as React from "react"
-// import {
-//   ArrowUpRightIcon,
-//   CircleFadingPlusIcon,
-//   FileInputIcon,
-//   FolderPlusIcon,
-//   SearchIcon,
-// } from "lucide-react"
-
-// import {
-//   CommandDialog,
-//   CommandEmpty,
-//   CommandGroup,
-//   CommandInput,
-//   CommandItem,
-//   CommandList,
-//   CommandSeparator,
-//   CommandShortcut,
-// } from "@/components/ui/command"
-
-// import { DialogTitle } from "@/components/ui/dialog"
-// import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-
-// export default function Component() {
-//   const [open, setOpen] = React.useState(false)
-
-//   React.useEffect(() => {
-//     const down = (e: KeyboardEvent) => {
-//       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-//         e.preventDefault()
-//         setOpen((open) => !open)
-//       }
-//     }
-
-//     document.addEventListener("keydown", down)
-//     return () => document.removeEventListener("keydown", down)
-//   }, [])
-
-//   return (
-//     <>
-//       <button
-//         className="border-input bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 inline-flex h-9 w-fit rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
-//         onClick={() => setOpen(true)}
-//       >
-//         <span className="flex grow items-center">
-//           <SearchIcon
-//             className="text-muted-foreground/80 -ms-1 me-3"
-//             size={16}
-//             aria-hidden="true"
-//           />
-//           <span className="text-muted-foreground/70 font-normal">Search</span>
-//         </span>
-//         <kbd className="bg-background text-muted-foreground/70 ms-12 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
-//           ⌘K
-//         </kbd>
-//       </button>
-//       <CommandDialog open={open} onOpenChange={setOpen}>
-//         {/* Accessibility fix: hidden dialog title */}
-//         <VisuallyHidden>
-//           <DialogTitle>Search</DialogTitle>
-//         </VisuallyHidden>
-
-//         <CommandInput placeholder="Type a command or search..." />
-//         <CommandList>
-//           <CommandEmpty>No results found.</CommandEmpty>
-//           <CommandGroup heading="Quick start">
-//             <CommandItem>
-//               <FolderPlusIcon size={16} className="opacity-60" aria-hidden="true" />
-//               <span>New folder</span>
-//               <CommandShortcut className="justify-center">⌘N</CommandShortcut>
-//             </CommandItem>
-//             <CommandItem>
-//               <FileInputIcon size={16} className="opacity-60" aria-hidden="true" />
-//               <span>Import document</span>
-//               <CommandShortcut className="justify-center">⌘I</CommandShortcut>
-//             </CommandItem>
-//             <CommandItem>
-//               <CircleFadingPlusIcon size={16} className="opacity-60" aria-hidden="true" />
-//               <span>Add block</span>
-//               <CommandShortcut className="justify-center">⌘B</CommandShortcut>
-//             </CommandItem>
-//           </CommandGroup>
-//           <CommandSeparator />
-//           <CommandGroup heading="Navigation">
-//             <CommandItem>
-//               <ArrowUpRightIcon size={16} className="opacity-60" aria-hidden="true" />
-//               <span>Go to dashboard</span>
-//             </CommandItem>
-//             <CommandItem>
-//               <ArrowUpRightIcon size={16} className="opacity-60" aria-hidden="true" />
-//               <span>Go to apps</span>
-//             </CommandItem>
-//             <CommandItem>
-//               <ArrowUpRightIcon size={16} className="opacity-60" aria-hidden="true" />
-//               <span>Go to connections</span>
-//             </CommandItem>
-//           </CommandGroup>
-//         </CommandList>
-//       </CommandDialog>
-//     </>
-//   )
-// }
 "use client";
 
-import React, { useState, useEffect } from "react";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from "@/components/ui/command";
+import { DialogTitle } from "@/components/ui/search-dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import algoliasearch from "algoliasearch/lite";
+import {
+  ClipboardCheck,
+  FileText,
+  Library,
+  SearchIcon,
+  Youtube,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-// ✅ Initialize Algolia client
+type HighlightMatch = {
+  value: string;
+  matchLevel: "none" | "partial" | "full";
+  matchedWords: string[];
+};
+type HighlightResult<T> = { [K in keyof T]?: HighlightMatch };
+type BaseHit = {
+  objectID: string;
+  title: string;
+  abbreviation?: string;
+};
+type AlgoliaHit =
+  | (BaseHit & { type: "subject"; code: string; path: string })
+  | (BaseHit & { type: "note"; description: string; path: string })
+  | (BaseHit & { type: "quiz"; url: string })
+  | (BaseHit & { type: "youtube"; path: string });
+type AppHit = AlgoliaHit & { _highlightResult?: HighlightResult<AlgoliaHit> };
+
 const searchClient = algoliasearch(
-  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
-  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY as string
+  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!,
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY!
+);
+const index = searchClient.initIndex(
+  process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!
 );
 
-const index = searchClient.initIndex(process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME as string);
+const Highlight = ({
+  hit,
+  attribute,
+}: {
+  hit: AppHit;
+  attribute: keyof BaseHit;
+}) => {
+  const highlightedValue = hit._highlightResult?.[attribute]?.value;
+  const originalValue = hit[attribute];
+  if (!highlightedValue) {
+    return <span>{originalValue}</span>;
+  }
+  return <span dangerouslySetInnerHTML={{ __html: highlightedValue }} />;
+};
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export default function SearchBar() {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [hits, setHits] = useState<any[]>([]);
+  const [hits, setHits] = useState<AppHit[]>([]);
   const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const fetchResults = useCallback(async (q: string) => {
+    if (!q.trim()) {
+      setHits([]);
+      return;
+    }
+    setLoading(true);
+    try {
+      const result = await index.search<AlgoliaHit>(q, { hitsPerPage: 6 });
+      setHits(result.hits as AppHit[]);
+    } catch (err) {
+      console.error("Algolia search error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let active = true;
-
-    const fetchResults = async () => {
-      if (!query.trim()) {
-        setHits([]);
-        return;
-      }
-      setLoading(true);
-      try {
-        const { hits } = await index.search(query, { hitsPerPage: 5 });
-        if (active) setHits(hits);
-      } catch (err) {
-        console.error("Algolia search error:", err);
-      }
-      setLoading(false);
-    };
-
-    // debounce search
-    const timeoutId = setTimeout(fetchResults, 300);
-
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!query.trim()) {
+      setHits([]);
+      return;
+    }
+    debounceRef.current = setTimeout(() => fetchResults(query), 300);
     return () => {
-      active = false;
-      clearTimeout(timeoutId);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query]);
+  }, [query, fetchResults]);
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen((o) => !o);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
+
+  const handleSelect = (hit: AlgoliaHit) => {
+    setOpen(false);
+    setQuery("");
+    switch (hit.type) {
+      case "subject":
+      case "note":
+      case "youtube":
+        router.push(hit.path);
+        break;
+      case "quiz":
+        window.open(hit.url, "_blank", "noopener,noreferrer");
+        break;
+    }
+  };
+
+  const groupedHits = useMemo(() => {
+    return hits.reduce(
+      (acc, hit) => {
+        const { type } = hit;
+        if (!acc[type]) {
+          acc[type] = [];
+        }
+        acc[type].push(hit);
+        return acc;
+      },
+      {} as Record<AlgoliaHit["type"], AppHit[]>
+    );
+  }, [hits]);
+
+  const renderHitContent = (hit: AppHit) => {
+    switch (hit.type) {
+      case "subject":
+        return (
+          <>
+            <Library
+              className="mr-3 h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <span className="flex-grow">
+              <Highlight hit={hit} attribute="title" />
+            </span>
+            <CommandShortcut>Code: {hit.code}</CommandShortcut>
+          </>
+        );
+      case "note":
+        return (
+          <>
+            <FileText
+              className="mr-3 h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <span className="flex-grow truncate">
+              <Highlight hit={hit} attribute="title" />
+            </span>
+            <CommandShortcut>{hit.abbreviation}</CommandShortcut>
+          </>
+        );
+      case "quiz":
+        return (
+          <>
+            <ClipboardCheck
+              className="mr-3 h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <span className="flex-grow">
+              <Highlight hit={hit} attribute="title" />
+            </span>
+          </>
+        );
+      case "youtube":
+        return (
+          <>
+            <Youtube
+              className="mr-3 h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <span className="flex-grow">
+              <Highlight hit={hit} attribute="title" />
+            </span>
+            <CommandShortcut>
+              Video in {hit.abbreviation?.toUpperCase()}
+            </CommandShortcut>
+          </>
+        );
+    }
+  };
 
   return (
-    <div className="relative w-full max-w-md mx-auto">
-      {/* Search input */}
-      <input
-        type="text"
-        placeholder="Search..."
-        className="w-full border rounded-lg px-4 py-2"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
+    <>
+      <button
+        className="hidden lg:inline-flex bg-background items-center text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 h-9 rounded-md border border-neutral-200 dark:border-neutral-800 px-3 py-2 text-sm shadow-xs transition outline-none focus-visible:ring-[3px]"
+        onClick={() => setOpen(true)}
+      >
+        <SearchIcon className="text-muted-foreground/80 -ms-1 me-3" size={16} />
+        <span className="text-muted-foreground/70">Search</span>
+        <kbd className="bg-background text-muted-foreground/70 ms-7 -me-1 inline-flex h-5 items-center rounded border border-neutral-200 dark:border-neutral-800 px-1 font-[inherit] text-[0.625rem] font-medium">
+          ⌘K
+        </kbd>
+      </button>
 
-      {/* Loading state */}
-      {loading && (
-        <div className="absolute top-full mt-1 w-full bg-white shadow p-2 text-sm text-gray-500">
-          Searching...
-        </div>
-      )}
+      <button className="lg:hidden" onClick={() => setOpen(true)}>
+        <SearchIcon className="text-muted-foreground/80" size={16} />
+      </button>
 
-      {/* Results dropdown */}
-      {hits.length > 0 && !loading && (
-        <ul className="absolute top-full mt-1 w-full bg-white border rounded-lg shadow-lg z-50">
-          {hits.map((hit) => (
-            <li
-              key={hit.objectID}
-              className="p-2 hover:bg-gray-100 cursor-pointer"
-            >
-              <strong>{hit.title}</strong>
-              {hit.description && (
-                <p className="text-xs text-gray-500">{hit.description}</p>
-              )}
-            </li>
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <VisuallyHidden>
+          <DialogTitle>Search</DialogTitle>
+        </VisuallyHidden>
+        <CommandInput
+          placeholder="Search for subjects, notes, quizzes..."
+          value={query}
+          onValueChange={setQuery}
+        />
+        <CommandList>
+          <CommandEmpty>
+            {loading
+              ? "Summoning the digital librarian..."
+              : query.trim()
+                ? "No scrolls found for that incantation."
+                : "Lost in the library? Start typing to find your way."}
+          </CommandEmpty>
+
+          {Object.entries(groupedHits).map(([type, items]) => (
+            <CommandGroup key={type} heading={`${capitalize(type)}s`}>
+              {items.map((hit) => (
+                <CommandItem
+                  key={hit.objectID}
+                  value={hit.title}
+                  onSelect={() => handleSelect(hit)}
+                  className="items-center"
+                >
+                  {renderHitContent(hit)}
+                </CommandItem>
+              ))}
+            </CommandGroup>
           ))}
-        </ul>
-      )}
-    </div>
+        </CommandList>
+      </CommandDialog>
+    </>
   );
 }

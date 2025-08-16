@@ -138,6 +138,7 @@ export const youtubeSchema = z.object({
       /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([\w-]{11})(?:\S+)?$/,
       "Invalid YouTube URL"
     ),
+  title: z.string().min(3, "Title must be at least 3 characters"),
 });
 
 export const googleFormSchema = z.object({

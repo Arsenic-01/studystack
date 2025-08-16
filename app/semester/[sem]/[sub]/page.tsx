@@ -1,27 +1,39 @@
-import NotesClient from "@/components/notes_page_components/NotesClient";
+import NotesFilter from "@/components/notes_page_components/NotesFilter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { fetchFormLinks } from "@/lib/actions/Form.actions";
+import { fetchNotesBySubject } from "@/lib/actions/Notes.actions";
 import { fetchSubject } from "@/lib/actions/Subjects.actions";
+import { fetchYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 
 const Page = async ({ params }: { params: { sub: string } }) => {
   const { sub } = await params;
 
-  // Fetch subject on the server to check if it exists
-  const res = await fetchSubject({ abbreviation: sub });
+  // 1. Fetch the main subject data first
+  const subject = await fetchSubject({ abbreviation: sub });
 
-  if (!res) {
+  // If the subject doesn't exist, show an error and stop.
+  if (!subject) {
     return <ErrorUI />;
   }
 
+  // 2. ✅ FETCH ALL OTHER DATA ON THE SERVER IN PARALLEL
+  // We use Promise.all to fetch notes, youtube links, and quizzes at the same time for max speed.
+  const [notes, youtubeLinks, googleFormLinks] = await Promise.all([
+    fetchNotesBySubject({ sub: subject.abbreviation }),
+    fetchYoutubeLinks({ subjectId: subject.subjectId }),
+    fetchFormLinks({ subjectId: subject.subjectId }),
+  ]);
+
+  // 3. Pass all the server-fetched data down to the client component
   return (
-    <NotesClient
-      abbreviation={res.abbreviation}
-      subjectId={res.subjectId}
-      subjectName={res.name}
-      subjectUnits={res.unit || []}
-      semester={res.semester}
+    <NotesFilter
+      subject={subject}
+      initialNotes={notes || []}
+      initialYoutubeLinks={youtubeLinks || []}
+      initialGoogleFormLinks={googleFormLinks || []}
     />
   );
 };

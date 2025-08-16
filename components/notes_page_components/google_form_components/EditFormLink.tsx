@@ -24,6 +24,7 @@ import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Edit, Pencil } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -31,10 +32,14 @@ const EditFormLink = ({
   id,
   url,
   quizName,
+  semester,
+  abbreviation,
 }: {
   id: string;
   url: string;
   quizName: string;
+  semester: string;
+  abbreviation: string;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
   const queryClient = useQueryClient();
@@ -47,6 +52,13 @@ const EditFormLink = ({
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      googleFormLink: url,
+      quizName: quizName,
+    });
+  }, [quizName, url, form]);
+
   const handleFormLinkUpdate = async (values: {
     googleFormLink: string;
     quizName: string;
@@ -56,6 +68,8 @@ const EditFormLink = ({
         googleFormLink: values.googleFormLink,
         quizName: values.quizName,
         id,
+        semester,
+        abbreviation,
       });
       toast.success("Google Form link updated successfully");
 

@@ -1,21 +1,14 @@
-import React, { useState } from "react";
+"use client";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { X, Plus } from "lucide-react";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { createSubject } from "@/lib/actions/Subjects.actions";
-import { z } from "zod";
-import { useForm, useFieldArray, FieldArrayPath } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -24,20 +17,32 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ID } from "node-appwrite";
+import { Input } from "@/components/ui/input";
 import { subjectSchema } from "@/components/validation_schema/validation";
+import { Subject } from "@/lib/appwrite_types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, X } from "lucide-react";
+import { ID } from "node-appwrite";
+import { useState, useTransition } from "react";
+import { FieldArrayPath, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 interface CreateSubjectModalProps {
   open: boolean;
   closeModal: () => void;
+  onSubjectCreate: (data: Subject) => void;
 }
 
 type SubjectFormData = z.infer<typeof subjectSchema>;
 
-const CreateSubjectModal = ({ open, closeModal }: CreateSubjectModalProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const CreateSubjectModal = ({
+  open,
+  closeModal,
+  onSubjectCreate,
+}: CreateSubjectModalProps) => {
   const [newUnit, setNewUnit] = useState("");
-  const queryClient = useQueryClient();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<SubjectFormData>({
     resolver: zodResolver(subjectSchema),
@@ -58,29 +63,18 @@ const CreateSubjectModal = ({ open, closeModal }: CreateSubjectModalProps) => {
     name: "units" as FieldArrayPath<SubjectFormData>,
   });
 
-  const handleSubmit = async (data: SubjectFormData) => {
-    setIsSubmitting(true);
-
-    try {
-      await createSubject({
+  const handleSubmit = (data: SubjectFormData) => {
+    startTransition(() => {
+      const subjectData: Subject = {
         subjectId: ID.unique(),
         name: data.name,
         code: data.code,
         abbreviation: data.abbreviation,
         semester: data.semester.toString(),
         unit: data.units,
-      });
-
-      toast.success("Subject created successfully");
-      queryClient.invalidateQueries({ queryKey: ["subjects"] });
-      closeModal();
-      form.reset();
-    } catch (error) {
-      toast.error("Failed to create subject");
-      console.error(error);
-    } finally {
-      setIsSubmitting(false);
-    }
+      };
+      onSubjectCreate(subjectData);
+    });
   };
 
   const addNewUnit = () => {
@@ -252,10 +246,10 @@ const CreateSubjectModal = ({ open, closeModal }: CreateSubjectModalProps) => {
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isPending}
                 className="transition-all duration-200"
               >
-                {isSubmitting ? "Creating..." : "Create Subject"}
+                {isPending ? "Saving..." : "Save Changes"}
               </Button>
             </DialogFooter>
           </form>

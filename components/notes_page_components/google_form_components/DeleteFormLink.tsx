@@ -15,7 +15,15 @@ import { Button } from "../../ui/button";
 
 import { useQueryClient } from "@tanstack/react-query";
 
-const DeleteFormLink = ({ id }: { id: string }) => {
+const DeleteFormLink = ({
+  id,
+  semester,
+  abbreviation,
+}: {
+  id: string;
+  semester: string;
+  abbreviation: string;
+}) => {
   const queryClient = useQueryClient();
 
   return (
@@ -38,7 +46,7 @@ const DeleteFormLink = ({ id }: { id: string }) => {
           <AlertDialogAction
             onClick={async () => {
               try {
-                await deleteFormLink(id);
+                await deleteFormLink({ id, semester, abbreviation });
                 toast.success("Google Form link deleted successfully");
                 queryClient.invalidateQueries({ queryKey: ["formLinks"] });
               } catch (error) {

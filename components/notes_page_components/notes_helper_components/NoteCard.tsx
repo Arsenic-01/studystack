@@ -129,19 +129,6 @@ const NoteCard = memo(({ note }: NoteCardProps) => {
               loading="lazy"
             />
           ) : (
-            // <div className="flex flex-col gap-2 items-center justify-center w-full h-full border border-neutral-300 dark:border-neutral-800 rounded-md bg-neutral-100 dark:bg-neutral-900">
-            //   <div className="flex items-center">
-            //     <FileText className="size-5 text-neutral-500 dark:text-neutral-400" />
-            //     <p className="text-sm text-muted-foreground ml-2">
-            //       Preview unavailable
-            //     </p>
-            //   </div>
-            //   {fileDetails && (
-            //     <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            //       File Type: {fileDetails.mimeType || "Unknown"}
-            //     </span>
-            //   )}
-            // </div>
             <div className="flex flex-col gap-1 items-center justify-center w-full h-full border border-neutral-300 dark:border-neutral-800 rounded-md bg-neutral-100 dark:bg-neutral-900 p-4">
               <div className="flex flex-col items-center justify-center text-neutral-500 dark:text-neutral-400">
                 {/* Dynamic Icon based on file type */}

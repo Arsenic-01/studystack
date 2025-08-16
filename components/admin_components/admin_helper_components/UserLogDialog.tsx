@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -15,10 +16,9 @@ import {
 } from "@/components/ui/table";
 import { fetchSessions } from "@/lib/actions/Admin.actions";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
 import { differenceInMinutes, format } from "date-fns";
 import { ArrowRight, Calendar, Clock, Terminal } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Session {
   sessionId: string;
@@ -40,29 +40,48 @@ export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { isLoading } = useQuery({
-    queryKey: ["sessions", user.id],
-    queryFn: async () => {
-      const data = await fetchSessions(user.id, 0);
-      setSessions(data);
-      setHasMore(data.length === 25); // if fetched 25, maybe more exist
-      setOffset(25);
-      return data;
-    },
-    enabled: open && !!user.id,
-  });
+  useEffect(() => {
+    // A flag to prevent state updates if the component unmounts during fetch
+    let isMounted = true;
+
+    const fetchInitialData = async () => {
+      if (!open || !user.id) return;
+
+      setIsLoading(true);
+      const initialSessions = await fetchSessions(user.id, 0);
+
+      if (isMounted) {
+        setSessions(initialSessions);
+        setHasMore(initialSessions.length === 25);
+        setOffset(25);
+        setIsLoading(false);
+      }
+    };
+
+    fetchInitialData();
+
+    // Cleanup function to reset state when the dialog closes
+    return () => {
+      isMounted = false;
+      setSessions([]);
+      setOffset(0);
+      setHasMore(true);
+    };
+  }, [open, user.id]); // Re-run if the dialog is opened for a different user
 
   const loadMore = async () => {
-    setLoadingMore(true);
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
     const moreSessions = await fetchSessions(user.id, offset);
     setSessions((prev) => [...prev, ...moreSessions]);
     setOffset((prev) => prev + 25);
-    setHasMore(moreSessions.length === 25); // If less than 25, no more data
-    setLoadingMore(false);
+    setHasMore(moreSessions.length === 25);
+    setIsLoadingMore(false);
   };
-
   const formatTimeIST = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, "HH:mm:ss");
@@ -221,13 +240,13 @@ export function UserLogDialog({ user, open, onClose }: UserLogDialogProps) {
               {/* Load More Button */}
               {hasMore && (
                 <div className="flex justify-center mt-4">
-                  <button
+                  <Button
                     onClick={loadMore}
-                    disabled={loadingMore}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition"
+                    disabled={isLoadingMore}
+                    variant="outline"
                   >
-                    {loadingMore ? "Loading..." : "Load More"}
-                  </button>
+                    {isLoadingMore ? "Loading..." : "Load More"}
+                  </Button>
                 </div>
               )}
             </div>

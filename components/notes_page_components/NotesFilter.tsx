@@ -13,10 +13,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchYoutubeLinks } from "@/lib/actions/Youtube.actions";
-import { Note } from "@/lib/appwrite_types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
 import { useAuthStore } from "@/store/authStore";
-import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   FileQuestion,
@@ -26,22 +32,19 @@ import {
   SquareArrowOutUpRight,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import DeleteFormLink from "./google_form_components/DeleteFormLink";
+import EditFormLink from "./google_form_components/EditFormLink";
+import NoteCard from "./notes_helper_components/NoteCard";
 import DeleteYoutubeLink from "./youtube_components/DeleteYoutubeLink";
 import EditYoutubeLink from "./youtube_components/EditYoutubeLink";
-import NoteCard from "./notes_helper_components/NoteCard";
-import { fetchFormLinks } from "@/lib/actions/Form.actions";
-import EditFormLink from "./google_form_components/EditFormLink";
-import DeleteFormLink from "./google_form_components/DeleteFormLink";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
+interface NotesFilterProps {
+  subject: Subject;
+  initialNotes: Note[];
+  initialYoutubeLinks: Youtube[];
+  initialGoogleFormLinks: Form[];
+}
 
 const fileTypes = [
   "Notes",
@@ -58,49 +61,20 @@ const fileTypes = [
   "Other",
 ];
 const NotesFilter = ({
-  notes,
-  subjectName,
-  semester,
-  subjectId,
-  subjectUnits,
-}: {
-  notes: Note[];
-  subjectName: string | undefined;
-  semester: string;
-  subjectUnits: string[];
-  subjectId: string;
-}) => {
+  subject,
+  initialNotes,
+  initialYoutubeLinks,
+  initialGoogleFormLinks,
+}: NotesFilterProps) => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [selectedUnit, setSelectedUnit] = useState<string>("All");
   const [selectedUser, setSelectedUser] = useState<string[]>([]);
   const { user } = useAuthStore();
 
   // Fetch YouTube links and Google Forms for the subject
-
-  const { data: youtubeLinks = [], isError } = useQuery({
-    queryKey: ["youtubeLinks", subjectId],
-    queryFn: () => fetchYoutubeLinks({ subjectId }),
-    enabled: !!subjectId,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-    refetchOnWindowFocus: false,
-  });
-  if (isError) {
-    toast.error("Failed to fetch YouTube videos.");
-  }
-
-  const { data: googleFormLinks = [], isError: isGoogleFormError } = useQuery({
-    queryKey: ["googleFormLinks", subjectId],
-    queryFn: () => fetchFormLinks({ subjectId }),
-    enabled: !!subjectId,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-    refetchOnWindowFocus: false,
-  });
-
-  if (isGoogleFormError) {
-    toast.error("Failed to fetch Google Forms.");
-  }
-
-  console.log("Google Form Links:", googleFormLinks);
+  const notes = initialNotes;
+  const youtubeLinks = initialYoutubeLinks;
+  const googleFormLinks = initialGoogleFormLinks;
 
   const toggleFilter = (type: string) => {
     setSelectedFilters((prev) =>
@@ -126,21 +100,38 @@ const NotesFilter = ({
   });
   const uniqueUsers = Array.from(new Set(notes.map((note) => note.users.name)));
 
+  useEffect(() => {
+    // We wrap this in a small timeout to ensure the browser has finished
+    // painting all the server-rendered content before we try to scroll.
+    const timer = setTimeout(() => {
+      const hash = window.location.hash;
+      if (hash) {
+        const elementId = hash.substring(1); // remove the '#'
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    }, 100); // 100ms delay is usually enough
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []); // The empty array [] ensures this runs only once when the component mounts
+
   return (
     <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 mb-8">
         <Button
           variant="outline"
-          className={`${!semester && "hidden"} w-fit`}
+          className={`${!subject.semester && "hidden"} w-fit`}
           asChild
         >
-          <Link href={`/semester/${semester}`}>
+          <Link href={`/semester/${subject.semester}`}>
             <ArrowLeft /> Back
           </Link>
         </Button>
         <Button
           variant="outline"
-          className={`${semester && "hidden"} w-fit`}
+          className={`${subject.semester && "hidden"} w-fit`}
           asChild
         >
           <Link href="/home">
@@ -148,7 +139,7 @@ const NotesFilter = ({
           </Link>
         </Button>
         <h1 className="text-2xl font-bold tracking-tight">
-          {subjectName ? `Notes for ${subjectName}` : "Invalid Subject URL"}
+          {subject.name ? `Notes for ${subject.name}` : "Invalid Subject URL"}
         </h1>
       </div>
       {notes.length === 0 && (
@@ -247,7 +238,7 @@ const NotesFilter = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="All">All Units</SelectItem>
-                {subjectUnits.map((unit, index) => (
+                {subject.unit.map((unit, index) => (
                   <SelectItem key={index} value={unit}>
                     <span className="flex justify-start items-start w-[290px] sm:w-auto truncate">
                       {unit}
@@ -261,7 +252,9 @@ const NotesFilter = ({
           {filteredNotes.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredNotes.map((note) => (
-                <NoteCard key={note.noteId} note={note} />
+                <div key={note.noteId} id={`note-${note.noteId}`}>
+                  <NoteCard key={note.noteId} note={note} />
+                </div>
               ))}
             </div>
           ) : (
@@ -306,12 +299,12 @@ const NotesFilter = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {youtubeLinks.map((link, index) => {
               // Extract video ID from different YouTube URL formats
-              const videoIdMatch = link.url.match(
+              const videoIdMatch = link.youtubeLink.match(
                 /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
               );
               const videoId = videoIdMatch ? videoIdMatch[1] : null;
               return videoId ? (
-                <div key={index}>
+                <div key={index} id={`youtube-${link.id}`}>
                   <div className="w-full aspect-video">
                     <iframe
                       className="w-full h-full rounded-lg"
@@ -325,10 +318,23 @@ const NotesFilter = ({
                   {(user?.name === link.createdBy ||
                     user?.role === "admin") && (
                     <div className="flex gap-2 items-center justify-between">
-                      <EditYoutubeLink url={link.url} id={link.id} />
-                      <DeleteYoutubeLink id={link.id} />
+                      <EditYoutubeLink
+                        id={link.id}
+                        url={link.youtubeLink}
+                        title={link.title}
+                        semester={subject.semester}
+                        abbreviation={subject.abbreviation}
+                      />
+                      <DeleteYoutubeLink
+                        id={link.id}
+                        semester={subject.semester}
+                        abbreviation={subject.abbreviation}
+                      />
                     </div>
                   )}
+                  <div className="text-sm text-neutral-500 dark:text-neutral-400 py-2 border border-neutral-200 dark:border-neutral-800 rounded-lg mt-2 text-center">
+                    {link.title || "No title provided"}
+                  </div>
                   <div className="text-sm text-neutral-500 dark:text-neutral-400 py-2 border border-neutral-200 dark:border-neutral-800 rounded-lg mt-2 text-center">
                     Added by {link.createdBy}
                   </div>
@@ -384,11 +390,17 @@ const NotesFilter = ({
                       user?.role === "admin") && (
                       <TableCell className="flex gap-2">
                         <EditFormLink
+                          semester={subject.semester}
+                          abbreviation={subject.abbreviation}
                           url={form.url}
                           id={form.id}
                           quizName={form.quizName}
                         />
-                        <DeleteFormLink id={form.id} />
+                        <DeleteFormLink
+                          id={form.id}
+                          semester={subject.semester}
+                          abbreviation={subject.abbreviation}
+                        />
                       </TableCell>
                     )}
                   </TableRow>

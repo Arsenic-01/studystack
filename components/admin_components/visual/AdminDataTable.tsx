@@ -17,13 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  deleteUser,
-  fetchUsers,
-  getLoginHistory,
-} from "@/lib/actions/Admin.actions";
-import { fetchAllNotes } from "@/lib/actions/Notes.actions";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteUser } from "@/lib/actions/Admin.actions";
+import { Note } from "@/lib/appwrite_types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -48,12 +44,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "../../../store/authStore";
-import { ActiveUsersChart } from "./ActiveUsers";
-import AdminSkeleton from "../skeleton/AdminSkeleton";
-import { ActivityChart } from "./AdminBarChart";
-import RefreshButton from "../admin_helper_components/RefreshButton";
-import { NotesTable } from "./AdminNotesTable";
-import { TeacherNotesChart } from "./TeacherNotesChart";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -63,9 +53,15 @@ import {
   AlertDialogFooter,
   AlertDialogTitle,
 } from "../../ui/alert-dialog";
+import RefreshButton from "../admin_helper_components/RefreshButton";
 import { UpdateUserDialog } from "../admin_helper_components/UpdateUserModal";
 import { UserLogDialog } from "../admin_helper_components/UserLogDialog";
+import AdminSkeleton from "../skeleton/AdminSkeleton";
+import { ActiveUsersChart } from "./ActiveUsers";
+import { ActivityChart, LoginHistoryEntry } from "./AdminBarChart";
+import { NotesTable } from "./AdminNotesTable";
 import StatCard from "./StatCard";
+import { TeacherNotesChart } from "./TeacherNotesChart";
 
 type Role = "admin" | "teacher" | "student";
 
@@ -76,14 +72,19 @@ export type User = {
   email: string;
   name: string;
   password: string;
-  // loginHistory: string[];
 };
 
-interface UsersTableProps {
-  initialData: User[];
+interface AdminDataTableProps {
+  initialUsers: User[];
+  initialLoginHistory: LoginHistoryEntry[];
+  initialNotes: Note[];
 }
 
-export function AdminDataTable({ initialData }: UsersTableProps) {
+export function AdminDataTable({
+  initialUsers,
+  initialLoginHistory,
+  initialNotes,
+}: AdminDataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [updateUserData, setUpdateUserData] = useState<User | null>(null);
@@ -93,27 +94,9 @@ export function AdminDataTable({ initialData }: UsersTableProps) {
   const router = useRouter();
   const { isLoggedIn } = useAuthStore();
 
-  const { data: users = initialData } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: fetchUsers,
-    initialData,
-    staleTime: 1000 * 60 * 10,
-    refetchInterval: 1000 * 60 * 10,
-  });
-
-  const { data: loginHistory = [] } = useQuery({
-    queryKey: ["loginHistory"],
-    queryFn: getLoginHistory,
-    staleTime: 1000 * 60 * 10,
-    refetchInterval: 1000 * 60 * 10,
-  });
-
-  const { data: notes = [] } = useQuery({
-    queryKey: ["notes"],
-    queryFn: fetchAllNotes,
-    initialData: [],
-    refetchOnWindowFocus: false,
-  });
+  const users = initialUsers;
+  const loginHistory = initialLoginHistory;
+  const notes = initialNotes;
 
   const deleteMutation = useMutation({
     mutationFn: deleteUser,

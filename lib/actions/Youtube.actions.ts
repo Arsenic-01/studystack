@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { DATABASE_ID, db, Query, YOUTUBE_COLLECTION_ID } from "../appwrite";
 
 export async function fetchYoutubeLinks({ subjectId }: { subjectId: string }) {
@@ -16,9 +17,12 @@ export async function fetchYoutubeLinks({ subjectId }: { subjectId: string }) {
 
     return response.documents.map((doc) => ({
       id: doc.$id,
-      url: doc.url,
-      createdAt: doc.createdAt,
+      title: doc.title,
+      youtubeLink: doc.url,
+      subjectId: doc.subjectId,
       createdBy: doc.createdBy,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
     }));
   } catch (error) {
     console.error("Error fetching YouTube links:", error);
@@ -29,27 +33,46 @@ export async function fetchYoutubeLinks({ subjectId }: { subjectId: string }) {
 export async function editYoutubeLink({
   id,
   youtubeLink,
+  title,
+  semester,
+  abbreviation,
 }: {
   id: string;
   youtubeLink: string;
+  title: string;
+  semester: string;
+  abbreviation: string;
 }) {
   try {
     await db.updateDocument(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, id, {
       url: youtubeLink,
+      title: title,
     });
-    return true;
+    revalidatePath(`/semester/${semester}/${abbreviation}`);
+    return { success: true };
   } catch (error) {
     console.error("Error updating YouTube link:", error);
-    return false;
+    return { success: false, error: "Failed to update link." };
   }
 }
 
-export async function deleteYoutubeLink(id: string) {
+export async function deleteYoutubeLink({
+  id,
+  semester,
+  abbreviation,
+}: {
+  id: string;
+  semester: string;
+  abbreviation: string;
+}) {
   try {
     await db.deleteDocument(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, id);
+    revalidatePath(`/semester/${semester}/${abbreviation}`);
+    return { success: true };
+
     return true;
   } catch (error) {
     console.error("Error deleting YouTube link:", error);
-    return false;
+    return { success: false, error: "Failed to delete link." };
   }
 }

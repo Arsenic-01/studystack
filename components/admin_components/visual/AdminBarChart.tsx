@@ -24,7 +24,7 @@ interface Note {
   createdAt: string;
 }
 
-interface LoginHistoryEntry {
+export interface LoginHistoryEntry {
   loginTime: string[]; // Array of timestamps (strings)
   userId: string;
   userName: string;

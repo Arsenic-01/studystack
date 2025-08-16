@@ -53,3 +53,21 @@ export interface Subject {
   semester: string;
   unit: string[];
 }
+
+export interface Youtube {
+  id: string;
+  title: string;
+  youtubeLink: string;
+  subjectId: string;
+  abbreviation: string;
+  semester: string;
+  createdBy: string;
+}
+
+export interface Form {
+  id: string;
+  createdBy: string;
+  url: string;
+  subjectId: string;
+  quizName: string;
+}

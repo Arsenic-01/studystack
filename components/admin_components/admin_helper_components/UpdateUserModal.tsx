@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useState, useTransition } from "react"; // ✅ 1. Import useTransition
 import {
   Dialog,
   DialogContent,
@@ -21,15 +20,14 @@ import {
 } from "@/components/ui/select";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { updateUser } from "@/lib/actions/Admin.actions";
-import bcrypt from "bcryptjs";
 
-interface UpdateUserData {
+export interface UpdateUserData {
   id: string;
   prnNo: string;
   role: "admin" | "teacher" | "student";
   email: string;
   name: string;
-  password: string;
+  password?: string;
 }
 
 type UpdateUserDialogProps = {
@@ -53,26 +51,27 @@ export function UpdateUserDialog({
 
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+  const [isPending, startTransition] = useTransition();
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
-
-  const updateMutation = useMutation({
-    mutationFn: updateUser,
-    onSuccess: onUpdate,
-  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    startTransition(() => {
+      // Create the payload. The password is sent as plain text (over HTTPS).
+      const payload: UpdateUserData = { ...formData };
+      if (newPassword) {
+        payload.password = newPassword;
+      }
 
-    const hashedPassword = newPassword
-      ? await bcrypt.hash(newPassword, 10)
-      : undefined;
-
-    updateMutation.mutate({
-      data: {
-        ...formData,
-        ...(hashedPassword && { password: hashedPassword }),
-      },
+      // Call the server action directly
+      updateUser(payload).then((result) => {
+        if (result.success) {
+          onUpdate(); // This will show the toast and close the modal
+        } else {
+          // Handle error, maybe show a toast
+          console.error(result.error);
+        }
+      });
     });
   };
 
@@ -157,8 +156,8 @@ export function UpdateUserDialog({
           </div>
 
           <DialogFooter>
-            <Button type="submit" disabled={updateMutation.isPending}>
-              {updateMutation.isPending ? "Updating..." : "Update"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Updating..." : "Update"}
             </Button>
           </DialogFooter>
         </form>

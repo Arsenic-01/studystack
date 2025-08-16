@@ -1,21 +1,24 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import { DATABASE_ID, db, NEW_SUBJECT_COLLECTION_ID, Query } from "../appwrite";
 import { Subject } from "../appwrite_types";
+import { AppwriteException } from "node-appwrite";
 
 export async function fetchSubject({ abbreviation }: { abbreviation: string }) {
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
       NEW_SUBJECT_COLLECTION_ID!,
-      [Query.equal("abbreviation", abbreviation)]
+      [Query.equal("abbreviation", abbreviation), Query.limit(1)]
     );
-    return response.documents[0];
+    return response.documents[0] as unknown as Subject;
   } catch (error) {
-    if (error.code === 404) {
+    const err = error as AppwriteException;
+    if (err.code === 404) {
       console.warn("Subject not found, returning null.");
-      return null; // Return null instead of throwing an error
+      return null;
     }
-    console.error("Error fetching subject:", error);
+    console.error("Error fetching subject:", err);
     return null;
   }
 }
@@ -49,25 +52,34 @@ export const deleteSubject = async ({ subjectId }: { subjectId: string }) => {
       NEW_SUBJECT_COLLECTION_ID!,
       subjectId
     );
-    return true;
+
+    revalidatePath("/admin/subjects");
+
+    return { success: true };
   } catch (error) {
     console.error("Error deleting subject:", error);
-    return false;
+    return { success: false, error: (error as Error).message };
   }
 };
 
 export const updateSubject = async (subject: Subject) => {
   try {
+    // Exclude subjectId from the data payload as it's the document ID
+    const { subjectId, ...updateData } = subject;
+
     await db.updateDocument(
       DATABASE_ID!,
       NEW_SUBJECT_COLLECTION_ID!,
-      subject.subjectId,
-      subject
+      subjectId,
+      updateData
     );
-    return true;
+
+    revalidatePath("/admin/subjects");
+
+    return { success: true };
   } catch (error) {
     console.error("Error updating subject:", error);
-    return false;
+    return { success: false, error: (error as Error).message };
   }
 };
 
@@ -79,9 +91,13 @@ export const createSubject = async (subject: Subject) => {
       subject.subjectId,
       subject
     );
-    return true;
+
+    // ✅ Revalidate the page after a change
+    revalidatePath("/admin/subjects");
+
+    return { success: true };
   } catch (error) {
     console.error("Error creating subject:", error);
-    return false;
+    return { success: false, error: (error as Error).message };
   }
 };

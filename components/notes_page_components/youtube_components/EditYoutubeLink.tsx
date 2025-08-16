@@ -22,11 +22,24 @@ import { editYoutubeLink } from "@/lib/actions/Youtube.actions";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query"; // ✅ Import useQueryClient
-import { Link, Pencil } from "lucide-react";
+import { Edit, Pencil } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-const EditYoutubeLink = ({ id, url }: { id: string; url: string }) => {
+const EditYoutubeLink = ({
+  id,
+  url,
+  title,
+  semester,
+  abbreviation,
+}: {
+  id: string;
+  url: string;
+  title: string;
+  semester: string;
+  abbreviation: string;
+}) => {
   const { user, isLoggedIn } = useAuthStore();
   const queryClient = useQueryClient(); // ✅ Initialize queryClient
 
@@ -34,18 +47,31 @@ const EditYoutubeLink = ({ id, url }: { id: string; url: string }) => {
     resolver: zodResolver(youtubeSchema),
     defaultValues: {
       youtubeLink: url,
+      title: title,
     },
   });
+  useEffect(() => {
+    form.reset({
+      youtubeLink: url,
+      title: title,
+    });
+  }, [url, title, form]);
 
-  const handleYoutubeEmbed = async (values: { youtubeLink: string }) => {
+  const handleYoutubeEmbed = async (values: {
+    youtubeLink: string;
+    title: string;
+  }) => {
     try {
-      await editYoutubeLink({ youtubeLink: values.youtubeLink, id });
+      await editYoutubeLink({
+        youtubeLink: values.youtubeLink,
+        id,
+        title: values.title,
+        semester,
+        abbreviation,
+      });
       toast.success("YouTube video embed updated successfully");
-
-      // ✅ Invalidate cache to refetch updated data
+      form.reset({ youtubeLink: values.youtubeLink, title: values.title });
       queryClient.invalidateQueries({ queryKey: ["youtubeLinks"] });
-
-      form.reset(); // Reset form on success
     } catch (error) {
       console.error("Error updating YouTube link:", error);
       toast.error("Something went wrong. Please try again.");
@@ -73,8 +99,24 @@ const EditYoutubeLink = ({ id, url }: { id: string; url: string }) => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleYoutubeEmbed)}
-                className="flex gap-2 justify-between items-center"
+                className="flex flex-col md:flex-row gap-2 justify-between items-center"
               >
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input
+                          id="title"
+                          placeholder={"Enter YouTube Title"}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="youtubeLink"
@@ -91,9 +133,14 @@ const EditYoutubeLink = ({ id, url }: { id: string; url: string }) => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" size="sm" className="px-3">
-                  <span className="sr-only">Embed</span>
-                  <Link />
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="mt-2 px-3 w-full md:w-fit"
+                >
+                  <span className="sr-only">Update Link</span>
+                  <span className="md:hidden">Update Youtube Link</span>
+                  <Edit />
                 </Button>
               </form>
             </Form>

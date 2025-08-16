@@ -10,6 +10,9 @@ import {
 } from "@/lib/appwrite";
 import { updateUserData } from "../appwrite_types";
 import { Models } from "node-appwrite";
+import { revalidatePath } from "next/cache";
+import { UpdateUserData } from "@/components/admin_components/admin_helper_components/UpdateUserModal";
+import bcrypt from "bcryptjs";
 
 export async function fetchUsers() {
   try {
@@ -23,8 +26,6 @@ export async function fetchUsers() {
       role: doc.role as "admin" | "student" | "teacher",
       email: doc.email,
       password: doc.password,
-      // loginHistory: doc.loginData,
-      // session: doc.session,
     }));
   } catch (error) {
     console.log("Error fetching users:", error);
@@ -32,64 +33,47 @@ export async function fetchUsers() {
   }
 }
 
-export async function updateUser({ data }: { data: updateUserData }) {
+export async function updateUser(data: updateUserData) {
   try {
-    const userId = data.id;
-    const filteredData = {
-      prnNo: data.prnNo,
-      name: data.name,
-      role: data.role,
-      email: data.email,
-      password: data.password,
-    };
-    await db.updateDocument(DATABASE_ID!, USER_COLLECTION_ID!, userId, {
-      ...filteredData,
-    });
-    return true;
+    const { id: userId, password, ...updateData } = data;
+
+    const dataToUpdate: Partial<UpdateUserData> = { ...updateData };
+
+    // ✅ 2. Securely hash the password ONLY if a new one is provided
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      dataToUpdate.password = hashedPassword;
+    }
+
+    await db.updateDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      userId,
+      dataToUpdate
+    );
+
+    revalidatePath("/admin");
+    return { success: true };
   } catch (error) {
-    console.log("Error updating user:", error);
-    return false;
+    console.error("Error updating user:", error);
+    return { success: false, error: (error as Error).message };
   }
 }
 
 export async function deleteUser(userId: string) {
   try {
     await db.deleteDocument(DATABASE_ID!, USER_COLLECTION_ID!, userId);
-    return true;
+
+    // ✅ 2. After deleting, revalidate the admin page cache
+    // IMPORTANT: This path should match the URL of your admin dashboard page.
+    revalidatePath("/admin");
+
+    return { success: true };
   } catch (error) {
-    console.log("Error deleting user:", error);
-    return false;
+    console.error("Error deleting user:", error);
+    return { success: false, error: (error as Error).message };
   }
 }
-
-// export async function fetchSessions(userId: string): Promise<session[]> {
-//   if (!userId) return [];
-
-//   try {
-//     const response = await db.listDocuments(
-//       DATABASE_ID!,
-//       SESSION_COLLECTION_ID!,
-//       [
-//         Query.equal("userId", userId),
-//         Query.orderDesc("sessionStart"),
-//         Query.limit(100),
-//       ]
-//     );
-//     console.log("response", response);
-
-//     // Transform Appwrite documents into Session[]
-//     return response.documents.map((doc: Models.Document) => ({
-//       sessionId: doc.$id, // Assuming $id is the session ID
-//       sessionStart: doc.sessionStart,
-//       sessionEnd: doc.sessionEnd,
-//       isActive: doc.isActive,
-//       userId: doc.userId,
-//     }));
-//   } catch (error) {
-//     console.error("Error fetching sessions:", error);
-//     return [];
-//   }
-// }
 
 interface Session {
   sessionId: string;

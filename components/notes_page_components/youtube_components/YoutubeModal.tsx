@@ -27,7 +27,15 @@ import { IconBrandYoutube } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
-const YoutubeModal = ({ subjectId }: { subjectId: string }) => {
+const YoutubeModal = ({
+  subjectId,
+  abbreviation,
+  semester,
+}: {
+  subjectId: string;
+  abbreviation: string;
+  semester: string;
+}) => {
   const { user, isLoggedIn } = useAuthStore();
   const queryClient = useQueryClient();
 
@@ -36,16 +44,23 @@ const YoutubeModal = ({ subjectId }: { subjectId: string }) => {
     resolver: zodResolver(youtubeSchema),
     defaultValues: {
       youtubeLink: "",
+      title: "",
     },
   });
 
   // Handle form submission
-  const handleYoutubeEmbed = async (values: { youtubeLink: string }) => {
+  const handleYoutubeEmbed = async (values: {
+    youtubeLink: string;
+    title: string;
+  }) => {
     try {
       const payload = {
         youtubeLink: values.youtubeLink,
-        user: user?.name, // Ensure user name is included
+        user: user?.name,
         subjectId: subjectId,
+        abbreviation: abbreviation,
+        semester: semester,
+        title: values.title,
       };
 
       const response = await fetch("/api/youtube", {
@@ -98,6 +113,22 @@ const YoutubeModal = ({ subjectId }: { subjectId: string }) => {
                 onSubmit={form.handleSubmit(handleYoutubeEmbed)}
                 className="flex gap-2 justify-between items-center"
               >
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input
+                          id="title"
+                          placeholder="Enter Your Title"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="youtubeLink"

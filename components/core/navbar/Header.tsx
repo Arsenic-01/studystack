@@ -1,5 +1,6 @@
 "use client";
 
+import SearchBar from "@/components/SearchBar"; // ✅ SearchBar import
 import Heartbeat from "@/functions/Heartbeat";
 import useSessionQuery from "@/hooks/useSessionQuery";
 import { useAuthStore } from "@/store/authStore";
@@ -9,9 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import LoginButton from "../Button";
 import { ThemeToggle } from "./navbar_helper_components/ThemeSwitcher";
-import SearchBar from "@/components/SearchBar"; // ✅ SearchBar import
 
 const ProfileCard = dynamic(
   () => import("./navbar_helper_components/ProfileCard"),
@@ -37,7 +36,6 @@ const Header = () => {
         className="backdrop-blur-lg max-w-5xl mx-auto bg-white/80 dark:bg-neutral-950/50 border-[0.1px] border-neutral-300 sm:border-neutral-300 dark:border-neutral-800 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3"
       >
         <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
-          
           {/* LEFT: Logo */}
           <div className="flex items-center gap-7">
             <Link
@@ -84,19 +82,13 @@ const Header = () => {
           {/* ✅ RIGHT: Search + Theme toggle + Profile */}
           <div className="flex items-center gap-2 sm:gap-3 justify-end">
             {/* 🔹 SearchBar now here, visible in both mobile & desktop */}
-            <div className="w-40 sm:w-56 lg:w-64">
-              <SearchBar />
-            </div>
+            {isLoggedIn && user && <SearchBar />}
 
             {/* Theme toggle */}
             <ThemeToggle />
 
             {/* Profile / Login */}
-            {!isLoggedIn ? (
-              <LoginButton text="Login" />
-            ) : (
-              <ProfileCard user={user!} />
-            )}
+            {isLoggedIn && user && <ProfileCard user={user!} />}
 
             {/* Mobile menu toggle */}
             <div className="md:hidden flex items-center">
@@ -163,8 +155,7 @@ const Header = () => {
                   <Link
                     href={`/admin/${user.userId}`}
                     className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
-                  >
-                  </Link>
+                  ></Link>
                 )}
                 {navLinks.map((item) => (
                   <Link
@@ -189,4 +180,3 @@ const Header = () => {
 };
 
 export default Header;
-
