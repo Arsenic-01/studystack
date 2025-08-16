@@ -19,7 +19,6 @@ import {
 import { editNoteSchema } from "@/components/validation_schema/validation";
 import { editNotes } from "@/lib/actions/Notes.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -51,6 +50,8 @@ interface EditNotesModalProps {
     | "Syllabus"
     | "Other";
   fromAdmin?: boolean;
+  semester: string;
+  abbreviation: string;
 }
 
 const EditNotesModal: React.FC<EditNotesModalProps> = ({
@@ -59,12 +60,12 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
   noteId,
   title,
   description,
-  type_of_file,
   fromAdmin,
+  semester,
+  abbreviation,
+  type_of_file,
 }) => {
   const [uploading, setUploading] = useState(false);
-
-  const queryClient = useQueryClient();
 
   const form = useForm({
     resolver: zodResolver(editNoteSchema),
@@ -90,6 +91,9 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
         title: data.title,
         description: data.description,
         type_of_file: data.type_of_file,
+        semester,
+        abbreviation,
+        fromAdmin,
       });
 
       if (!response || response.error) {
@@ -98,9 +102,6 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
 
       toast.success("Note updated successfully!");
       closeModal();
-      if (fromAdmin) {
-        queryClient.invalidateQueries({ queryKey: ["notes"] });
-      } else queryClient.invalidateQueries({ queryKey: ["subjectNotes"] });
     } catch (error) {
       console.error("Update failed", error);
       toast.error("Failed to update note.");

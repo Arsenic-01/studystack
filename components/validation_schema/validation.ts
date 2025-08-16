@@ -141,15 +141,34 @@ export const youtubeSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
 });
 
-export const googleFormSchema = z.object({
-  quizName: z.string().min(1, "Quiz name is required"),
-  googleFormLink: z
-    .string()
-    .min(1, "Google Form link is required")
-    .regex(
-      /^(https?:\/\/)?(www\.)?docs\.google\.com\/forms\/d\/e\/[a-zA-Z0-9_-]+\/viewform/,
-      "Invalid Google Form URL"
-    ),
-});
+const urlRegex =
+  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 
-export type GoogleFormSchemaType = z.infer<typeof googleFormSchema>;
+export const linkSchema = z.discriminatedUnion("formType", [
+  z.object({
+    formType: z.literal("googleForm"),
+    name: z.string().min(1, "Name is required"),
+    url: z
+      .string()
+      .min(1, "Google Form link is required")
+      .regex(
+        /^(https?:\/\/)?(www\.)?docs\.google\.com\/forms\/d\/e\/[a-zA-Z0-9_-]+\/viewform/,
+        "Invalid Google Form URL format"
+      ),
+  }),
+  z.object({
+    formType: z.literal("assignment"),
+    name: z.string().min(1, "Name is required"),
+    url: z
+      .string()
+      .min(1, "Assignment link is required")
+      .regex(urlRegex, "Invalid URL"),
+  }),
+  z.object({
+    formType: z.literal("other"),
+    name: z.string().min(1, "Name is required"),
+    url: z.string().min(1, "Link is required").regex(urlRegex, "Invalid URL"),
+  }),
+]);
+
+export type LinkSchemaType = z.infer<typeof linkSchema>;

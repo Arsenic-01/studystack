@@ -8,13 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteNote } from "@/lib/actions/Notes.actions";
+import { Note } from "@/lib/appwrite_types";
 import { useAuthStore } from "@/store/authStore";
-import { useQueryClient } from "@tanstack/react-query";
 import { EllipsisVertical, Info } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import EditNotesModal from "../crud_notes/EditNotesModal";
-import { NoteCardProps } from "./NoteCard";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,16 +23,22 @@ import {
   AlertDialogTitle,
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
+import EditNotesModal from "../crud_notes/EditNotesModal";
+
+function formatFileSize(bytes: string | number) {
+  const num = typeof bytes === "string" ? parseInt(bytes, 10) : bytes;
+  if (isNaN(num)) return "Unknown";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  const index = Math.floor(Math.log(num) / Math.log(1024));
+  return `${(num / Math.pow(1024, index)).toFixed(2)} ${units[index]}`;
+}
 
 const CardOwner = ({
   note,
   formattedDate,
-  fileName,
-  fileSize,
-}: NoteCardProps & {
+}: {
+  note: Note;
   formattedDate: string;
-  fileName?: string;
-  fileSize?: string;
 }) => {
   const { user } = useAuthStore();
   const [open, setOpen] = useState(false);
@@ -46,13 +50,16 @@ const CardOwner = ({
       document.body.style.removeProperty("pointer-events");
     }, 300);
   };
-  const queryClient = useQueryClient();
 
   const handleDelete = () => {
-    deleteNote({ noteId: note.noteId, fileId: note.fileId })
+    deleteNote({
+      noteId: note.noteId,
+      fileId: note.fileId,
+      semester: note.semester,
+      abbreviation: note.abbreviation,
+    })
       .then(() => {
         toast.success("Note deleted successfully");
-        queryClient.invalidateQueries({ queryKey: ["subjectNotes"] });
       })
       .catch(() => toast.error("Error deleting note"));
   };
@@ -74,12 +81,11 @@ const CardOwner = ({
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Uploaded at {formattedDate}</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuLabel>File Name: {note.title}</DropdownMenuLabel>
           <DropdownMenuLabel>
-            File Name: {fileName || "Unknown"}
+            File size: {formatFileSize(note.fileSize)}
           </DropdownMenuLabel>
-          <DropdownMenuLabel>
-            File Size: {fileSize || "Unknown"}
-          </DropdownMenuLabel>
+          <DropdownMenuLabel>Mime type: {note.mimeType}</DropdownMenuLabel>
 
           {(user?.userId === note.users.userId || user?.role === "admin") && (
             <>
@@ -98,6 +104,8 @@ const CardOwner = ({
 
       {open && (
         <EditNotesModal
+          semester={note.semester}
+          abbreviation={note.abbreviation}
           open={open}
           closeModal={closeModal}
           noteId={note.noteId}

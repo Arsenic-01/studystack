@@ -22,9 +22,9 @@ const Page = async ({ params }: { params: { sub: string } }) => {
   // 2. ✅ FETCH ALL OTHER DATA ON THE SERVER IN PARALLEL
   // We use Promise.all to fetch notes, youtube links, and quizzes at the same time for max speed.
   const [notes, youtubeLinks, googleFormLinks] = await Promise.all([
-    fetchNotesBySubject({ sub: subject.abbreviation }),
-    fetchYoutubeLinks({ subjectId: subject.subjectId }),
-    fetchFormLinks({ subjectId: subject.subjectId }),
+    fetchNotesBySubject({ abbreviation: subject.abbreviation }),
+    fetchYoutubeLinks({ abbreviation: subject.abbreviation }),
+    fetchFormLinks({ abbreviation: subject.abbreviation }),
   ]);
 
   // 3. Pass all the server-fetched data down to the client component

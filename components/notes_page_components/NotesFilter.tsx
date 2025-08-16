@@ -13,14 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
 import { useAuthStore } from "@/store/authStore";
 import {
@@ -29,15 +21,15 @@ import {
   Home,
   ListFilter,
   ListFilterPlus,
-  SquareArrowOutUpRight,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import DeleteFormLink from "./google_form_components/DeleteFormLink";
-import EditFormLink from "./google_form_components/EditFormLink";
+import { Dialog, DialogContent, DialogTitle } from "../ui/search-dialog";
+import { GoogleFormCard } from "./google_form_components/GoogleFormCard";
 import NoteCard from "./notes_helper_components/NoteCard";
-import DeleteYoutubeLink from "./youtube_components/DeleteYoutubeLink";
-import EditYoutubeLink from "./youtube_components/EditYoutubeLink";
+import { YouTubeCard } from "./youtube_components/YouTubeCard";
+import { Input } from "../ui/input";
 
 interface NotesFilterProps {
   subject: Subject;
@@ -74,7 +66,6 @@ const NotesFilter = ({
   // Fetch YouTube links and Google Forms for the subject
   const notes = initialNotes;
   const youtubeLinks = initialYoutubeLinks;
-  const googleFormLinks = initialGoogleFormLinks;
 
   const toggleFilter = (type: string) => {
     setSelectedFilters((prev) =>
@@ -99,10 +90,21 @@ const NotesFilter = ({
     return matchesFileType && matchesUnit && matchesUser;
   });
   const uniqueUsers = Array.from(new Set(notes.map((note) => note.users.name)));
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+
+  const [formSearchQuery, setFormSearchQuery] = useState("");
+  const [selectedFormType, setSelectedFormType] = useState("all");
+
+  const filteredForms = initialGoogleFormLinks.filter((form) => {
+    const matchesType =
+      selectedFormType === "all" || form.formType === selectedFormType;
+    const matchesSearch =
+      formSearchQuery === "" ||
+      form.quizName.toLowerCase().includes(formSearchQuery.toLowerCase());
+    return matchesType && matchesSearch;
+  });
 
   useEffect(() => {
-    // We wrap this in a small timeout to ensure the browser has finished
-    // painting all the server-rendered content before we try to scroll.
     const timer = setTimeout(() => {
       const hash = window.location.hash;
       if (hash) {
@@ -253,7 +255,7 @@ const NotesFilter = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredNotes.map((note) => (
                 <div key={note.noteId} id={`note-${note.noteId}`}>
-                  <NoteCard key={note.noteId} note={note} />
+                  <NoteCard note={note} />
                 </div>
               ))}
             </div>
@@ -292,122 +294,109 @@ const NotesFilter = ({
         </div>
       )}
 
-      {/* YouTube Videos */}
       {youtubeLinks && youtubeLinks.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-xl font-semibold mb-4">YouTube Videos</h2>
+          <h2 className="text-2xl font-bold tracking-tight mb-6">
+            Related Videos
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {youtubeLinks.map((link, index) => {
-              // Extract video ID from different YouTube URL formats
+            {youtubeLinks.map((link) => {
               const videoIdMatch = link.youtubeLink.match(
                 /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
               );
               const videoId = videoIdMatch ? videoIdMatch[1] : null;
-              return videoId ? (
-                <div key={index} id={`youtube-${link.id}`}>
-                  <div className="w-full aspect-video">
-                    <iframe
-                      className="w-full h-full rounded-lg"
-                      width="100%"
-                      height="100%"
-                      src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-                      title="YouTube video"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                  {(user?.name === link.createdBy ||
-                    user?.role === "admin") && (
-                    <div className="flex gap-2 items-center justify-between">
-                      <EditYoutubeLink
-                        id={link.id}
-                        url={link.youtubeLink}
-                        title={link.title}
-                        semester={subject.semester}
-                        abbreviation={subject.abbreviation}
-                      />
-                      <DeleteYoutubeLink
-                        id={link.id}
-                        semester={subject.semester}
-                        abbreviation={subject.abbreviation}
-                      />
-                    </div>
-                  )}
-                  <div className="text-sm text-neutral-500 dark:text-neutral-400 py-2 border border-neutral-200 dark:border-neutral-800 rounded-lg mt-2 text-center">
-                    {link.title || "No title provided"}
-                  </div>
-                  <div className="text-sm text-neutral-500 dark:text-neutral-400 py-2 border border-neutral-200 dark:border-neutral-800 rounded-lg mt-2 text-center">
-                    Added by {link.createdBy}
-                  </div>
+
+              if (!videoId) return null;
+
+              return (
+                <div key={link.id} id={`youtube-${link.id}`}>
+                  <YouTubeCard
+                    link={link}
+                    videoId={videoId}
+                    user={user}
+                    onPlay={setPlayingVideoId}
+                    semester={subject.semester}
+                    abbreviation={subject.abbreviation}
+                  />
                 </div>
-              ) : null;
+              );
             })}
           </div>
         </div>
       )}
 
-      {googleFormLinks && googleFormLinks.length > 0 && (
-        <div className="mt-10">
-          <h2 className="text-xl font-semibold mb-4">Google Forms Quiz</h2>
-          <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
-            <Table className="shad-table">
-              <TableHeader>
-                <TableRow className="shad-table-row-header items-center">
-                  <TableHead>Quiz Name</TableHead>
-                  <TableHead>Created By</TableHead>
-                  <TableHead className="w-[100px] pr-3">Visit</TableHead>
-                  {(user?.role === "admin" || user?.name === "teacher") && (
-                    <TableHead className="w-[70px] items-center">
-                      Actions
-                    </TableHead>
-                  )}
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {googleFormLinks.map((form) => (
-                  <TableRow key={form.id} className="shad-table-row">
-                    <TableCell className="whitespace-nowrap md:whitespace-normal">
-                      {form.quizName}
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap md:whitespace-normal">
-                      {form.createdBy}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-center gap-2">
-                        <a
-                          href={form.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Button variant="outline" className="w-fit">
-                            Open
-                            <SquareArrowOutUpRight className="h-4 w-4" />
-                          </Button>
-                        </a>
-                      </div>
-                    </TableCell>
-                    {(user?.name === form.createdBy ||
-                      user?.role === "admin") && (
-                      <TableCell className="flex gap-2">
-                        <EditFormLink
-                          semester={subject.semester}
-                          abbreviation={subject.abbreviation}
-                          url={form.url}
-                          id={form.id}
-                          quizName={form.quizName}
-                        />
-                        <DeleteFormLink
-                          id={form.id}
-                          semester={subject.semester}
-                          abbreviation={subject.abbreviation}
-                        />
-                      </TableCell>
-                    )}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+      <Dialog
+        open={!!playingVideoId}
+        onOpenChange={() => setPlayingVideoId(null)}
+      >
+        <DialogContent className="max-w-3xl p-0 border-0">
+          <DialogTitle></DialogTitle>
+          <div className="aspect-video">
+            <iframe
+              className="w-full h-full"
+              src={`https://www.youtube-nocookie.com/embed/${playingVideoId}?autoplay=1`}
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {initialGoogleFormLinks && initialGoogleFormLinks.length > 0 && (
+        <div className="mt-10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <h2 className="text-2xl font-bold tracking-tight">
+              Quizzes & Links
+            </h2>
+
+            <div className="flex flex-col sm:flex-row w-full md:w-auto gap-2">
+              <div className="relative w-full sm:w-auto">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by name..."
+                  className="pl-9 w-full sm:w-64"
+                  value={formSearchQuery}
+                  onChange={(e) => setFormSearchQuery(e.target.value)}
+                />
+              </div>
+              <Select
+                value={selectedFormType}
+                onValueChange={setSelectedFormType}
+              >
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue placeholder="Filter by type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="googleForm">Google Forms</SelectItem>
+                  <SelectItem value="assignment">Assignments</SelectItem>
+                  <SelectItem value="other">Other Links</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {filteredForms.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {filteredForms.map((form) => (
+                <GoogleFormCard
+                  key={form.id}
+                  form={form}
+                  user={user}
+                  semester={subject.semester}
+                  abbreviation={subject.abbreviation}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 px-6 border-2 border-dashed rounded-lg">
+              <h3 className="text-lg font-semibold">No Links Found</h3>
+              <p className="text-muted-foreground mt-1">
+                Try adjusting your search or filter settings.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

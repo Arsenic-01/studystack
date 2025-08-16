@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table";
 import { deleteUser } from "@/lib/actions/Admin.actions";
 import { Note } from "@/lib/appwrite_types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -90,7 +90,6 @@ export function AdminDataTable({
   const [updateUserData, setUpdateUserData] = useState<User | null>(null);
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [userLogData, setUserLogData] = useState<User | null>(null);
-  const queryClient = useQueryClient();
   const router = useRouter();
   const { isLoggedIn } = useAuthStore();
 
@@ -101,7 +100,6 @@ export function AdminDataTable({
   const deleteMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success("User deleted successfully");
     },
   });
@@ -354,7 +352,6 @@ export function AdminDataTable({
                 user={updateUserData}
                 onClose={() => setUpdateUserData(null)}
                 onUpdate={() => {
-                  queryClient.invalidateQueries({ queryKey: ["users"] });
                   setUpdateUserData(null);
                   toast.success("User updated successfully");
                 }}

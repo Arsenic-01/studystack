@@ -38,8 +38,6 @@ export async function updateUser(data: updateUserData) {
     const { id: userId, password, ...updateData } = data;
 
     const dataToUpdate: Partial<UpdateUserData> = { ...updateData };
-
-    // ✅ 2. Securely hash the password ONLY if a new one is provided
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       dataToUpdate.password = hashedPassword;
@@ -63,9 +61,6 @@ export async function updateUser(data: updateUserData) {
 export async function deleteUser(userId: string) {
   try {
     await db.deleteDocument(DATABASE_ID!, USER_COLLECTION_ID!, userId);
-
-    // ✅ 2. After deleting, revalidate the admin page cache
-    // IMPORTANT: This path should match the URL of your admin dashboard page.
     revalidatePath("/admin");
 
     return { success: true };

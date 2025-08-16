@@ -6,29 +6,30 @@ import { revalidatePath } from "next/cache";
 
 // Create new Google Form link
 export async function createFormLink({
-  subjectId,
   googleFormLink,
   createdBy,
   quizName,
   semester,
   abbreviation,
+  formType,
 }: {
-  subjectId: string;
   googleFormLink: string;
   createdBy: string;
   quizName: string;
   semester: string;
+  formType: "googleForm" | "assignment" | "other";
   abbreviation: string;
 }) {
   try {
     await db.createDocument(DATABASE_ID!, FORM_COLLECTION_ID!, ID.unique(), {
-      subjectId,
       url: googleFormLink,
       createdBy,
-      quizName,
+      title: quizName,
+      abbreviation,
+      semester,
+      formType,
     });
 
-    // ✅ 3. After creating, revalidate the subject page
     revalidatePath(`/semester/${semester}/${abbreviation}`);
     return { success: true };
   } catch (error) {
@@ -38,21 +39,27 @@ export async function createFormLink({
 }
 
 // Fetch all Google Form links for a subject
-export async function fetchFormLinks({ subjectId }: { subjectId: string }) {
+export async function fetchFormLinks({
+  abbreviation,
+}: {
+  abbreviation: string;
+}) {
   try {
-    if (!subjectId)
-      throw new Error("subjectId is required but was not provided.");
+    if (!abbreviation)
+      throw new Error("abbreviation is required but was not provided.");
 
     const response = await db.listDocuments(DATABASE_ID!, FORM_COLLECTION_ID!, [
-      Query.equal("subjectId", subjectId),
+      Query.equal("abbreviation", abbreviation),
     ]);
 
     return response.documents.map((doc) => ({
       id: doc.$id,
       url: doc.url,
       createdBy: doc.createdBy,
-      quizName: doc.quizName,
-      subjectId: doc.subjectId,
+      quizName: doc.title,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
+      formType: doc.formType,
     }));
   } catch (error) {
     console.error("Error fetching Google Form links:", error);
@@ -67,17 +74,20 @@ export async function editFormLink({
   quizName,
   semester,
   abbreviation,
+  formType,
 }: {
   id: string;
   googleFormLink: string;
   quizName: string;
   semester: string;
   abbreviation: string;
+  formType: "googleForm" | "assignment" | "other";
 }) {
   try {
     await db.updateDocument(DATABASE_ID!, FORM_COLLECTION_ID!, id, {
       url: googleFormLink,
-      quizName,
+      title: quizName,
+      formType,
     });
     revalidatePath(`/semester/${semester}/${abbreviation}`);
     return { success: true };

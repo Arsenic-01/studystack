@@ -202,7 +202,7 @@ export default function SearchBar() {
   return (
     <>
       <button
-        className="hidden lg:inline-flex bg-background items-center text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 h-9 rounded-md border border-neutral-200 dark:border-neutral-800 px-3 py-2 text-sm shadow-xs transition outline-none focus-visible:ring-[3px]"
+        className="hidden lg:inline-flex bg-background items-center text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 h-9 rounded-md border border-neutral-200 dark:border-neutral-800 px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
         onClick={() => setOpen(true)}
       >
         <SearchIcon className="text-muted-foreground/80 -ms-1 me-3" size={16} />

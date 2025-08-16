@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -23,21 +23,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { youtubeSchema } from "@/components/validation_schema/validation";
 import { useAuthStore } from "@/store/authStore";
-import { IconBrandYoutube } from "@tabler/icons-react";
+import { FaYoutube } from "react-icons/fa6";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 const YoutubeModal = ({
-  subjectId,
   abbreviation,
   semester,
 }: {
-  subjectId: string;
   abbreviation: string;
   semester: string;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
-  const queryClient = useQueryClient();
 
   // Initialize form with react-hook-form and Zod validation
   const form = useForm({
@@ -57,7 +53,6 @@ const YoutubeModal = ({
       const payload = {
         youtubeLink: values.youtubeLink,
         user: user?.name,
-        subjectId: subjectId,
         abbreviation: abbreviation,
         semester: semester,
         title: values.title,
@@ -76,10 +71,7 @@ const YoutubeModal = ({
         toast.error(result.error || "Failed to embed video.");
       } else {
         toast.success("YouTube video embedded successfully");
-        form.reset(); // Reset form on success
-        queryClient.invalidateQueries({
-          queryKey: ["youtubeLinks", subjectId],
-        });
+        form.reset();
       }
     } catch (error) {
       console.error("Error uploading YouTube link:", error);
@@ -96,7 +88,7 @@ const YoutubeModal = ({
               className="rounded-full w-full md:w-fit p-2"
               variant="outline"
             >
-              <IconBrandYoutube />
+              <FaYoutube />
               <span className="md:hidden inline">Youtube Video</span>
             </Button>
           </DialogTrigger>
@@ -111,7 +103,7 @@ const YoutubeModal = ({
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleYoutubeEmbed)}
-                className="flex gap-2 justify-between items-center"
+                className="flex flex-col md:flex-row gap-2 justify-between items-center"
               >
                 <FormField
                   control={form.control}
@@ -145,9 +137,10 @@ const YoutubeModal = ({
                     </FormItem>
                   )}
                 />
-                <Button type="submit" size="sm" className="px-3">
-                  <span className="sr-only">Embed</span>
-                  <Link />
+                <Button type="submit" className="mt-2 px-3 w-full md:w-fit">
+                  <span className="sr-only">Add Link</span>
+                  <span className="md:hidden">Add Youtube Link</span>
+                  <PlusCircle />
                 </Button>
               </form>
             </Form>

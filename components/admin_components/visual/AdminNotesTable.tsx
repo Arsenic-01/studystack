@@ -39,7 +39,6 @@ import {
   AlertDialogTitle,
 } from "../../ui/alert-dialog";
 import { deleteNote } from "@/lib/actions/Notes.actions";
-import { useQueryClient } from "@tanstack/react-query";
 import { Note } from "@/lib/appwrite_types";
 
 export function NotesTable({ notes }: { notes: Note[] }) {
@@ -49,8 +48,6 @@ export function NotesTable({ notes }: { notes: Note[] }) {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [open, setOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
-
-  const queryClient = useQueryClient();
 
   // Get unique teacher names
   const uniqueTeachers = useMemo(
@@ -86,7 +83,7 @@ export function NotesTable({ notes }: { notes: Note[] }) {
 
   const closeModal = () => {
     setOpen(false);
-    setSelectedNote(null); // Reset selected note when modal closes
+    setSelectedNote(null);
   };
 
   const handleEdit = (note: Note) => {
@@ -99,26 +96,26 @@ export function NotesTable({ notes }: { notes: Note[] }) {
     deleteNote({
       noteId: selectedNote.noteId,
       fileId: selectedNote.fileId,
-      semester: "currentSemester",
-      abbreviation: "currentAbbreviation",
+      semester: selectedNote.semester,
+      abbreviation: selectedNote.abbreviation,
     })
       .then(() => {
         toast.success("Note deleted successfully");
-        queryClient.invalidateQueries({ queryKey: ["notes"] });
       })
       .catch(() => toast.error("Error deleting note"))
       .finally(() => {
         setAlertOpen(false);
-        setSelectedNote(null); // Clear the selected note after delete
+        setSelectedNote(null);
       });
   };
 
   const columns: ColumnDef<Note>[] = [
     { accessorKey: "title", header: "Title" },
     {
-      accessorKey: "uploadedBy",
+      accessorFn: (row) => row.users.name,
+      accessorKey: "users",
       header: "Uploaded By",
-      cell: ({ row }) => row.getValue("uploadedBy") || "Unknown",
+      cell: ({ getValue }) => getValue<string>() || "Unknown",
     },
     {
       accessorKey: "createdAt",
@@ -127,14 +124,12 @@ export function NotesTable({ notes }: { notes: Note[] }) {
         format(new Date(row.getValue("createdAt")), "dd MMM yyyy, hh:mm a"),
     },
     {
-      accessorKey: "fileId",
+      accessorKey: "fileUrl",
       header: "File",
       cell: ({ row }) => (
         <Button variant="outline" asChild>
           <Link
-            href={`https://cloud.appwrite.io/v1/storage/buckets/67a6452c003b5b6b6502/files/${row.getValue(
-              "fileId"
-            )}/view?project=679a700c0013ee3706ba`}
+            href={`${row.getValue("fileUrl")}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -268,6 +263,8 @@ export function NotesTable({ notes }: { notes: Note[] }) {
           title={selectedNote.title}
           description={selectedNote.description}
           type_of_file={selectedNote.type_of_file!}
+          semester={selectedNote.semester}
+          abbreviation={selectedNote.abbreviation}
           fromAdmin
         />
       )}

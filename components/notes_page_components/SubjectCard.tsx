@@ -26,18 +26,18 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
       <div className="flex flex-col sm:inline-flex gap-3 justify-end pt-5  w-full">
         <div className="flex flex-col md:flex-row justify-end w-full gap-2">
           <div className="flex items-center justify-center gap-2">
-            <GoogleFormModal subjectId={subject.subjectId} />
+            <GoogleFormModal
+              abbreviation={subject.abbreviation}
+              semester={subject.semester}
+            />
             <YoutubeModal
-              subjectId={subject.subjectId}
               semester={subject.semester}
               abbreviation={subject.abbreviation}
             />
           </div>
           <UploadNotesButton
-            subjectId={subject.subjectId}
-            sem={subject.semester}
+            semester={subject.semester}
             subjectUnit={subject.unit!}
-            subjectName={subject.name}
             abbreviation={subject.abbreviation}
           />
 

@@ -1,7 +1,8 @@
+// Your updated GoogleFormModal.tsx component
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -18,92 +19,165 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  googleFormSchema,
-  GoogleFormSchemaType,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  linkSchema,
+  LinkSchemaType,
 } from "@/components/validation_schema/validation";
-import { useAuthStore } from "@/store/authStore";
-import { IconBrandGoogle } from "@tabler/icons-react";
-import { toast } from "sonner";
 import { createFormLink } from "@/lib/actions/Form.actions";
-import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/store/authStore";
+import { useState } from "react";
+import { FaLink } from "react-icons/fa6";
+import { toast } from "sonner";
 
-const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
+const GoogleFormModal = ({
+  abbreviation,
+  semester,
+}: {
+  abbreviation: string;
+  semester: string;
+}) => {
   const { user, isLoggedIn } = useAuthStore();
-  const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
 
-  // Initialize form with react-hook-form and Zod validation
-  const form = useForm<GoogleFormSchemaType>({
-    resolver: zodResolver(googleFormSchema),
+  const form = useForm<LinkSchemaType>({
+    resolver: zodResolver(linkSchema),
     defaultValues: {
-      quizName: "",
-      googleFormLink: "",
+      formType: "googleForm",
+      name: "",
+      url: "",
     },
   });
 
-  // Handle form submission
-  const handleGoogleFormEmbed = async (values: GoogleFormSchemaType) => {
+  const formType = form.watch("formType");
+
+  const modalContent = {
+    googleForm: {
+      title: "Add Google Form",
+      description: "Paste the 'viewform' link of your quiz or survey.",
+      namePlaceholder: "Enter Quiz Name",
+      urlPlaceholder: "Enter Google Form Link",
+    },
+    assignment: {
+      title: "Add Assignment Link",
+      description:
+        "Provide a link to the assignment details or submission page.",
+      namePlaceholder: "Enter Assignment Title",
+      urlPlaceholder: "Enter Assignment Link",
+    },
+    other: {
+      title: "Add External Link",
+      description: "Add any other relevant link for this subject.",
+      namePlaceholder: "Enter Link Name",
+      urlPlaceholder: "Enter URL",
+    },
+  };
+
+  const currentContent = modalContent[formType];
+
+  const handleFormSubmit = async (values: LinkSchemaType) => {
     if (!user?.name) {
-      toast.error("You must be logged in to embed a Google Form.");
+      toast.error("You must be logged in to add a link.");
       return;
     }
 
     const payload = {
-      quizName: values.quizName,
-      googleFormLink: values.googleFormLink,
+      quizName: values.name,
+      googleFormLink: values.url,
+      formType: values.formType,
       createdBy: user.name,
-      subjectId,
+      abbreviation: abbreviation,
+      semester: semester,
     };
 
     const response = await createFormLink(payload);
     if (response) {
-      toast.success("Google Form link uploaded successfully");
+      toast.success("Link added successfully!");
       form.reset();
-      queryClient.invalidateQueries({
-        queryKey: ["googleFormLinks", subjectId],
-      });
+      setIsOpen(false);
+    } else {
+      toast.error("Failed to add link. Please try again.");
     }
   };
 
   return (
     <>
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button
               className="rounded-full w-full md:w-fit p-2"
               variant="outline"
             >
-              <IconBrandGoogle />
-              <span className="md:hidden inline">Google Form</span>
+              <FaLink className="size-2" />
+              <span className="md:hidden inline">Add Link</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="lg:max-w-md">
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Embed Google Form</DialogTitle>
-              <DialogDescription className="pb-5 lg:pb-0">
-                Copy the link from Google Forms and paste it here
+              <DialogTitle>{currentContent.title}</DialogTitle>
+              <DialogDescription>
+                {currentContent.description}
               </DialogDescription>
             </DialogHeader>
 
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(handleGoogleFormEmbed)}
-                className="flex flex-col md:flex-row gap-2 justify-between items-center"
+                onSubmit={form.handleSubmit(handleFormSubmit)}
+                className="space-y-4"
               >
                 <FormField
                   control={form.control}
-                  name="quizName"
+                  name="formType"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem>
+                      <FormLabel>Link Type</FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          // Reset URL field to clear previous validation errors
+                          form.resetField("url");
+                        }}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="googleForm">
+                            Google Form
+                          </SelectItem>
+                          <SelectItem value="assignment">Assignment</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter Quiz Name"
+                          placeholder={currentContent.namePlaceholder}
                           {...field}
-                          className="w-full"
                         />
                       </FormControl>
                       <FormMessage />
@@ -113,15 +187,14 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
 
                 <FormField
                   control={form.control}
-                  name="googleFormLink"
+                  name="url"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem>
+                      <FormLabel>Link URL</FormLabel>
                       <FormControl>
                         <Input
-                          id="link"
-                          placeholder="Enter Your Google Form Link"
+                          placeholder={currentContent.urlPlaceholder}
                           {...field}
-                          className="w-full"
                         />
                       </FormControl>
                       <FormMessage />
@@ -130,12 +203,10 @@ const GoogleFormModal = ({ subjectId }: { subjectId: string }) => {
                 />
                 <Button
                   type="submit"
-                  size="sm"
-                  className="mt-2 px-3 w-full md:w-fit"
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
                 >
-                  <span className="md:hidden block">Embed Google Form</span>
-                  <span className="sr-only">Embed</span>
-                  <Link />
+                  {form.formState.isSubmitting ? "Adding..." : "Add Link"}
                 </Button>
               </form>
             </Form>

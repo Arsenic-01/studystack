@@ -4,7 +4,7 @@ import { ID } from "node-appwrite";
 
 export async function POST(req: NextRequest) {
   try {
-    const { youtubeLink, user, subjectId, abbreviation, semester, title } =
+    const { youtubeLink, user, abbreviation, semester, title } =
       await req.json();
 
     // Validate input
@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
       {
         url: youtubeLink,
         createdBy: user,
-        subjectId: subjectId,
         abbreviation,
         semester,
         title,

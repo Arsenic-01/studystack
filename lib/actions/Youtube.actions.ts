@@ -3,23 +3,26 @@
 import { revalidatePath } from "next/cache";
 import { DATABASE_ID, db, Query, YOUTUBE_COLLECTION_ID } from "../appwrite";
 
-export async function fetchYoutubeLinks({ subjectId }: { subjectId: string }) {
+export async function fetchYoutubeLinks({
+  abbreviation,
+}: {
+  abbreviation: string;
+}) {
   try {
-    if (!subjectId) {
-      throw new Error("subjectId is required but was not provided.");
+    if (!abbreviation) {
+      throw new Error("abbreviation is required but was not provided.");
     }
 
     const response = await db.listDocuments(
       DATABASE_ID!,
       YOUTUBE_COLLECTION_ID!,
-      [Query.equal("subjectId", subjectId)]
+      [Query.equal("abbreviation", abbreviation)]
     );
 
     return response.documents.map((doc) => ({
       id: doc.$id,
       title: doc.title,
       youtubeLink: doc.url,
-      subjectId: doc.subjectId,
       createdBy: doc.createdBy,
       abbreviation: doc.abbreviation,
       semester: doc.semester,
@@ -69,8 +72,6 @@ export async function deleteYoutubeLink({
     await db.deleteDocument(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, id);
     revalidatePath(`/semester/${semester}/${abbreviation}`);
     return { success: true };
-
-    return true;
   } catch (error) {
     console.error("Error deleting YouTube link:", error);
     return { success: false, error: "Failed to delete link." };

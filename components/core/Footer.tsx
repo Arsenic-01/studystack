@@ -9,7 +9,7 @@ import { footerIcons } from "../../data/index";
 const Footer = () => {
   const { user } = useAuthStore();
   const iconClass =
-    "text-neutral-900/80 transition-all ease-in-out duration-300 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200";
+    "text-neutral-900/ transition-colors ease-in-out duration-300 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200";
 
   return (
     <div>
@@ -38,7 +38,7 @@ const Footer = () => {
                 key={_}
                 target="_blank"
                 href={item.href}
-                className="text-base text-neutral-900/80 transition-all ease-in-out duration-300 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200"
+                className="text-base text-neutral-900/80 transition-colors ease-in-out duration-300 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200"
               >
                 {item.title}
               </Link>

@@ -14,6 +14,7 @@ export async function middleware(req: NextRequest) {
   try {
     const users = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
       Query.equal("sessionToken", sessionToken),
+      Query.limit(1),
     ]);
 
     if (users.total === 0) {

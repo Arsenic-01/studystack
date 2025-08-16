@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/select";
 import { uploadNoteSchema } from "@/components/validation_schema/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -34,9 +33,7 @@ import { toast } from "sonner";
 interface UploadNotesModalProps {
   open: boolean;
   closeModal: () => void;
-  subjectId: string;
-  subjectName: string;
-  sem: string;
+  semester: string;
   userId: string;
   userName: string;
   subjectUnit: string[];
@@ -46,17 +43,14 @@ interface UploadNotesModalProps {
 const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
   open,
   closeModal,
-  subjectId,
-  subjectName,
-  sem,
+  semester,
   userId,
   userName,
   subjectUnit,
   abbreviation,
 }) => {
   const [uploading, setUploading] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const queryClient = useQueryClient();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const form = useForm({
     resolver: zodResolver(uploadNoteSchema),
@@ -72,21 +66,22 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     fileType: string;
     unit: string;
   }) => {
-    if (!selectedFiles.length || !subjectId || !sem || !userId) return;
+    if (!selectedFile || !semester || !userId) {
+      toast.error("Please select a file to upload.");
+      return;
+    }
 
     setUploading(true);
     const formData = new FormData();
-    selectedFiles.forEach((file) => formData.append("files", file));
+    formData.append("file", selectedFile);
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("fileType", data.fileType);
-    formData.append("subjectId", subjectId);
-    formData.append("sem", sem);
+    formData.append("semester", semester);
     formData.append("userId", userId);
     formData.append("userName", userName);
-    formData.append("unit", data.unit); // Sending selected unit
-    formData.append("subjectName", subjectName); // Sending subject name
-    formData.append("abbreviation", abbreviation); // Sending subject abbreviation
+    formData.append("unit", data.unit);
+    formData.append("abbreviation", abbreviation);
     try {
       const response = await fetch("/api/upload", {
         method: "POST",
@@ -98,7 +93,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
         toast.success("File Uploaded Successfully! 🎉");
         closeModal();
         form.reset();
-        queryClient.invalidateQueries({ queryKey: ["subjectNotes"] });
+        setSelectedFile(null);
       } else {
         console.error("Upload error:", result.error);
       }
@@ -108,7 +103,9 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
       setUploading(false);
     }
   };
-  // console.log(subjectUnit);
+  const handleFileSelect = (files: File[]) => {
+    setSelectedFile(files[0] || null);
+  };
   return (
     <Dialog open={open} onOpenChange={closeModal}>
       <DialogContent className="lg:max-w-xl">
@@ -215,7 +212,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
 
             {/* File Upload */}
             <div className="w-full min-h-32 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-              <FileUpload onChange={setSelectedFiles} />
+              <FileUpload onChange={handleFileSelect} />
             </div>
 
             {/* Upload Button */}
@@ -223,7 +220,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
               <Button
                 type="submit"
                 className="w-full sm:w-fit flex items-center gap-2"
-                disabled={uploading || !selectedFiles.length}
+                disabled={uploading || !selectedFile}
               >
                 {uploading ? "Uploading..." : "Upload Notes"}
                 <Upload />

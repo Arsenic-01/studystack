@@ -13,8 +13,6 @@ import {
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
 
-import { useQueryClient } from "@tanstack/react-query";
-
 const DeleteYoutubeLink = ({
   id,
   semester,
@@ -24,8 +22,6 @@ const DeleteYoutubeLink = ({
   semester: string;
   abbreviation: string;
 }) => {
-  const queryClient = useQueryClient();
-
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -48,7 +44,6 @@ const DeleteYoutubeLink = ({
               try {
                 await deleteYoutubeLink({ id, semester, abbreviation });
                 toast.success("YouTube link deleted successfully");
-                queryClient.invalidateQueries({ queryKey: ["youtubeLinks"] });
               } catch (error) {
                 toast.error("Failed to delete the video.");
                 console.error(error);

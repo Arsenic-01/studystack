@@ -7,15 +7,11 @@ import { Button } from "../../ui/button";
 import UploadNotesModal from "./UploadNotesModal";
 
 const UploadNotesButton = ({
-  subjectId,
-  sem,
-  subjectName,
+  semester,
   subjectUnit,
   abbreviation,
 }: {
-  subjectId: string;
-  sem: string;
-  subjectName: string;
+  semester: string;
   subjectUnit: string[];
   abbreviation: string;
 }) => {
@@ -38,9 +34,7 @@ const UploadNotesButton = ({
           subjectUnit={subjectUnit}
           open={open}
           closeModal={() => setOpen(false)}
-          subjectId={subjectId!}
-          subjectName={subjectName}
-          sem={sem!}
+          semester={semester!}
           userId={user?.userId || ""}
           userName={user?.name || ""}
           abbreviation={abbreviation}

@@ -14,69 +14,104 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { googleFormSchema } from "@/components/validation_schema/validation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  linkSchema,
+  LinkSchemaType,
+} from "@/components/validation_schema/validation";
 import { editFormLink } from "@/lib/actions/Form.actions";
-
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { Edit, Pencil } from "lucide-react";
-import { useEffect } from "react";
+import { Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+// --- CHANGE 1: Update props to include formType ---
 const EditFormLink = ({
   id,
   url,
   quizName,
+  formType: initialFormType, // Receive the initial form type
   semester,
   abbreviation,
 }: {
   id: string;
   url: string;
   quizName: string;
+  formType: "googleForm" | "assignment" | "other";
   semester: string;
   abbreviation: string;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
-  const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const form = useForm({
-    resolver: zodResolver(googleFormSchema),
+  const form = useForm<LinkSchemaType>({
+    resolver: zodResolver(linkSchema),
     defaultValues: {
-      googleFormLink: url ?? "",
-      quizName: quizName ?? "",
+      formType: initialFormType,
+      name: quizName ?? "",
+      url: url ?? "",
     },
   });
 
+  const formType = form.watch("formType");
+
   useEffect(() => {
     form.reset({
-      googleFormLink: url,
-      quizName: quizName,
+      formType: initialFormType,
+      name: quizName,
+      url: url,
     });
-  }, [quizName, url, form]);
+  }, [quizName, url, initialFormType, form]);
 
-  const handleFormLinkUpdate = async (values: {
-    googleFormLink: string;
-    quizName: string;
-  }) => {
+  const modalContent = {
+    googleForm: {
+      title: "Edit Google Form",
+      description: "Update the name or link for this Google Form.",
+      namePlaceholder: "Enter Quiz Name",
+      urlPlaceholder: "Enter Google Form Link",
+    },
+    assignment: {
+      title: "Edit Assignment Link",
+      description: "Update the name or link for this assignment.",
+      namePlaceholder: "Enter Assignment Title",
+      urlPlaceholder: "Enter Assignment Link",
+    },
+    other: {
+      title: "Edit External Link",
+      description: "Update the name or link for this resource.",
+      namePlaceholder: "Enter Link Name",
+      urlPlaceholder: "Enter URL",
+    },
+  };
+
+  const currentContent = modalContent[formType];
+
+  const handleFormLinkUpdate = async (values: LinkSchemaType) => {
     try {
       await editFormLink({
-        googleFormLink: values.googleFormLink,
-        quizName: values.quizName,
         id,
+        quizName: values.name,
+        googleFormLink: values.url,
+        formType: values.formType,
         semester,
         abbreviation,
       });
-      toast.success("Google Form link updated successfully");
-
-      queryClient.invalidateQueries({ queryKey: ["formLinks"] });
-      form.reset();
+      toast.success("Link updated successfully");
+      setIsOpen(false); // Close dialog on success
     } catch (error) {
-      console.error("Error updating Google Form link:", error);
+      console.error("Error updating link:", error);
       toast.error("Something went wrong. Please try again.");
     }
   };
@@ -84,33 +119,68 @@ const EditFormLink = ({
   return (
     <>
       {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="w-fit">
-              Edit
-              <Pencil />
+            <Button variant="outline" className="w-full md:w-fit">
+              <Pencil className="h-4 w-4" />
+              Edit Link
             </Button>
           </DialogTrigger>
-          <DialogContent className="lg:max-w-md">
+          <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Google Form Link</DialogTitle>
-              <DialogDescription className="pb-5 lg:pb-0">
-                Copy the link from Google Forms and paste it here
+              <DialogTitle>{currentContent.title}</DialogTitle>
+              <DialogDescription>
+                {currentContent.description}
               </DialogDescription>
             </DialogHeader>
 
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleFormLinkUpdate)}
-                className="flex flex-col md:flex-row gap-2 justify-between items-center"
+                className="space-y-4"
               >
                 <FormField
                   control={form.control}
-                  name="quizName"
+                  name="formType"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem>
+                      <FormLabel>Link Type</FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.resetField("url");
+                        }}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="googleForm">
+                            Google Form
+                          </SelectItem>
+                          <SelectItem value="assignment">Assignment</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter Quiz Name" {...field} />
+                        <Input
+                          placeholder={currentContent.namePlaceholder}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -119,13 +189,13 @@ const EditFormLink = ({
 
                 <FormField
                   control={form.control}
-                  name="googleFormLink"
+                  name="url"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem>
+                      <FormLabel>Link URL</FormLabel>
                       <FormControl>
                         <Input
-                          id="link"
-                          placeholder="Enter Google Form link"
+                          placeholder={currentContent.urlPlaceholder}
                           {...field}
                         />
                       </FormControl>
@@ -135,12 +205,10 @@ const EditFormLink = ({
                 />
                 <Button
                   type="submit"
-                  size="sm"
-                  className="mt-2 px-3 w-full md:w-fit"
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
                 >
-                  <span className="sr-only">Update Link</span>
-                  <span className="md:hidden">Update Form Link</span>
-                  <Edit />
+                  {form.formState.isSubmitting ? "Saving..." : "Save Changes"}
                 </Button>
               </form>
             </Form>

@@ -21,7 +21,6 @@ import { youtubeSchema } from "@/components/validation_schema/validation";
 import { editYoutubeLink } from "@/lib/actions/Youtube.actions";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query"; // ✅ Import useQueryClient
 import { Edit, Pencil } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -41,7 +40,6 @@ const EditYoutubeLink = ({
   abbreviation: string;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
-  const queryClient = useQueryClient(); // ✅ Initialize queryClient
 
   const form = useForm({
     resolver: zodResolver(youtubeSchema),
@@ -71,7 +69,6 @@ const EditYoutubeLink = ({
       });
       toast.success("YouTube video embed updated successfully");
       form.reset({ youtubeLink: values.youtubeLink, title: values.title });
-      queryClient.invalidateQueries({ queryKey: ["youtubeLinks"] });
     } catch (error) {
       console.error("Error updating YouTube link:", error);
       toast.error("Something went wrong. Please try again.");
@@ -133,11 +130,7 @@ const EditYoutubeLink = ({
                     </FormItem>
                   )}
                 />
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="mt-2 px-3 w-full md:w-fit"
-                >
+                <Button type="submit" className="mt-2 px-3 w-full md:w-fit">
                   <span className="sr-only">Update Link</span>
                   <span className="md:hidden">Update Youtube Link</span>
                   <Edit />

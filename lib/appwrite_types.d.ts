@@ -26,8 +26,8 @@ export type Note = {
   description: string;
   createdAt: string;
   fileId: string;
-  sem: string;
-  subjectId: string;
+  semester: string;
+  abbreviation: string;
   users: { name: string; userId: string };
   type_of_file:
     | "Notes"
@@ -43,6 +43,10 @@ export type Note = {
     | "Syllabus"
     | "Other";
   unit: string[];
+  fileUrl: string;
+  mimeType: string;
+  fileSize: string;
+  thumbNail?: string;
 };
 
 export interface Subject {
@@ -58,7 +62,6 @@ export interface Youtube {
   id: string;
   title: string;
   youtubeLink: string;
-  subjectId: string;
   abbreviation: string;
   semester: string;
   createdBy: string;
@@ -68,6 +71,8 @@ export interface Form {
   id: string;
   createdBy: string;
   url: string;
-  subjectId: string;
   quizName: string;
+  abbreviation: string;
+  semester: string;
+  formType: "googleForm" | "assignment" | "other";
 }
