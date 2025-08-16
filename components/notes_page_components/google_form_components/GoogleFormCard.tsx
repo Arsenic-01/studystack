@@ -72,7 +72,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg transition-colors hover:bg-muted/50">
       <div className="flex items-center gap-4 w-full sm:w-auto">
-        <div className={`p-3 rounded-full ${config.bg}`}>
+        <div className={`p-2 rounded-full ${config.bg}`}>
           <Icon className={`size-5 ${config.color}`} />
         </div>
         <div className="flex-grow">

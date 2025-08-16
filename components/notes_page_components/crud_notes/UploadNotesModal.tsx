@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { uploadNoteSchema } from "@/components/validation_schema/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Upload } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -60,49 +60,124 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     },
   });
 
+  const CHUNK_SIZE = 4 * 1024 * 1024; // 4MB (below Vercel Hobby 4.5MB limit)
+
   const handleFileUpload = async (data: {
     title: string;
     description: string;
     fileType: string;
     unit: string;
   }) => {
-    if (!selectedFile || !semester || !userId) {
+    if (!selectedFile) {
       toast.error("Please select a file to upload.");
       return;
     }
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("title", data.title);
-    formData.append("description", data.description);
-    formData.append("fileType", data.fileType);
-    formData.append("semester", semester);
-    formData.append("userId", userId);
-    formData.append("userName", userName);
-    formData.append("unit", data.unit);
-    formData.append("abbreviation", abbreviation);
     try {
-      const response = await fetch("/api/upload", {
+      // 1) Start resumable session
+      const initRes = await fetch("/api/initiate-upload", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: selectedFile.name,
+          fileType: selectedFile.type || "application/octet-stream",
+        }),
       });
-
-      const result = await response.json();
-      if (result.success) {
-        toast.success("File Uploaded Successfully! 🎉");
-        closeModal();
-        form.reset();
-        setSelectedFile(null);
-      } else {
-        console.error("Upload error:", result.error);
+      const initJson = await initRes.json();
+      if (!initRes.ok || !initJson?.uploadUrl) {
+        throw new Error(
+          initJson?.error || "Failed to start Drive upload session."
+        );
       }
-    } catch (error) {
-      console.error("Upload failed", error);
+      const uploadUrl: string = initJson.uploadUrl;
+
+      // 2) Chunked upload
+      const total = selectedFile.size;
+      let offset = 0;
+      let driveFileId: string | null = null;
+
+      while (offset < total) {
+        const end = Math.min(offset + CHUNK_SIZE, total);
+        const chunk = selectedFile.slice(offset, end);
+        const contentRange = `bytes ${offset}-${end - 1}/${total}`;
+
+        // Send chunk → our proxy → Drive
+        const res = await fetch("/api/upload-chunk", {
+          method: "POST",
+          headers: {
+            "x-upload-url": uploadUrl,
+            "x-content-range": contentRange,
+            "x-content-type": selectedFile.type || "application/octet-stream",
+            "Content-Length": String(chunk.size),
+          },
+          body: chunk,
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || json?.success === false) {
+          console.error("Chunk upload failure:", json);
+          throw new Error(
+            json?.error || `Chunk upload failed at ${offset}-${end - 1}`
+          );
+        }
+
+        // Mid-upload normalized response: { resume: true, range }
+        if (json.resume) {
+          offset = end;
+          // You can show progress UI here:
+          // const pct = Math.round((end / total) * 100);
+          // setProgress(pct);
+          continue;
+        }
+
+        // Final response: { resume: false, data: { id, ... } }
+        if (json.resume === false) {
+          driveFileId = json?.data?.id ?? null;
+          offset = end;
+        }
+      }
+
+      if (!driveFileId) {
+        throw new Error("Drive did not return a file ID on completion.");
+      }
+
+      // 3) Save your metadata (your existing API)
+      const saveRes = await fetch("/api/save-note", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileId: driveFileId,
+          title: data.title,
+          description: data.description,
+          type_of_file: data.fileType,
+          unit: data.unit,
+          semester,
+          userId,
+          userName,
+          abbreviation,
+        }),
+      });
+      const saveJson = await saveRes.json();
+      if (!saveRes.ok || !saveJson?.success) {
+        throw new Error(saveJson?.error || "Failed to save note metadata.");
+      }
+
+      toast.success("File Uploaded Successfully! 🎉");
+      closeModal();
+      form.reset();
+      setSelectedFile(null);
+    } catch (err: unknown) {
+      console.error("Upload process failed", err);
+      toast.error(
+        err instanceof Error ? err.message : "Upload failed. Please try again."
+      );
     } finally {
       setUploading(false);
     }
   };
+
   const handleFileSelect = (files: File[]) => {
     setSelectedFile(files[0] || null);
   };
@@ -215,15 +290,23 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
               <FileUpload onChange={handleFileSelect} />
             </div>
 
-            {/* Upload Button */}
             <div className="flex w-full justify-end items-center mt-4">
               <Button
                 type="submit"
-                className="w-full sm:w-fit flex items-center gap-2"
+                className="w-full sm:w-fit"
                 disabled={uploading || !selectedFile}
               >
-                {uploading ? "Uploading..." : "Upload Notes"}
-                <Upload />
+                {uploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Note
+                  </>
+                )}
               </Button>
             </div>
           </form>
