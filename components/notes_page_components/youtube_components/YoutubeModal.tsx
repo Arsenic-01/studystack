@@ -137,7 +137,10 @@ const YoutubeModal = ({
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="mt-2 px-3 w-full md:w-fit">
+                <Button
+                  type="submit"
+                  className="mt-2 md:mt-0 px-3 w-full md:w-fit"
+                >
                   <span className="sr-only">Add Link</span>
                   <span className="md:hidden">Add Youtube Link</span>
                   <PlusCircle />

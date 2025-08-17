@@ -54,8 +54,8 @@ const linkTypeConfig = {
   other: {
     icon: LinkIcon,
     label: "Other Link",
-    color: "text-slate-600 dark:text-slate-500",
-    bg: "bg-slate-100 dark:bg-slate-900/50",
+    color: "text-slate-600 dark:text-slate-300",
+    bg: "bg-slate-200 dark:bg-neutral-800",
   },
 };
 
@@ -70,7 +70,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg transition-colors hover:bg-muted/50">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-muted/50">
       <div className="flex items-center gap-4 w-full sm:w-auto">
         <div className={`p-2 rounded-full ${config.bg}`}>
           <Icon className={`size-5 ${config.color}`} />

@@ -1,12 +1,9 @@
 "use client";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"; // <-- Import Popover components
 import { deleteNote } from "@/lib/actions/Notes.actions";
 import { Note } from "@/lib/appwrite_types";
 import { useAuthStore } from "@/store/authStore";
@@ -21,6 +18,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
 import EditNotesModal from "../crud_notes/EditNotesModal";
@@ -41,14 +39,10 @@ const CardOwner = ({
   formattedDate: string;
 }) => {
   const { user } = useAuthStore();
-  const [open, setOpen] = useState(false);
-  const [alertOpen, setAlertOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const closeModal = () => {
-    setOpen(false);
-    setTimeout(() => {
-      document.body.style.removeProperty("pointer-events");
-    }, 300);
+    setEditModalOpen(false);
   };
 
   const handleDelete = () => {
@@ -64,10 +58,14 @@ const CardOwner = ({
       .catch(() => toast.error("Error deleting note"));
   };
 
+  // State to control Popover visibility, so we can close it from a button click
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+      {/* STEP 1: Use Popover as the main component */}
+      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+        <PopoverTrigger asChild>
           <Button variant="outline" size={"icon"}>
             {user?.userId === note.users.userId || user?.role === "admin" ? (
               <EllipsisVertical />
@@ -75,38 +73,75 @@ const CardOwner = ({
               <Info />
             )}
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>Uploaded by {note.users.name}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel>Uploaded at {formattedDate}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel>File Name: {note.title}</DropdownMenuLabel>
-          <DropdownMenuLabel>
-            File size: {formatFileSize(note.fileSize)}
-          </DropdownMenuLabel>
-          <DropdownMenuLabel>Mime type: {note.mimeType}</DropdownMenuLabel>
+        </PopoverTrigger>
+        <PopoverContent className="w-56 py-2 px-0">
+          <div className="space-y-2 pt-1">
+            <p className="text-sm font-medium px-3">
+              Uploaded by {note.users.name}
+            </p>
+            <hr className="border-t-1 border-neutral-300 dark:border-neutral-800" />
+            <p className="text-sm text-muted-foreground px-3 pt-2">
+              At: {formattedDate}
+            </p>
+            <p className="text-sm text-muted-foreground px-3">
+              File size: {formatFileSize(note.fileSize)}
+            </p>
+            <p className="text-sm text-muted-foreground pb-2 px-3">
+              Mime type: {note.mimeType}
+            </p>
 
-          {(user?.userId === note.users.userId || user?.role === "admin") && (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => setOpen(true)}>
-                Edit Note
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setAlertOpen(true)}>
-                Delete Note
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+            {(user?.userId === note.users.userId || user?.role === "admin") && (
+              <>
+                <hr className="border-t-1 border-neutral-300 dark:border-neutral-800" />
+                <p className="text-sm font-medium pt-1 px-2">Actions</p>
+                {/* Edit Button */}
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start rounded-none"
+                  onClick={() => {
+                    setEditModalOpen(true);
+                    setPopoverOpen(false);
+                  }}
+                >
+                  Edit Note
+                </Button>
 
-      {open && (
+                {/* STEP 2: The AlertDialog is now fully self-contained here */}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start rounded-none"
+                    >
+                      Delete Note
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      the note.
+                    </AlertDialogDescription>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
+            )}
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* The EditModal is separate and controlled by its own state */}
+      {editModalOpen && (
         <EditNotesModal
           semester={note.semester}
           abbreviation={note.abbreviation}
-          open={open}
+          open={editModalOpen}
           closeModal={closeModal}
           noteId={note.noteId}
           title={note.title}
@@ -114,38 +149,6 @@ const CardOwner = ({
           type_of_file={note.type_of_file!}
         />
       )}
-
-      <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
-        <AlertDialogContent>
-          <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete the note.
-          </AlertDialogDescription>
-          <AlertDialogFooter>
-            <AlertDialogCancel
-              onClick={() => {
-                setAlertOpen(false);
-                setTimeout(() => {
-                  document.body.style.removeProperty("pointer-events");
-                }, 300);
-              }}
-            >
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                handleDelete();
-                setAlertOpen(false);
-                setTimeout(() => {
-                  document.body.style.removeProperty("pointer-events");
-                }, 300);
-              }}
-            >
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 };

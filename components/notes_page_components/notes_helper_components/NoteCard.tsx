@@ -40,7 +40,7 @@ const NoteCard = memo(({ note }: { note: Note }) => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <CardTitle className="text-lg font-semibold truncate pr-1">
+              <CardTitle className="text-lg font-semibold  pr-1">
                 <div>{note.title}</div>
               </CardTitle>
             </TooltipTrigger>

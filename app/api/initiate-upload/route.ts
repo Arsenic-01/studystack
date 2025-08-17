@@ -1,4 +1,4 @@
-// /app/api/drive/initiate/route.ts
+// /app/api/initiate-upload/route.ts
 import { getDriveAccessToken } from "@/lib/googleDrive";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,10 +10,22 @@ const DRIVE_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID || "";
 export async function POST(req: NextRequest) {
   try {
     const { fileName, fileType } = await req.json();
+    const origin = req.headers.get("origin"); // <-- GET THE ORIGIN HEADER
+    console.log("Origin:", origin);
+    console.log("File Name:", fileName);
+    console.log("File Type:", fileType);
 
     if (!fileName || !fileType) {
       return NextResponse.json(
         { error: "Missing file metadata" },
+        { status: 400 }
+      );
+    }
+
+    // It's good practice to ensure an origin exists for CORS requests
+    if (!origin) {
+      return NextResponse.json(
+        { error: "Missing origin header" },
         { status: 400 }
       );
     }
@@ -28,6 +40,7 @@ export async function POST(req: NextRequest) {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json; charset=UTF-8",
           "X-Upload-Content-Type": fileType,
+          Origin: origin,
         },
         body: JSON.stringify({
           name: fileName,
@@ -53,11 +66,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, uploadUrl });
-  } catch (e: any) {
+  } catch (e) {
     console.error("Initiate error:", e);
-    return NextResponse.json(
-      { error: e.message || "Internal error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

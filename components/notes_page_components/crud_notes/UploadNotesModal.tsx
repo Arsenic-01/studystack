@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -51,7 +52,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const form = useForm({
     resolver: zodResolver(uploadNoteSchema),
     defaultValues: {
@@ -60,7 +61,49 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     },
   });
 
-  const CHUNK_SIZE = 4 * 1024 * 1024; // 4MB (below Vercel Hobby 4.5MB limit)
+  const directUploadToDrive = (uploadUrl: string, file: File): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT", uploadUrl);
+      // IMPORTANT: Do NOT set the Authorization header here.
+      // The uploadUrl is a pre-signed URL and acts as the token.
+      xhr.setRequestHeader(
+        "Content-Type",
+        file.type || "application/octet-stream"
+      ); // Track upload progress
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round(
+            (event.loaded / event.total) * 100
+          );
+          setUploadProgress(percentComplete);
+        }
+      }; // Handle completion
+
+      xhr.onload = () => {
+        if (xhr.status === 200 || xhr.status === 201) {
+          resolve(JSON.parse(xhr.responseText));
+        } else {
+          reject(
+            new Error(
+              `Upload failed with status: ${xhr.status} - ${xhr.responseText} - ${xhr.responseType} - ${xhr.response} - ${xhr.statusText}`
+            )
+          );
+        }
+      }; // Handle errors
+
+      xhr.onerror = () => {
+        reject(
+          new Error(
+            `Network error during upload. ${xhr.statusText} - ${xhr.responseText} - ${xhr.status} - ${xhr.responseType} - ${xhr.response}`
+          )
+        );
+      };
+
+      xhr.send(file);
+    });
+  };
 
   const handleFileUpload = async (data: {
     title: string;
@@ -74,8 +117,10 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
     }
 
     setUploading(true);
+    setUploadProgress(0); // Reset progress
+
     try {
-      // 1) Start resumable session
+      // 1) Start resumable session (This part remains the same)
       const initRes = await fetch("/api/initiate-upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,60 +135,17 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
           initJson?.error || "Failed to start Drive upload session."
         );
       }
-      const uploadUrl: string = initJson.uploadUrl;
+      const uploadUrl: string = initJson.uploadUrl; // 2) UPLOAD DIRECTLY TO GOOGLE DRIVE (The new, efficient way)
 
-      // 2) Chunked upload
-      const total = selectedFile.size;
-      let offset = 0;
-      let driveFileId: string | null = null;
-
-      while (offset < total) {
-        const end = Math.min(offset + CHUNK_SIZE, total);
-        const chunk = selectedFile.slice(offset, end);
-        const contentRange = `bytes ${offset}-${end - 1}/${total}`;
-
-        // Send chunk → our proxy → Drive
-        const res = await fetch("/api/upload-chunk", {
-          method: "POST",
-          headers: {
-            "x-upload-url": uploadUrl,
-            "x-content-range": contentRange,
-            "x-content-type": selectedFile.type || "application/octet-stream",
-            "Content-Length": String(chunk.size),
-          },
-          body: chunk,
-        });
-
-        const json = await res.json();
-
-        if (!res.ok || json?.success === false) {
-          console.error("Chunk upload failure:", json);
-          throw new Error(
-            json?.error || `Chunk upload failed at ${offset}-${end - 1}`
-          );
-        }
-
-        // Mid-upload normalized response: { resume: true, range }
-        if (json.resume) {
-          offset = end;
-          // You can show progress UI here:
-          // const pct = Math.round((end / total) * 100);
-          // setProgress(pct);
-          continue;
-        }
-
-        // Final response: { resume: false, data: { id, ... } }
-        if (json.resume === false) {
-          driveFileId = json?.data?.id ?? null;
-          offset = end;
-        }
-      }
+      const driveResponse = await directUploadToDrive(uploadUrl, selectedFile);
+      const driveFileId = driveResponse?.id;
 
       if (!driveFileId) {
         throw new Error("Drive did not return a file ID on completion.");
       }
+      setUploadProgress(100); // Ensure it hits 100% on success
+      // 3) Save your metadata (This part remains the same)
 
-      // 3) Save your metadata (your existing API)
       const saveRes = await fetch("/api/save-note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -175,6 +177,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
       );
     } finally {
       setUploading(false);
+      setUploadProgress(null); // Clear progress on finish/error
     }
   };
 
@@ -205,7 +208,6 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                 </FormItem>
               )}
             />
-
             {/* Description Input */}
             <FormField
               control={form.control}
@@ -219,7 +221,6 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                 </FormItem>
               )}
             />
-
             {subjectUnit.length > 0 && (
               <FormField
                 control={form.control}
@@ -250,7 +251,6 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                 )}
               />
             )}
-
             {/* File Type Selection */}
             <FormField
               control={form.control}
@@ -284,12 +284,18 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                 </FormItem>
               )}
             />
-
             {/* File Upload */}
             <div className="w-full min-h-32 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
               <FileUpload onChange={handleFileSelect} />
             </div>
-
+            {uploading && uploadProgress !== null && (
+              <div className="mt-2">
+                <Progress value={uploadProgress} className="w-full" />
+                <p className="text-sm text-center mt-1 text-muted-foreground">
+                  {uploadProgress}%
+                </p>
+              </div>
+            )}
             <div className="flex w-full justify-end items-center mt-4">
               <Button
                 type="submit"
@@ -304,7 +310,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
                 ) : (
                   <>
                     <Upload className="mr-2 h-4 w-4" />
-                    Upload Note
+                    Upload Notes
                   </>
                 )}
               </Button>
