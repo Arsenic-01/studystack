@@ -1,5 +1,5 @@
 import { deleteFormLink } from "@/lib/actions/Form.actions";
-import { Trash } from "lucide-react";
+import { Loader2, Trash } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -12,16 +12,32 @@ import {
   AlertDialogTrigger,
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const DeleteFormLink = ({
   id,
-  semester,
   abbreviation,
 }: {
   id: string;
   semester: string;
   abbreviation: string;
 }) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => deleteFormLink({ id }),
+    onSuccess: () => {
+      toast.success("Link deleted successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["forms", abbreviation], // Invalidate the correct query
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete the link.");
+      console.error(error);
+    },
+  });
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -39,17 +55,15 @@ const DeleteFormLink = ({
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={async () => {
-              try {
-                await deleteFormLink({ id, semester, abbreviation });
-                toast.success("Google Form link deleted successfully");
-              } catch (error) {
-                toast.error("Failed to delete the Google Form link.");
-                console.error(error);
-              }
-            }}
-          >
+          <AlertDialogAction onClick={() => mutate()} disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              "Continue"
+            )}
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>

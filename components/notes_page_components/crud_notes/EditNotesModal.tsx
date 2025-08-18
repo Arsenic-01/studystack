@@ -19,8 +19,9 @@ import {
 import { editNoteSchema } from "@/components/validation_schema/validation";
 import { editNotes } from "@/lib/actions/Notes.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit } from "lucide-react";
-import React, { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Edit, Loader2 } from "lucide-react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
@@ -49,9 +50,26 @@ interface EditNotesModalProps {
     | "Programs"
     | "Syllabus"
     | "Other";
-  fromAdmin?: boolean;
   semester: string;
   abbreviation: string;
+}
+
+interface EditNoteSchema {
+  title: string;
+  description: string;
+  type_of_file:
+    | "Notes"
+    | "PPTS"
+    | "Assignments"
+    | "SLA"
+    | "Lab_Manuals"
+    | "Modal_Solutions"
+    | "MSBTE_QP"
+    | "Videos"
+    | "Animations"
+    | "Programs"
+    | "Syllabus"
+    | "Other";
 }
 
 const EditNotesModal: React.FC<EditNotesModalProps> = ({
@@ -60,11 +78,10 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
   noteId,
   title,
   description,
-  semester,
   abbreviation,
   type_of_file,
 }) => {
-  const [uploading, setUploading] = useState(false);
+  const queryClient = useQueryClient();
 
   const form = useForm({
     resolver: zodResolver(editNoteSchema),
@@ -75,37 +92,29 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
     },
   });
 
-  const handleEditNotes = async (data: {
-    title: string;
-    description: string;
-    type_of_file: string;
-  }) => {
-    if (!data.title || !data.description || !data.type_of_file) return;
-
-    setUploading(true);
-
-    try {
-      const response = await editNotes({
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: EditNoteSchema) =>
+      editNotes({
         noteId,
         title: data.title,
         description: data.description,
         type_of_file: data.type_of_file,
-        semester,
-        abbreviation,
-      });
-
-      if (!response || response.error) {
-        throw new Error(response?.error || "Unknown error occurred");
-      }
-
+      }),
+    onSuccess: () => {
       toast.success("Note updated successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["notes", abbreviation], // Invalidate the 'notes' query
+      });
       closeModal();
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error("Update failed", error);
       toast.error("Failed to update note.");
-    } finally {
-      setUploading(false);
-    }
+    },
+  });
+
+  const handleEditNotes = (data: EditNoteSchema) => {
+    mutate(data);
   };
 
   return (
@@ -200,11 +209,19 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
                     <Button
                       type="submit"
                       className="mt-2 px-3 w-full md:w-fit"
-                      disabled={uploading}
+                      disabled={isPending}
                     >
-                      <span className="sr-only">Update Link</span>
-                      <span>Update Note</span>
-                      <Edit />
+                      {isPending ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          Update Note
+                          <Edit className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </Button>
                   </div>
                 </form>

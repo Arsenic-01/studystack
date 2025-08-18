@@ -3,9 +3,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  ClipboardCheck,
-  FilePenLine,
-  Link as LinkIcon,
+  ClipboardList,
+  FileText,
+  Globe,
   Pencil,
   SquareArrowOutUpRight,
   User,
@@ -40,22 +40,22 @@ interface GoogleFormCardProps {
 // Configuration for different link types
 const linkTypeConfig = {
   googleForm: {
-    icon: ClipboardCheck,
+    icon: ClipboardList, // more "form-like"
     label: "Google Form",
-    color: "text-green-600 dark:text-green-500",
-    bg: "bg-green-100 dark:bg-green-900/50",
+    color: "text-teal-600 dark:text-teal-400",
+    bg: "bg-teal-100 dark:bg-teal-900/50",
   },
   assignment: {
-    icon: FilePenLine,
+    icon: FileText, // cleaner assignment look
     label: "Assignment",
-    color: "text-blue-600 dark:text-blue-500",
-    bg: "bg-blue-100 dark:bg-blue-900/50",
+    color: "text-indigo-600 dark:text-indigo-400",
+    bg: "bg-indigo-100 dark:bg-indigo-900/50",
   },
   other: {
-    icon: LinkIcon,
+    icon: Globe, // feels more "generic link"
     label: "Other Link",
-    color: "text-slate-600 dark:text-slate-300",
-    bg: "bg-slate-200 dark:bg-neutral-800",
+    color: "text-rose-600 dark:text-rose-400",
+    bg: "bg-rose-100 dark:bg-rose-900/40",
   },
 };
 
@@ -70,7 +70,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-muted/50">
+    <div className="flex text- flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-muted/50">
       <div className="flex items-center gap-4 w-full sm:w-auto">
         <div className={`p-2 rounded-full ${config.bg}`}>
           <Icon className={`size-5 ${config.color}`} />
@@ -118,7 +118,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
         )}
         <Button asChild variant="outline" className="w-full sm:w-fit">
           <a href={form.url} target="_blank" rel="noopener noreferrer">
-            Open <SquareArrowOutUpRight className="ml-2 h-4 w-4" />
+            Open <SquareArrowOutUpRight className="size-4" />
           </a>
         </Button>
       </div>

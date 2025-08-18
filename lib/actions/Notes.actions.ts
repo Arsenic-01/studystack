@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { DATABASE_ID, db, NOTE_COLLECTION_ID, Query } from "../appwrite";
 import { getDriveClient } from "../googleDrive";
+import { Note } from "../appwrite_types";
 
 export async function fetchNotesBySubject({
   abbreviation,
@@ -44,24 +45,15 @@ export async function fetchNotesBySubject({
 interface DeleteNoteParams {
   noteId: string;
   fileId: string;
-  semester: string;
-  abbreviation: string;
-  fromAdmin?: boolean;
 }
 
-export async function deleteNote({
-  noteId,
-  fileId,
-  semester,
-  abbreviation,
-}: DeleteNoteParams) {
+export async function deleteNote({ noteId, fileId }: DeleteNoteParams) {
   try {
     const drive = await getDriveClient();
     await drive.files.delete({
       fileId: fileId,
     });
     await db.deleteDocument(DATABASE_ID!, NOTE_COLLECTION_ID!, noteId);
-    revalidatePath(`/semester/${semester}/${abbreviation}`);
     revalidatePath("/admin");
 
     return { success: true };
@@ -100,16 +92,14 @@ export const fetchAllNotes = async () => {
   }
 };
 
-interface EditNotesModalProps {
+export interface EditNotesModalFunctionProps {
   noteId: string;
   title: string;
   description: string;
   type_of_file: string;
-  semester: string;
-  abbreviation: string;
 }
 
-export const editNotes = async (data: EditNotesModalProps) => {
+export const editNotes = async (data: EditNotesModalFunctionProps) => {
   try {
     await db.updateDocument(DATABASE_ID!, NOTE_COLLECTION_ID!, data.noteId, {
       title: data.title,
@@ -117,7 +107,6 @@ export const editNotes = async (data: EditNotesModalProps) => {
       type_of_file: data.type_of_file,
     });
 
-    revalidatePath(`/semester/${data.semester}/${data.abbreviation}`);
     revalidatePath("/admin");
     return { success: true };
   } catch (error) {
@@ -125,3 +114,74 @@ export const editNotes = async (data: EditNotesModalProps) => {
     return { success: false, error: "Failed to update note." };
   }
 };
+
+export async function fetchPaginatedNotes({
+  abbreviation,
+  limit,
+  offset,
+  filters,
+}: {
+  abbreviation: string;
+  limit: number;
+  offset: number;
+  filters?: {
+    type_of_file?: string[];
+    unit?: string;
+    userName?: string[];
+  };
+}) {
+  if (!abbreviation) return { documents: [], total: 0 };
+
+  try {
+    const queries = [
+      Query.equal("abbreviation", abbreviation),
+      Query.orderDesc("$createdAt"),
+      Query.limit(limit),
+      Query.offset(offset),
+    ];
+
+    if (filters?.type_of_file && filters.type_of_file.length > 0) {
+      queries.push(Query.equal("type_of_file", filters.type_of_file));
+    }
+    if (filters?.unit && filters.unit !== "All") {
+      queries.push(Query.equal("unit", filters.unit));
+    }
+    if (filters?.userName && filters.userName.length > 0) {
+      queries.push(Query.equal("userName", filters.userName));
+    }
+
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      NOTE_COLLECTION_ID!,
+      queries
+    );
+
+    const documents = response.documents.map((doc) => ({
+      noteId: doc.$id,
+      title: doc.title,
+      description: doc.description,
+      createdAt: doc.$createdAt,
+      fileId: doc.fileId,
+      semester: doc.semester || "",
+      type_of_file: doc.type_of_file || "",
+      unit: doc.unit || [],
+      users: {
+        name: doc.userName || "Unknown User",
+        userId: doc.userId || "",
+      },
+      abbreviation: doc.abbreviation || "",
+      fileUrl: doc.fileUrl || "",
+      mimeType: doc.mimeType || "",
+      fileSize: doc.fileSize || "",
+      thumbNail: doc.thumbNail || "",
+    }));
+
+    return {
+      documents: documents as Note[],
+      total: response.total,
+    };
+  } catch (error) {
+    console.error("Error fetching paginated notes:", error);
+    return { documents: [], total: 0 };
+  }
+}

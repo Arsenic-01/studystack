@@ -67,6 +67,71 @@ export async function fetchFormLinks({
   }
 }
 
+export async function fetchPaginatedFormLinks({
+  abbreviation,
+  limit,
+  offset,
+  filters,
+}: {
+  abbreviation: string;
+  limit: number;
+  offset: number;
+  filters?: {
+    search?: string;
+    formType?: string;
+  };
+}) {
+  if (!abbreviation) return { documents: [], total: 0 };
+
+  try {
+    // Start with the base queries that are always applied
+    const queries: string[] = [
+      Query.equal("abbreviation", abbreviation),
+      Query.orderDesc("$createdAt"),
+      Query.limit(limit),
+      Query.offset(offset),
+    ];
+
+    // --- Dynamically add filter and search queries ---
+
+    // 1. Add search query if a search term is provided
+    // NOTE: For Appwrite Search to work, you must create a full-text index
+    // on the 'title' attribute in your 'forms' collection settings.
+    if (filters?.search && filters.search.trim() !== "") {
+      queries.push(Query.search("title", filters.search));
+    }
+
+    // 2. Add formType filter if it's not 'all'
+    if (filters?.formType && filters.formType !== "all") {
+      queries.push(Query.equal("formType", filters.formType));
+    }
+
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      FORM_COLLECTION_ID!,
+      queries
+    );
+
+    const documents = response.documents.map((doc) => ({
+      id: doc.$id,
+      url: doc.url,
+      createdBy: doc.createdBy,
+      quizName: doc.title,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
+      formType: doc.formType,
+    }));
+
+    return {
+      documents,
+      total: response.total,
+    };
+  } catch (error) {
+    console.error("Error fetching paginated Form links:", error);
+    return { documents: [], total: 0 };
+  }
+}
+
 // Edit Google Form link
 export async function editFormLink({
   id,
@@ -98,18 +163,10 @@ export async function editFormLink({
 }
 
 // Delete Google Form link
-export async function deleteFormLink({
-  id,
-  semester,
-  abbreviation,
-}: {
-  id: string;
-  semester: string;
-  abbreviation: string;
-}) {
+export async function deleteFormLink({ id }: { id: string }) {
   try {
     await db.deleteDocument(DATABASE_ID!, FORM_COLLECTION_ID!, id);
-    revalidatePath(`/semester/${semester}/${abbreviation}`);
+    revalidatePath("/admin");
     return { success: true };
   } catch (error) {
     console.error("Error deleting Google Form link:", error);

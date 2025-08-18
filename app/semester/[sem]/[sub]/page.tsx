@@ -1,12 +1,15 @@
 import NotesFilter from "@/components/notes_page_components/NotesFilter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { fetchFormLinks } from "@/lib/actions/Form.actions";
-import { fetchNotesBySubject } from "@/lib/actions/Notes.actions";
+import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
+import { fetchPaginatedNotes } from "@/lib/actions/Notes.actions";
 import { fetchSubject } from "@/lib/actions/Subjects.actions";
-import { fetchYoutubeLinks } from "@/lib/actions/Youtube.actions";
+import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
+
+const NOTES_PER_PAGE = 6;
+const LINKS_PER_PAGE = 3;
 
 const Page = async ({ params }: { params: { sub: string } }) => {
   const { sub } = await params;
@@ -22,9 +25,21 @@ const Page = async ({ params }: { params: { sub: string } }) => {
   // 2. ✅ FETCH ALL OTHER DATA ON THE SERVER IN PARALLEL
   // We use Promise.all to fetch notes, youtube links, and quizzes at the same time for max speed.
   const [notes, youtubeLinks, googleFormLinks] = await Promise.all([
-    fetchNotesBySubject({ abbreviation: subject.abbreviation }),
-    fetchYoutubeLinks({ abbreviation: subject.abbreviation }),
-    fetchFormLinks({ abbreviation: subject.abbreviation }),
+    fetchPaginatedNotes({
+      abbreviation: subject.abbreviation,
+      limit: NOTES_PER_PAGE,
+      offset: 0,
+    }),
+    fetchPaginatedYoutubeLinks({
+      abbreviation: subject.abbreviation,
+      limit: LINKS_PER_PAGE,
+      offset: 0,
+    }),
+    fetchPaginatedFormLinks({
+      abbreviation: subject.abbreviation,
+      limit: LINKS_PER_PAGE,
+      offset: 0,
+    }),
   ]);
 
   // 3. Pass all the server-fetched data down to the client component

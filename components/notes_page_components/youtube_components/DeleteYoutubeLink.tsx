@@ -1,5 +1,5 @@
 import { deleteYoutubeLink } from "@/lib/actions/Youtube.actions";
-import { Trash } from "lucide-react";
+import { Loader2, Trash } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -12,16 +12,31 @@ import {
   AlertDialogTrigger,
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const DeleteYoutubeLink = ({
   id,
-  semester,
   abbreviation,
 }: {
   id: string;
-  semester: string;
   abbreviation: string;
 }) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => deleteYoutubeLink({ id }),
+    onSuccess: () => {
+      toast.success("YouTube link deleted successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["youtube", abbreviation],
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete the video.");
+      console.error(error);
+    },
+  });
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -39,17 +54,15 @@ const DeleteYoutubeLink = ({
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={async () => {
-              try {
-                await deleteYoutubeLink({ id, semester, abbreviation });
-                toast.success("YouTube link deleted successfully");
-              } catch (error) {
-                toast.error("Failed to delete the video.");
-                console.error(error);
-              }
-            }}
-          >
+          <AlertDialogAction onClick={() => mutate()} disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              "Continue"
+            )}
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>

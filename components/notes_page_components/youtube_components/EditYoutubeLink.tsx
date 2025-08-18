@@ -20,10 +20,16 @@ import { youtubeSchema } from "@/components/validation_schema/validation";
 import { editYoutubeLink } from "@/lib/actions/Youtube.actions";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+
+type YoutubeFormValues = {
+  youtubeLink: string;
+  title: string;
+};
 
 const EditYoutubeLink = ({
   open,
@@ -32,12 +38,10 @@ const EditYoutubeLink = ({
   id,
   url,
   title,
-  semester,
   abbreviation,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-
   id: string;
   url: string;
   title: string;
@@ -45,6 +49,7 @@ const EditYoutubeLink = ({
   abbreviation: string;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
+  const queryClient = useQueryClient();
 
   const form = useForm({
     resolver: zodResolver(youtubeSchema),
@@ -60,25 +65,34 @@ const EditYoutubeLink = ({
     });
   }, [url, title, form]);
 
-  const handleYoutubeEmbed = async (values: {
-    youtubeLink: string;
-    title: string;
-  }) => {
-    try {
-      await editYoutubeLink({
-        youtubeLink: values.youtubeLink,
+  const { mutate } = useMutation({
+    // mutationFn is the function that performs the async action
+    mutationFn: (values: YoutubeFormValues) =>
+      editYoutubeLink({
         id,
+        youtubeLink: values.youtubeLink,
         title: values.title,
-        semester,
-        abbreviation,
+      }),
+
+    // onSuccess is called after the mutation succeeds
+    onSuccess: () => {
+      toast.success("YouTube link updated successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["youtube", abbreviation],
       });
-      toast.success("YouTube video embed updated successfully");
-      form.reset({ youtubeLink: values.youtubeLink, title: values.title });
-      onOpenChange(false);
-    } catch (error) {
+
+      onOpenChange(false); // Close the modal
+    },
+
+    // onError is called if the mutation fails
+    onError: (error) => {
       console.error("Error updating YouTube link:", error);
       toast.error("Something went wrong. Please try again.");
-    }
+    },
+  });
+
+  const handleYoutubeEmbed = (values: YoutubeFormValues) => {
+    mutate(values);
   };
 
   return (

@@ -33,25 +33,63 @@ export async function fetchYoutubeLinks({
   }
 }
 
+export async function fetchPaginatedYoutubeLinks({
+  abbreviation,
+  limit,
+  offset,
+}: {
+  abbreviation: string;
+  limit: number;
+  offset: number;
+}) {
+  try {
+    if (!abbreviation) {
+      throw new Error("abbreviation is required but was not provided.");
+    }
+
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      YOUTUBE_COLLECTION_ID!,
+      [
+        Query.equal("abbreviation", abbreviation),
+        Query.orderDesc("$createdAt"),
+        Query.limit(limit),
+        Query.offset(offset),
+      ]
+    );
+
+    const documents = response.documents.map((doc) => ({
+      id: doc.$id,
+      title: doc.title,
+      youtubeLink: doc.url,
+      createdBy: doc.createdBy,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
+    }));
+
+    return {
+      documents: documents,
+      total: response.total,
+    };
+  } catch (error) {
+    console.error("Error fetching YouTube links:", error);
+    return { documents: [], total: 0 };
+  }
+}
 export async function editYoutubeLink({
   id,
   youtubeLink,
   title,
-  semester,
-  abbreviation,
 }: {
   id: string;
   youtubeLink: string;
   title: string;
-  semester: string;
-  abbreviation: string;
 }) {
   try {
     await db.updateDocument(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, id, {
       url: youtubeLink,
       title: title,
     });
-    revalidatePath(`/semester/${semester}/${abbreviation}`);
     revalidatePath("/admin");
     return { success: true };
   } catch (error) {
@@ -60,18 +98,9 @@ export async function editYoutubeLink({
   }
 }
 
-export async function deleteYoutubeLink({
-  id,
-  semester,
-  abbreviation,
-}: {
-  id: string;
-  semester: string;
-  abbreviation: string;
-}) {
+export async function deleteYoutubeLink({ id }: { id: string }) {
   try {
     await db.deleteDocument(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, id);
-    revalidatePath(`/semester/${semester}/${abbreviation}`);
     revalidatePath("/admin");
     return { success: true };
   } catch (error) {

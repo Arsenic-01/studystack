@@ -31,6 +31,8 @@ import {
 import { editFormLink } from "@/lib/actions/Form.actions";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -57,7 +59,7 @@ const EditFormLink = ({
   abbreviation: string;
 }) => {
   const { user, isLoggedIn } = useAuthStore();
-
+  const queryClient = useQueryClient();
   const form = useForm<LinkSchemaType>({
     resolver: zodResolver(linkSchema),
     defaultValues: {
@@ -100,22 +102,32 @@ const EditFormLink = ({
 
   const currentContent = modalContent[formType];
 
-  const handleFormLinkUpdate = async (values: LinkSchemaType) => {
-    try {
-      await editFormLink({
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values: LinkSchemaType) =>
+      editFormLink({
         id,
         quizName: values.name,
         googleFormLink: values.url,
         formType: values.formType,
         semester,
         abbreviation,
-      });
+      }),
+    onSuccess: () => {
       toast.success("Link updated successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["forms", abbreviation], // Invalidate the 'forms' query
+      });
       onOpenChange(false);
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error("Error updating link:", error);
       toast.error("Something went wrong. Please try again.");
-    }
+    },
+  });
+
+  // 4. Update the submit handler
+  const handleFormLinkUpdate = (values: LinkSchemaType) => {
+    mutate(values);
   };
 
   return (
@@ -199,12 +211,15 @@ const EditFormLink = ({
                     </FormItem>
                   )}
                 />
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={form.formState.isSubmitting}
-                >
-                  {form.formState.isSubmitting ? "Saving..." : "Save Changes"}
+                <Button type="submit" className="w-full" disabled={isPending}>
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
                 </Button>
               </form>
             </Form>

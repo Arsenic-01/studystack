@@ -7,7 +7,7 @@ import {
 import { deleteNote } from "@/lib/actions/Notes.actions";
 import { Note } from "@/lib/appwrite_types";
 import { useAuthStore } from "@/store/authStore";
-import { EllipsisVertical, Info } from "lucide-react";
+import { EllipsisVertical, Info, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -22,6 +22,7 @@ import {
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
 import EditNotesModal from "../crud_notes/EditNotesModal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function formatFileSize(bytes: string | number) {
   const num = typeof bytes === "string" ? parseInt(bytes, 10) : bytes;
@@ -45,25 +46,29 @@ const CardOwner = ({
     setEditModalOpen(false);
   };
 
-  const handleDelete = () => {
-    deleteNote({
-      noteId: note.noteId,
-      fileId: note.fileId,
-      semester: note.semester,
-      abbreviation: note.abbreviation,
-    })
-      .then(() => {
-        toast.success("Note deleted successfully");
-      })
-      .catch(() => toast.error("Error deleting note"));
-  };
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteNoteMutate, isPending: isDeleting } = useMutation({
+    mutationFn: () =>
+      deleteNote({
+        noteId: note.noteId,
+        fileId: note.fileId,
+      }),
+    onSuccess: () => {
+      toast.success("Note deleted successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["notes", note.abbreviation], // Invalidate notes for this subject
+      });
+      setPopoverOpen(false); // Close the popover on success
+    },
+    onError: () => toast.error("Error deleting note"),
+  });
 
   // State to control Popover visibility, so we can close it from a button click
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   return (
     <>
-      {/* STEP 1: Use Popover as the main component */}
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" size={"icon"}>
@@ -94,7 +99,6 @@ const CardOwner = ({
               <>
                 <hr className="border-t-1 border-neutral-300 dark:border-neutral-800" />
                 <p className="text-sm font-medium pt-1 px-2">Actions</p>
-                {/* Edit Button */}
                 <Button
                   variant="ghost"
                   className="w-full justify-start rounded-none"
@@ -106,7 +110,6 @@ const CardOwner = ({
                   Edit Note
                 </Button>
 
-                {/* STEP 2: The AlertDialog is now fully self-contained here */}
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
@@ -124,8 +127,18 @@ const CardOwner = ({
                     </AlertDialogDescription>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete}>
-                        Continue
+                      <AlertDialogAction
+                        onClick={() => deleteNoteMutate()}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Deleting...
+                          </>
+                        ) : (
+                          "Continue"
+                        )}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
