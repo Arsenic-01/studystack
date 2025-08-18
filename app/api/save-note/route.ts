@@ -19,14 +19,16 @@ export async function POST(req: NextRequest) {
 
     const drive = await getDriveClient();
 
+    // Set the file to be publicly readable
     await drive.permissions.create({
       fileId: fileId,
       requestBody: { role: "reader", type: "anyone" },
     });
 
+    // Get the essential file metadata (we no longer need the temporary thumbnailLink)
     const { data: fileMetadata } = await drive.files.get({
       fileId: fileId,
-      fields: "thumbnailLink, mimeType, size",
+      fields: "mimeType, size",
     });
 
     const noteId = ID.unique();
@@ -40,8 +42,9 @@ export async function POST(req: NextRequest) {
         fileId: fileId,
         fileUrl: `https://drive.google.com/file/d/${fileId}/preview`,
         mimeType: fileMetadata.mimeType || "unknown",
-        fileSize: fileMetadata.size || 0,
-        thumbNail: fileMetadata.thumbnailLink || null,
+        fileSize: fileMetadata.size ? fileMetadata.size.toString() : "0", // Ensure fileSize is a string if your DB requires it
+        // Construct the new, permanent thumbnail URL and save it
+        thumbNail: `https://drive.google.com/thumbnail?id=${fileId}`,
       }
     );
 
