@@ -1,4 +1,4 @@
-import { DATABASE_ID, db } from "@/lib/appwrite";
+import { DATABASE_ID, db, SUBJECT_COLLECTION_ID } from "@/lib/appwrite";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -21,12 +21,13 @@ export async function POST(req: Request) {
 
     const sem = String(semester);
 
-    await db.createDocument(
-      DATABASE_ID!,
-      process.env.NEW_SUBJECT_COLLECTION_ID!,
+    await db.createDocument(DATABASE_ID!, SUBJECT_COLLECTION_ID!, subjectId, {
       subjectId,
-      { subjectId, name, code, semester: sem, unit: units }
-    );
+      name,
+      code,
+      semester: sem,
+      unit: units,
+    });
 
     return NextResponse.json(
       { message: "Subject added successfully!" },

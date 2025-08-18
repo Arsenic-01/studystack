@@ -28,7 +28,7 @@ const PaginationControl = ({
       >
         Previous
       </Button>
-      {/* For a large number of pages, you'd want more complex logic here */}
+
       {pageNumbers.map((page) => (
         <Button
           key={page}

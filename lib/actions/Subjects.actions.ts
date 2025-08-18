@@ -1,6 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { DATABASE_ID, db, NEW_SUBJECT_COLLECTION_ID, Query } from "../appwrite";
+import { DATABASE_ID, db, SUBJECT_COLLECTION_ID, Query } from "../appwrite";
 import { Subject } from "../appwrite_types";
 import { AppwriteException } from "node-appwrite";
 
@@ -8,7 +8,7 @@ export async function fetchSubject({ abbreviation }: { abbreviation: string }) {
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
-      NEW_SUBJECT_COLLECTION_ID!,
+      SUBJECT_COLLECTION_ID!,
       [Query.equal("abbreviation", abbreviation), Query.limit(1)]
     );
     return response.documents[0] as unknown as Subject;
@@ -27,7 +27,7 @@ export async function fetchAllSubjects() {
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
-      NEW_SUBJECT_COLLECTION_ID!,
+      SUBJECT_COLLECTION_ID!,
       [Query.orderAsc("semester"), Query.limit(100)]
     );
     // console.log("response", response);
@@ -47,11 +47,7 @@ export async function fetchAllSubjects() {
 
 export const deleteSubject = async ({ subjectId }: { subjectId: string }) => {
   try {
-    await db.deleteDocument(
-      DATABASE_ID!,
-      NEW_SUBJECT_COLLECTION_ID!,
-      subjectId
-    );
+    await db.deleteDocument(DATABASE_ID!, SUBJECT_COLLECTION_ID!, subjectId);
 
     revalidatePath("/admin/subjects");
 
@@ -69,7 +65,7 @@ export const updateSubject = async (subject: Subject) => {
 
     await db.updateDocument(
       DATABASE_ID!,
-      NEW_SUBJECT_COLLECTION_ID!,
+      SUBJECT_COLLECTION_ID!,
       subjectId,
       updateData
     );
@@ -87,12 +83,11 @@ export const createSubject = async (subject: Subject) => {
   try {
     await db.createDocument(
       DATABASE_ID!,
-      NEW_SUBJECT_COLLECTION_ID!,
+      SUBJECT_COLLECTION_ID!,
       subject.subjectId,
       subject
     );
 
-    // ✅ Revalidate the page after a change
     revalidatePath("/admin/subjects");
 
     return { success: true };

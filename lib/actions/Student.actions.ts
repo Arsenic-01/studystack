@@ -3,7 +3,7 @@
 import {
   DATABASE_ID,
   db,
-  NEW_SUBJECT_COLLECTION_ID,
+  SUBJECT_COLLECTION_ID,
   Query,
   SESSION_COLLECTION_ID,
 } from "@/lib/appwrite";
@@ -18,7 +18,7 @@ export async function fetchSubjectsBySemester(
 
   try {
     const response: Models.DocumentList<Models.Document> =
-      await db.listDocuments(DATABASE_ID!, NEW_SUBJECT_COLLECTION_ID!, [
+      await db.listDocuments(DATABASE_ID!, SUBJECT_COLLECTION_ID!, [
         Query.equal("semester", sem),
       ]);
 
