@@ -1,7 +1,6 @@
 "use client";
 
-import SearchBar from "@/components/SearchBar"; 
-import
+import SearchBar from "@/components/SearchBar";
 import Heartbeat from "@/functions/Heartbeat";
 import useSessionQuery from "@/hooks/useSessionQuery";
 import { useAuthStore } from "@/store/authStore";
@@ -56,7 +55,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Navigation links (desktop only) */}
+          {/* ✅ CENTER: Navigation links (desktop only) */}
           <div className="hidden md:flex justify-center items-center gap-7">
             {navLinks.map((item) => (
               <Link
@@ -80,7 +79,7 @@ const Header = () => {
             )}
           </div>
 
-          {/* Search + Theme toggle + Profile */}
+          {/* ✅ RIGHT: Search + Theme toggle + Profile */}
           <div className="flex items-center gap-2 sm:gap-3 justify-end">
             {/* 🔹 SearchBar now here, visible in both mobile & desktop */}
             {isLoggedIn && user && <SearchBar />}
