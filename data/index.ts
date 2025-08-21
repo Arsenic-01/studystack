@@ -100,6 +100,16 @@ export const creators = [
     role: "Frontend Developer & UI/UX Designer",
     avatar: "/tanaypfp.jpg",
   },
+  {
+    name: "Adarsh Tile",
+    role: "Frontend Developer & Project Report, Documentation",
+    avatar: "/adarshpfp.jpg",
+  },
+  {
+    name: "Yadnesh Udar",
+    role: "Project Report",
+    avatar: "/yadneshpfp.jpg",
+  },
 ];
 
 export const guide = [
