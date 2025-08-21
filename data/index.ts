@@ -221,6 +221,68 @@ export const vsc = [
   },
 ];
 
+export const ysc = [
+  {
+    id: 1,
+    name: "yadnesh_udar.",
+    designation: "Discord",
+    image: "/about_tooltip_logos/Discord.png",
+    href: "https://discord.com/yadnesh_udar",
+  },
+  {
+    id: 2,
+    name: "Yadnesh Udar",
+    designation: "Github",
+    image: "/about_tooltip_logos/Git.png",
+    href: "https://github.com/Yadneshudar13",
+  },
+  {
+    id: 3,
+    name: "yadneshudar@gmail.com",
+    designation: "Gmail",
+    image: "/about_tooltip_logos/Email.webp",
+    href: "mailto:yadneshudar@gmail.com?subject=Approach%20via%20Study%20Stack%20webapp&body=Hey%20there!%2C%20I%20am%20___%20and%20I%20wanted%20to%20contact%20you%20because%20___",
+  },
+  {
+    id: 4,
+    name: "Yadnesh Udar",
+    designation: "Linkedin",
+    image: "/about_tooltip_logos/Linkedin.webp",
+    href: " https://www.linkedin.com/in/yadnesh-udar-a0b9922b7",
+  },  
+];
+
+export const asc = [
+  {
+    id: 1,
+    name: "astile1424",
+    designation: "Discord",
+    image: "/about_tooltip_logos/Discord.png",
+    href: "https://discord.com/users/1235115974534103091",
+  },
+  {
+    id: 2,
+    name: "Adarsh Tile",
+    designation: "Github",
+    image: "/about_tooltip_logos/Git.png",
+    href: "https://github.com/AdarshSanskar",
+  },
+  {
+    id: 3,
+    name: "astile1424@gmail.com",
+    designation: "Gmail",
+    image: "/about_tooltip_logos/Email.webp",
+    href: "mailto:astile1424@gmail.com?subject=Approach%20via%20Study%20Stack%20webapp&body=Hey%20there!%2C%20I%20am%20___%20and%20I%20wanted%20to%20contact%20you%20because%20___",
+  },
+  {
+    id: 4,
+    name: "Adarsh Tile",
+    designation: "Linkedin",
+    image: "/about_tooltip_logos/Linkedin.webp",
+    href: "www.linkedin.com/in/tile-adarsh",
+  },  
+];
+
 export const gb = [
   {
     id: 1,
