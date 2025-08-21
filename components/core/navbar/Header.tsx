@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation"; // Import usePathname
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { ThemeToggle } from "./navbar_helper_components/ThemeSwitcher";
@@ -17,8 +18,10 @@ const ProfileCard = dynamic(
   { ssr: false }
 );
 
+// Updated navLinks to include "Project"
 const navLinks = [
   { name: "About", href: "/about" },
+  { name: "Project", href: "/about/project" },
   { name: "Contact", href: "/contact" },
   { name: "FAQs", href: "/home#faq" },
 ];
@@ -26,6 +29,7 @@ const navLinks = [
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isLoggedIn, user } = useAuthStore();
+  const pathname = usePathname(); // Get the current path
 
   useSessionQuery();
 
@@ -62,8 +66,10 @@ const Header = () => {
                 key={item.name}
                 href={item.href}
                 className={twMerge(
-                  !isLoggedIn && item.name === "FAQs" && "hidden",
-                  `xl:text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50`
+                  // Vercel-like styling for nav links
+                  "text-sm transition-colors text-neutral-600 hover:text-black dark:text-neutral-400 dark:hover:text-white",
+                  pathname === item.href && "text-black dark:text-white", // Active link style
+                  !isLoggedIn && item.name === "FAQs" && "hidden" // Keep existing conditional logic
                 )}
               >
                 {item.name}
@@ -72,7 +78,11 @@ const Header = () => {
             {isLoggedIn && user && user.role === "admin" && (
               <Link
                 href={`/admin/${user.userId}`}
-                className="text-lg text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50"
+                className={twMerge(
+                  // Vercel-like styling for admin link
+                  "text-sm transition-colors text-neutral-600 hover:text-black dark:text-neutral-400 dark:hover:text-white",
+                  pathname.startsWith("/admin") && "text-black dark:text-white" // Active link style
+                )}
               >
                 Admin
               </Link>
@@ -155,7 +165,9 @@ const Header = () => {
                   <Link
                     href={`/admin/${user.userId}`}
                     className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
-                  >Admin</Link>
+                  >
+                    Admin
+                  </Link>
                 )}
                 {navLinks.map((item) => (
                   <Link
