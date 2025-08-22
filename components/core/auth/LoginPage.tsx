@@ -45,7 +45,7 @@ export default function LoginPage() {
 
     // Use NextAuth's signIn function
     const result = await signIn("credentials", {
-      prn: prnNo,
+      prnNo,
       password,
       redirect: false,
     });

@@ -52,15 +52,19 @@ export const authOptions: NextAuthOptions = {
           }
 
           const user = response.documents[0];
+          console.log("Fetched user:", user);
 
           // Compare provided password with stored hash
           const isValid = await bcrypt.compare(
             credentials.password,
             user.password
           );
+          console.log("Password valid:", isValid);
           if (!isValid) {
             return null; // Wrong password
           }
+
+          console.log("User authenticated:", user);
 
           // ✅ Return user object compatible with NextAuth
           return {

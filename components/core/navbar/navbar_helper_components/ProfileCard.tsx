@@ -1,102 +1,28 @@
-import { UserProps } from "@/lib/appwrite_types";
-import { session, useAuthStore } from "@/store/authStore";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@heroui/react";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { Avatar, AvatarImage } from "../../../ui/avatar";
-import { LogOut } from "lucide-react";
-import { sessionStopLog } from "@/lib/actions/Student.actions";
-import { fetchSessions } from "@/lib/actions/Admin.actions";
+"use client";
 
-const ProfileCard = ({ user }: { user: UserProps }) => {
-  const { logout } = useAuthStore();
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+import { signOut, useSession } from "next-auth/react";
 
-  const handleLogout = async () => {
-    if (loading) return; // Prevent multiple clicks
-    setLoading(true);
+export default function ProfileCard() {
+  const { data: session } = useSession();
 
-    try {
-      const sessions: session[] = await fetchSessions(user.userId); // Fetch sessions before logout
-      // console.log("Fetched sessions:", sessions);
-
-      if (sessions.length > 0) {
-        await sessionStopLog(sessions);
-        // console.log("sessionStopLog response:", res);
-      }
-
-      await fetch("/api/logout", { method: "POST" });
-      logout(); // Zustand store logout
-      localStorage.setItem("logout", "true");
-      setTimeout(() => localStorage.removeItem("logout"), 500);
-
-      toast.success("Logout successful 🎉");
-      router.refresh();
-    } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Logout failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "logout" && event.newValue === "true") {
-        logout();
-        router.replace("/");
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, [router, logout]);
+  if (!session?.user) return null;
 
   return (
-    <div>
-      <Dropdown placement="bottom-end">
-        <DropdownTrigger>
-          <Avatar className="hover:cursor-pointer dark:border dark:border-none size-6 md:size-7">
-            <AvatarImage
-              className="pointer-events-none select-none"
-              src="/user_img.png"
-              alt={user.name}
-            />
-          </Avatar>
-        </DropdownTrigger>
-        <DropdownMenu
-          aria-label="Profile Actions"
-          className="max-w-sm w-full"
-          variant="flat"
-        >
-          <DropdownItem key="profile" className="flex flex-col gap-2">
-            <p className="font-semibold">Signed in as {user.name}</p>
-            <p className="text-sm ">Email: {user.email}</p>
-            <p className="text-sm ">PRN No: {user.prnNo}</p>
-          </DropdownItem>
-          <DropdownItem
-            key="logout"
-            color="danger"
-            as="button"
-            onPress={handleLogout}
-            isReadOnly={loading}
-          >
-            <div className="inline-flex items-center gap-2">
-              {loading ? "Logging out..." : "Logout"}
-              <LogOut className="h-4 w-4" />
-            </div>
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+    <div className="p-4 rounded-2xl shadow-md bg-white dark:bg-neutral-900">
+      <h2 className="text-lg font-semibold">{session.user.name}</h2>
+      <p className="text-sm text-gray-500">{session.user.email}</p>
+      {"prnNo" in session.user && (
+        <p className="text-sm text-gray-400">PRN: {session.user.prnNo}</p>
+      )}
+      {"role" in session.user && (
+        <p className="text-sm text-gray-400">Role: {session.user.role}</p>
+      )}
+      <button
+        onClick={() => signOut({ callbackUrl: "/" })}
+        className="mt-3 px-3 py-1 text-sm rounded-lg bg-red-500 text-white hover:bg-red-600"
+      >
+        Logout
+      </button>
     </div>
   );
-};
-
-export default ProfileCard;
+}

@@ -12,6 +12,7 @@ import { usePathname } from "next/navigation"; // Import usePathname
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { ThemeToggle } from "./navbar_helper_components/ThemeSwitcher";
+import { useSession } from "next-auth/react";
 
 const ProfileCard = dynamic(
   () => import("./navbar_helper_components/ProfileCard"),
@@ -27,6 +28,7 @@ const navLinks = [
 ];
 
 const Header = () => {
+  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const { isLoggedIn, user } = useAuthStore();
   const pathname = usePathname(); // Get the current path
@@ -98,7 +100,18 @@ const Header = () => {
             <ThemeToggle />
 
             {/* Profile / Login */}
-            {isLoggedIn && user && <ProfileCard user={user!} />}
+            <div>
+              {session?.user ? (
+                <ProfileCard />
+              ) : (
+                <Link
+                  href="/"
+                  className="px-3 py-1 text-sm rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
 
             {/* Mobile menu toggle */}
             <div className="md:hidden flex items-center">
