@@ -1,3 +1,4 @@
+// data/index.ts
 import { FaGlobe, FaInstagram, FaYoutube } from "react-icons/fa6";
 
 export const semester = [
@@ -97,12 +98,12 @@ export const creators = [
   },
   {
     name: "Tanay Hingane",
-    role: "Frontend Developer & UI/UX Designer",
-    avatar: "/tanaypfp.jpg",
+    role: "Fullstack Developer & Database Management",
+    avatar: "/team/user_pfp/tanay.jpg",
   },
   {
     name: "Adarsh Tile",
-    role: "Frontend Developer & Project Report, Documentation",
+    role: "Frontend Developer & Project Documentation",
     avatar: "/adarshpfp.jpg",
   },
   {
@@ -175,7 +176,7 @@ export const tsc = [
     name: "Victus03",
     designation: "Portfolio",
     image: "/about_tooltip_logos/Website.png",
-    href: "#",
+    href: "https://tanayhingane03.vercel.app/",
   },
   {
     id: 6,
@@ -259,7 +260,7 @@ export const ysc = [
     designation: "Linkedin",
     image: "/about_tooltip_logos/Linkedin.webp",
     href: " https://www.linkedin.com/in/yadnesh-udar-a0b9922b7",
-  },  
+  },
 ];
 
 export const asc = [
@@ -290,7 +291,7 @@ export const asc = [
     designation: "Linkedin",
     image: "/about_tooltip_logos/Linkedin.webp",
     href: "www.linkedin.com/in/tile-adarsh",
-  },  
+  },
 ];
 
 export const gb = [
@@ -305,5 +306,63 @@ export const gb = [
     name: "Mr A.D.Talole",
     designation: "Lecturer(CM Dept)",
     image: "/talolesir.webp",
+  },
+];
+
+export const vedant_ps = [
+  { id: 1, name: "Sentry", color: "danger" },
+  { id: 2, name: "Auth", color: "primary" },
+  { id: 9, name: "Algolia Search", color: "success" },
+  { id: 3, name: "Admin Dashboard", color: "warning", credit: 0.5 },
+  { id: 4, name: "Youtube Links", color: "secondary" },
+  { id: 5, name: "Quiz Addition", color: "danger", credit: 0.5 },
+  { id: 7, name: "Notes Addition", color: "info" },
+  { id: 6, name: "Frontend of Landing Page", color: "success", credit: 0.5 },
+  { id: 8, name: "Appwrite Backend", color: "default" },
+];
+
+export const tanay_ps = [
+  { id: 1, name: "Quiz Addition", color: "danger", credit: 0.5 },
+  { id: 2, name: "Admin Dashboard", color: "warning", credit: 0.5 },
+  { id: 3, name: "Frontend of Landing Page", color: "success", credit: 0.5 },
+  { id: 4, name: "Notes Sorting", color: "info" },
+  { id: 5, name: "Abbr Link Edit", color: "primary" },
+  { id: 6, name: "Project Portfolio", color: "default" },
+  { id: 7, name: "Next Auth", color: "secondary" },
+  { id: 8, name: "Database Management", color: "default" },
+];
+
+export const yadnesh_ps = [
+  {
+    id: 1,
+    name: "Project Report",
+    color: "danger",
+  },
+  {
+    id: 2,
+    name: "ProjectDocumentation",
+    color: "success",
+  },
+];
+export const adarsh_ps = [
+  {
+    id: 1,
+    name: "Video Rebuild",
+    color: "danger",
+  },
+  {
+    id: 2,
+    name: "Project Report",
+    color: "success",
+  },
+  {
+    id: 3,
+    name: "Project Documentation",
+    color: "warning",
+  },
+  {
+    id: 4,
+    name: "About Page",
+    color: "info",
   },
 ];

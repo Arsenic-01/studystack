@@ -1,8 +1,6 @@
 import { AboutGrid } from "@/components/about_components/AboutGrid";
 import Created from "@/components/about_components/Created";
 import GuidedBy from "@/components/about_components/about_helper_components/GuidedBy";
-import React from "react";
-import { VelocityScroll } from "@/components/ui/magicui/scroll-based-velocity";
 
 const AboutPage = () => {
   return (
@@ -19,13 +17,6 @@ const AboutPage = () => {
         </h1>
         <div className="">
           <Created />
-        </div>
-      </div>
-      <div>
-        <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
-          <VelocityScroll> • Made with ❤️ and Passion </VelocityScroll>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-background"></div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-background"></div>
         </div>
       </div>
       <div>
