@@ -1,13 +1,13 @@
 "use client";
 
 import { footerLinks } from "@/data";
-import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
 import Link from "next/link";
 import { footerIcons } from "../../data/index";
+import { useUser } from "@/hooks/useUser";
 
 const Footer = () => {
-  const { user } = useAuthStore();
+  const { user } = useUser();
   const iconClass =
     "text-neutral-900/ transition-colors ease-in-out duration-300 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-200";
 

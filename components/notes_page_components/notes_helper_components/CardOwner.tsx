@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/popover"; // <-- Import Popover components
 import { deleteNote } from "@/lib/actions/Notes.actions";
 import { Note } from "@/lib/appwrite_types";
-import { useAuthStore } from "@/store/authStore";
 import { EllipsisVertical, Info, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -23,6 +22,7 @@ import {
 import { Button } from "../../ui/button";
 import EditNotesModal from "../crud_notes/EditNotesModal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@/hooks/useUser";
 
 function formatFileSize(bytes: string | number) {
   const num = typeof bytes === "string" ? parseInt(bytes, 10) : bytes;
@@ -39,7 +39,7 @@ const CardOwner = ({
   note: Note;
   formattedDate: string;
 }) => {
-  const { user } = useAuthStore();
+  const { user } = useUser();
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   const closeModal = () => {
@@ -72,7 +72,7 @@ const CardOwner = ({
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" size={"icon"}>
-            {user?.userId === note.users.userId || user?.role === "admin" ? (
+            {user?.id === note.users.userId || user?.role === "admin" ? (
               <EllipsisVertical />
             ) : (
               <Info />
@@ -95,7 +95,7 @@ const CardOwner = ({
               Mime type: {note.mimeType}
             </p>
 
-            {(user?.userId === note.users.userId || user?.role === "admin") && (
+            {(user?.id === note.users.userId || user?.role === "admin") && (
               <>
                 <hr className="border-t-1 border-neutral-300 dark:border-neutral-800" />
                 <p className="text-sm font-medium pt-1 px-2">Actions</p>

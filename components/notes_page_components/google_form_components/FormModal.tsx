@@ -34,8 +34,8 @@ import {
   linkSchema,
   LinkSchemaType,
 } from "@/components/validation_schema/validation";
+import { useUser } from "@/hooks/useUser";
 import { createFormLink } from "@/lib/actions/Form.actions";
-import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 import { FaLink } from "react-icons/fa6";
 import { toast } from "sonner";
@@ -47,7 +47,7 @@ const GoogleFormModal = ({
   abbreviation: string;
   semester: string;
 }) => {
-  const { user, isLoggedIn } = useAuthStore();
+  const { user } = useUser();
   const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm<LinkSchemaType>({
@@ -112,7 +112,7 @@ const GoogleFormModal = ({
 
   return (
     <>
-      {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
+      {(user?.role === "teacher" || user?.role === "admin") && (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button

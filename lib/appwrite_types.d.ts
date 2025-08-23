@@ -10,6 +10,14 @@ interface UserProps {
   createdAt: Date;
 }
 
+export interface SessionUser {
+  id: string;
+  role: string;
+  prnNo: string;
+  name: string;
+  email?: string | null;
+}
+
 export interface updateUserData {
   id: string;
   prnNo?: string;

@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { youtubeSchema } from "@/components/validation_schema/validation";
+import { useUser } from "@/hooks/useUser";
 import { editYoutubeLink } from "@/lib/actions/Youtube.actions";
-import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
@@ -48,7 +48,7 @@ const EditYoutubeLink = ({
   semester: string;
   abbreviation: string;
 }) => {
-  const { user, isLoggedIn } = useAuthStore();
+  const { user } = useUser();
   const queryClient = useQueryClient();
 
   const form = useForm({
@@ -97,7 +97,7 @@ const EditYoutubeLink = ({
 
   return (
     <>
-      {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
+      {(user?.role === "teacher" || user?.role === "admin") && (
         <Dialog open={open} onOpenChange={onOpenChange}>
           <DialogContent className="lg:max-w-md">
             <DialogHeader>

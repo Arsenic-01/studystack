@@ -17,7 +17,6 @@ import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
 import { fetchPaginatedNotes } from "@/lib/actions/Notes.actions";
 import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
-import { useAuthStore } from "@/store/authStore";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -34,6 +33,7 @@ import NoteCard from "./notes_helper_components/NoteCard";
 import PaginationControl from "./PaginationControl";
 import NoteCardSkeleton from "./skeleton/NoteCardSkeleton";
 import { YouTubeCard } from "./youtube_components/YouTubeCard";
+import { useUser } from "@/hooks/useUser";
 
 interface PaginatedData<T> {
   documents: T[];
@@ -77,8 +77,7 @@ const NotesFilter = ({
   initialYoutubeLinks,
   initialGoogleFormLinks,
 }: NotesFilterProps) => {
-  const { user } = useAuthStore();
-
+  const { user } = useUser();
   // Pagination
   const [notesPage, setNotesPage] = useState(1);
   const [youtubePage, setYoutubePage] = useState(1);
@@ -424,7 +423,7 @@ const NotesFilter = ({
                     <YouTubeCard
                       link={link}
                       videoId={videoId}
-                      user={user}
+                      user={user!}
                       onPlay={setPlayingVideoId}
                       semester={subject.semester}
                       abbreviation={subject.abbreviation}
@@ -500,7 +499,7 @@ const NotesFilter = ({
                     <GoogleFormCard
                       key={form.id}
                       form={form}
-                      user={user}
+                      user={user!}
                       semester={subject.semester}
                       abbreviation={subject.abbreviation}
                     />

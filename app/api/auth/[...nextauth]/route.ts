@@ -1,9 +1,12 @@
 // src/app/api/auth/[...nextauth]/route.ts
 
+import { Models } from "node-appwrite";
 import NextAuth, { NextAuthOptions, User as NextAuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { Client, Databases, Query } from "node-appwrite";
 import bcrypt from "bcryptjs";
+import { JWT } from "next-auth/jwt";
+import { User } from "next-auth";
 
 const client = new Client();
 client
@@ -15,9 +18,8 @@ const databases = new Databases(client);
 const databaseId = process.env.DATABASE_ID!;
 const collectionId = process.env.USER_COLLECTION_ID!;
 
-interface AppwriteUser {
-  $id: string;
-  prnNo: string; // ✅ corrected (was "prn" before)
+export interface AppwriteUser extends Models.Document {
+  prnNo: string;
   password: string;
   role: "student" | "teacher" | "admin";
   name: string;
@@ -84,24 +86,31 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: User }) {
       if (user) {
-        token.role = (user as any).role;
-        token.prnNo = (user as any).prnNo;
+        token.id = user.id;
+        token.name = user.name;
+        token.role = user.role;
+        token.prnNo = user.prnNo;
       }
       return token;
     },
+
     async session({ session, token }) {
-      if (token) {
-        session.user.role = token.role as string;
-        session.user.prnNo = token.prnNo as string;
+      if (token && session.user) {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.role = token.role;
+        session.user.prnNo = token.prnNo;
       }
       return session;
     },
   },
+
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

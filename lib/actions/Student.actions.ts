@@ -1,14 +1,7 @@
 "use server";
 
-import {
-  DATABASE_ID,
-  db,
-  SUBJECT_COLLECTION_ID,
-  Query,
-  SESSION_COLLECTION_ID,
-} from "@/lib/appwrite";
+import { DATABASE_ID, db, Query, SUBJECT_COLLECTION_ID } from "@/lib/appwrite";
 import { Models } from "node-appwrite";
-import { session } from "../../store/authStore";
 import { Subject } from "../appwrite_types";
 
 export async function fetchSubjectsBySemester(
@@ -40,29 +33,3 @@ export async function fetchSubjectsBySemester(
     return null;
   }
 }
-
-export const sessionStopLog = async (sessions: session[]) => {
-  try {
-    // Find the latest active session
-    const latestSession = sessions.find((s) => s.isActive);
-
-    if (!latestSession) {
-      console.warn("No active session found to stop.");
-      return null; // No active session to update
-    }
-
-    const response = await db.updateDocument(
-      DATABASE_ID!,
-      SESSION_COLLECTION_ID!,
-      latestSession.sessionId,
-      {
-        sessionEnd: new Date().toISOString(),
-        isActive: false,
-      }
-    );
-    return response;
-  } catch (error) {
-    console.error("Error stopping session:", error);
-    throw new Error("Failed to stop session");
-  }
-};

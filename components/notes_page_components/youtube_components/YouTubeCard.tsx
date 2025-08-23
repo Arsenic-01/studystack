@@ -8,9 +8,10 @@ import { Pencil, PlayCircle, User } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 // Assuming you have these components already
+import { Button } from "@/components/ui/button";
+import { SessionUser } from "@/lib/appwrite_types";
 import DeleteYoutubeLink from "./DeleteYoutubeLink";
 import EditYoutubeLink from "./EditYoutubeLink";
-import { Button } from "@/components/ui/button";
 
 // Define the shape of the 'link' and 'user' props
 interface YouTubeLink {
@@ -20,15 +21,10 @@ interface YouTubeLink {
   createdBy: string;
 }
 
-interface User {
-  name: string;
-  role: string;
-}
-
 interface YouTubeCardProps {
   link: YouTubeLink;
   videoId: string;
-  user: User | null;
+  user: SessionUser;
   onPlay: (videoId: string) => void;
   semester: string;
   abbreviation: string;
@@ -84,11 +80,7 @@ export const YouTubeCard: React.FC<YouTubeCardProps> = ({
             <Pencil />
             Edit Video
           </Button>
-          <DeleteYoutubeLink
-            id={link.id}
-            semester={semester}
-            abbreviation={abbreviation}
-          />
+          <DeleteYoutubeLink id={link.id} abbreviation={abbreviation} />
         </CardFooter>
       )}
       {isEditing && (

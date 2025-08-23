@@ -17,8 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useUser } from "@/hooks/useUser";
 import { deleteUser } from "@/lib/actions/Admin.actions";
-import { Note, FormLink, YoutubeLink } from "@/lib/appwrite_types";
+import { FormLink, Note, YoutubeLink } from "@/lib/appwrite_types";
 import { useMutation } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -43,7 +44,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuthStore } from "../../../store/authStore";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,10 +60,10 @@ import AdminSkeleton from "../skeleton/AdminSkeleton";
 import { ActiveUsersChart } from "./ActiveUsers";
 import { ActivityChart, LoginHistoryEntry } from "./AdminBarChart";
 import { NotesTable } from "./AdminNotesTable";
+import { FormLinksTable } from "./FormLinksTable";
 import StatCard from "./StatCard";
 import { TeacherNotesChart } from "./TeacherNotesChart";
 import { YoutubeLinksTable } from "./YoutubeLinksTable";
-import { FormLinksTable } from "./FormLinksTable";
 
 type Role = "admin" | "teacher" | "student";
 
@@ -97,7 +97,7 @@ export function AdminDataTable({
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [userLogData, setUserLogData] = useState<User | null>(null);
   const router = useRouter();
-  const { isLoggedIn } = useAuthStore();
+  const { user } = useUser();
 
   const users = initialUsers;
   const loginHistory = initialLoginHistory;
@@ -223,7 +223,7 @@ export function AdminDataTable({
 
   return (
     <div>
-      {isLoggedIn ? (
+      {user ? (
         <>
           <div className="container mx-auto">
             <div className="flex items-start justify-between mb-5 sm:mb-8">

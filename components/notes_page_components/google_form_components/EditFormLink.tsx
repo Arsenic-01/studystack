@@ -28,8 +28,8 @@ import {
   linkSchema,
   LinkSchemaType,
 } from "@/components/validation_schema/validation";
+import { useUser } from "@/hooks/useUser";
 import { editFormLink } from "@/lib/actions/Form.actions";
-import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -58,7 +58,7 @@ const EditFormLink = ({
   semester: string;
   abbreviation: string;
 }) => {
-  const { user, isLoggedIn } = useAuthStore();
+  const { user } = useUser();
   const queryClient = useQueryClient();
   const form = useForm<LinkSchemaType>({
     resolver: zodResolver(linkSchema),
@@ -132,7 +132,7 @@ const EditFormLink = ({
 
   return (
     <>
-      {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
+      {(user?.role === "teacher" || user?.role === "admin") && (
         <Dialog open={open} onOpenChange={onOpenChange}>
           <DialogContent>
             <DialogHeader>

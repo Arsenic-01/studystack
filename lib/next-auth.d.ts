@@ -1,27 +1,31 @@
-// next-auth.d.ts
-
 import "next-auth";
+import type { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
   interface Session {
     user: {
-      role?: string;
+      id: string;
+      role: string;
+      prnNo: string;
+      name: string;
+      email?: string | null;
+      image?: string | null;
     } & DefaultSession["user"];
   }
 
-  interface User {
-    role?: string;
+  interface User extends DefaultUser {
+    id: string;
+    role: string;
+    prnNo: string;
+    name: string;
   }
 }
 
 declare module "next-auth/jwt" {
-  /**
-   * Returned by the `jwt` callback and can be accessed on the `token` object in the `session` callback
-   */
   interface JWT {
-    role?: string;
+    id: string;
+    role: string;
+    prnNo: string;
+    name: string;
   }
 }

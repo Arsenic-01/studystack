@@ -65,8 +65,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="py-36 2xl:py-40 px-5 mx-auto">
-      <div className="w-full mx-auto max-w-md rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-950 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
+    <div className="max-w-5xl mx-auto w-full py-10">
+      <div className="w-full mx-auto rounded-xl px-6 py-8 sm:py-10 shadow-lg bg-neutral-50 dark:bg-neutral-950 backdrop-blur-2xl relative border border-zinc-300 dark:border-zinc-800">
         <div className="text-center flex-col items-center gap-4">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
             Register

@@ -1,11 +1,11 @@
+import ConditionalHeader from "@/components/core/ConditionalHeader";
 import Footer from "@/components/core/Footer";
-import Header from "@/components/core/navbar/Header";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { Providers } from "./providers";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import ReactQueryProvider from "./QueryProvider";
 
 // const inter = Inter({ subsets: ["latin"] });
@@ -30,7 +30,7 @@ export default function RootLayout({
       <body className={`${dmSans.className} antialiased`}>
         <Providers>
           <ReactQueryProvider>
-            <Header />
+            <ConditionalHeader />
             {children}
             <SpeedInsights />
             <Toaster richColors />

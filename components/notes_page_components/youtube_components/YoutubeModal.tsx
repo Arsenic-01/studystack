@@ -22,9 +22,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { youtubeSchema } from "@/components/validation_schema/validation";
-import { useAuthStore } from "@/store/authStore";
 import { FaYoutube } from "react-icons/fa6";
 import { toast } from "sonner";
+import { useUser } from "@/hooks/useUser";
 
 const YoutubeModal = ({
   abbreviation,
@@ -33,8 +33,7 @@ const YoutubeModal = ({
   abbreviation: string;
   semester: string;
 }) => {
-  const { user, isLoggedIn } = useAuthStore();
-
+  const { user } = useUser();
   // Initialize form with react-hook-form and Zod validation
   const form = useForm({
     resolver: zodResolver(youtubeSchema),
@@ -81,7 +80,7 @@ const YoutubeModal = ({
 
   return (
     <>
-      {isLoggedIn && (user?.role === "teacher" || user?.role === "admin") && (
+      {(user?.role === "teacher" || user?.role === "admin") && (
         <Dialog>
           <DialogTrigger asChild>
             <Button

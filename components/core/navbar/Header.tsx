@@ -1,46 +1,65 @@
 "use client";
 
-import SearchBar from "@/components/SearchBar";
-import Heartbeat from "@/functions/Heartbeat";
-import useSessionQuery from "@/hooks/useSessionQuery";
-import { useAuthStore } from "@/store/authStore";
-import { AnimatePresence, motion } from "framer-motion";
+import React from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // Import usePathname
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { AnimatePresence, motion } from "framer-motion";
+import { useUser } from "@/hooks/useUser";
+import SearchBar from "@/components/SearchBar";
+import LoginButton from "../Button";
 import { ThemeToggle } from "./navbar_helper_components/ThemeSwitcher";
-import { useSession } from "next-auth/react";
+
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 const ProfileCard = dynamic(
   () => import("./navbar_helper_components/ProfileCard"),
   { ssr: false }
 );
 
-// Updated navLinks to include "Project"
-const navLinks = [
-  { name: "About", href: "/about" },
-  { name: "Project", href: "/about/project" },
-  { name: "Contact", href: "/contact" },
-  { name: "FAQs", href: "/home#faq" },
+const aboutLinks: { title: string; href: string; description: string }[] = [
+  {
+    title: "About Us",
+    href: "/about",
+    description: "Learn more about our mission, vision, and team.",
+  },
+  {
+    title: "Our Project",
+    href: "/about/project",
+    description: "Discover the details and technology behind StudyStack.",
+  },
+];
+
+const mainNavLinks = [
+  { name: "Contact", href: "/contact", requiresAuth: false },
+  { name: "FAQs", href: "/home#faq", requiresAuth: true },
 ];
 
 const Header = () => {
-  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, user } = useAuthStore();
-  const pathname = usePathname(); // Get the current path
+  const pathname = usePathname();
+  const { user } = useUser();
 
-  useSessionQuery();
+  // Filter links based on auth status
+  const visibleMainNavLinks = mainNavLinks.filter(
+    (link) => !link.requiresAuth || user
+  );
 
   return (
-    <nav className="fixed top-0 w-full px-5 z-50">
-      <div
-        suppressHydrationWarning
-        className="backdrop-blur-lg max-w-5xl mx-auto bg-white/80 dark:bg-neutral-950/50 border-[0.1px] border-neutral-300 sm:border-neutral-300 dark:border-neutral-800 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3"
-      >
+    <nav className="fixed top-0 w-full px-5 z-50" suppressHydrationWarning>
+      <div className="backdrop-blur-lg max-w-5xl mx-auto bg-white/80 dark:bg-neutral-950/50 border-[0.1px] border-neutral-300 sm:border-neutral-300 dark:border-neutral-800 rounded-xl py-2 mt-5 sm:mt-7 px-3 sm:pl-5 sm:pr-3">
         <div className="grid grid-cols-2 md:grid-cols-3 justify-end items-center">
           {/* LEFT: Logo */}
           <div className="flex items-center gap-7">
@@ -61,59 +80,69 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* ✅ CENTER: Navigation links (desktop only) */}
-          <div className="hidden md:flex justify-center items-center gap-7">
-            {navLinks.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={twMerge(
-                  // Vercel-like styling for nav links
-                  "text-sm transition-colors text-neutral-600 hover:text-black dark:text-neutral-400 dark:hover:text-white",
-                  pathname === item.href && "text-black dark:text-white", // Active link style
-                  !isLoggedIn && item.name === "FAQs" && "hidden" // Keep existing conditional logic
+          <div className="hidden md:flex justify-center items-center gap-1">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>About</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                      {aboutLinks.map((component) => (
+                        <ListItem
+                          className=" hover:cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800/70 rounded-md"
+                          key={component.title}
+                          title={component.title}
+                          href={component.href}
+                        >
+                          {component.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                {visibleMainNavLinks.map((item) => (
+                  <NavigationMenuItem key={item.name}>
+                    <NavigationMenuLink
+                      className={twMerge(
+                        navigationMenuTriggerStyle(),
+                        pathname === item.href && "bg-accent"
+                      )}
+                      asChild
+                    >
+                      <Link href={item.href}>{item.name}</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ))}
+
+                {user && "role" in user && user.role === "admin" && (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      className={twMerge(
+                        navigationMenuTriggerStyle(),
+                        pathname.startsWith("/admin") && "bg-accent"
+                      )}
+                      asChild
+                    >
+                      <Link href="/admin">Admin</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
                 )}
-              >
-                {item.name}
-              </Link>
-            ))}
-            {isLoggedIn && user && user.role === "admin" && (
-              <Link
-                href={`/admin/${user.userId}`}
-                className={twMerge(
-                  // Vercel-like styling for admin link
-                  "text-sm transition-colors text-neutral-600 hover:text-black dark:text-neutral-400 dark:hover:text-white",
-                  pathname.startsWith("/admin") && "text-black dark:text-white" // Active link style
-                )}
-              >
-                Admin
-              </Link>
-            )}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
-          {/* ✅ RIGHT: Search + Theme toggle + Profile */}
+          {/* RIGHT: Search + Theme toggle + Profile */}
           <div className="flex items-center gap-2 sm:gap-3 justify-end">
-            {/* 🔹 SearchBar now here, visible in both mobile & desktop */}
-            {isLoggedIn && user && <SearchBar />}
-
-            {/* Theme toggle */}
+            {user && <SearchBar />}
             <ThemeToggle />
-
-            {/* Profile / Login */}
             <div>
-              {session?.user ? (
+              {user ? (
                 <ProfileCard />
               ) : (
-                <Link
-                  href="/"
-                  className="px-3 py-1 text-sm rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-                >
-                  Login
-                </Link>
+                <LoginButton text="Login" className="hidden md:block" />
               )}
             </div>
-
-            {/* Mobile menu toggle */}
             <div className="md:hidden flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -162,34 +191,30 @@ const Header = () => {
             </div>
           </div>
         </div>
-
-        {/* Mobile menu dropdown */}
         <AnimatePresence>
           {isOpen && (
-            <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: "auto" }}
-              transition={{ duration: 0.01, ease: "easeInOut" }}
-              exit={{ height: 0 }}
-              className="overflow-hidden"
-            >
+            <motion.div /* ... */>
               <div className="flex flex-col items-center gap-4 md:hidden pb-5 pt-7">
-                {isLoggedIn && user?.role === "admin" && (
-                  <Link
-                    href={`/admin/${user.userId}`}
-                    className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
-                  >
+                {user && "role" in user && user.role === "admin" && (
+                  <Link href={`/admin`} className="... w-full text-center ...">
                     Admin
                   </Link>
                 )}
-                {navLinks.map((item) => (
+                {/* Show grouped links individually on mobile */}
+                {aboutLinks.map((item) => (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="... w-full text-center ..."
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+                {visibleMainNavLinks.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={twMerge(
-                      !isLoggedIn && item.name === "FAQs" && "hidden",
-                      "text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
-                    )}
+                    className="... w-full text-center ..."
                   >
                     {item.name}
                   </Link>
@@ -199,9 +224,34 @@ const Header = () => {
           )}
         </AnimatePresence>
       </div>
-      {isLoggedIn && user && <Heartbeat userId={user.userId} />}
     </nav>
   );
 };
+
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
 
 export default Header;

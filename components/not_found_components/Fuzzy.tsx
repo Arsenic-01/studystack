@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useUser } from "@/hooks/useUser";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useAuthStore } from "@/store/authStore";
+import { useEffect, useState } from "react";
 
 export const FuzzyOverlay = () => {
   const [theme, setTheme] = useState("light");
@@ -37,7 +37,7 @@ export const FuzzyOverlay = () => {
 };
 
 export const NotFoundErrorMessage = () => {
-  const { user } = useAuthStore();
+  const { user } = useUser();
 
   return (
     <div className="relative grid h-screen place-content-center space-y-6 bg-white text-black p-8 dark:bg-black dark:text-neutral-50">
