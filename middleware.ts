@@ -2,14 +2,7 @@ import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token;
-
-    // Redirect if non-admin tries to access /admin
-    if (req.nextUrl.pathname.startsWith("/admin") && token?.role !== "admin") {
-      return NextResponse.redirect(new URL("/home", req.url));
-    }
-
+  function middleware() {
     return NextResponse.next();
   },
   {
@@ -20,5 +13,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/admin/:path*", "/home", "/semester/:sem*"],
+  matcher: ["/home", "/semester/:sem*"],
 };

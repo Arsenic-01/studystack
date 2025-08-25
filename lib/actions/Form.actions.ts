@@ -30,7 +30,6 @@ export async function createFormLink({
       formType,
     });
 
-    revalidatePath(`/semester/${semester}/${abbreviation}`);
     return { success: true };
   } catch (error) {
     console.error("Error creating Google Form link:", error);

@@ -36,39 +36,32 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.prnNo || !credentials?.password) {
-          return null;
+          throw new Error("Missing PRN number or password");
         }
 
         try {
-          // Fetch user by PRN number
           const response = await databases.listDocuments<AppwriteUser>(
             databaseId,
             collectionId,
             [Query.equal("prnNo", credentials.prnNo)]
           );
-          console.log("credentials", credentials);
-          console.log("response", response);
 
           if (response.documents.length === 0) {
-            return null; // No user found
+            throw new Error("User not found");
           }
 
           const user = response.documents[0];
-          console.log("Fetched user:", user);
 
           // Compare provided password with stored hash
           const isValid = await bcrypt.compare(
             credentials.password,
             user.password
           );
-          console.log("Password valid:", isValid);
+
           if (!isValid) {
-            return null; // Wrong password
+            throw new Error("Invalid password");
           }
 
-          console.log("User authenticated:", user);
-
-          // ✅ Return user object compatible with NextAuth
           return {
             id: user.$id,
             name: user.name,
@@ -78,7 +71,7 @@ export const authOptions: NextAuthOptions = {
           } as NextAuthUser & { role: string; prnNo: string };
         } catch (error) {
           console.error("Authentication failed:", error);
-          return null;
+          throw new Error("Authentication failed. Please try again later.");
         }
       },
     }),

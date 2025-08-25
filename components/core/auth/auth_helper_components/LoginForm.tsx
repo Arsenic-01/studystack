@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
 import { toast } from "sonner";
-import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { RainbowButton } from "@/components/ui/rainbow-button";
@@ -143,8 +143,7 @@ export function LoginForm() {
           </div>
         </div>
 
-        <RainbowButton className="w-full mt-3" type="submit" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <RainbowButton className="w-full" type="submit" disabled={loading}>
           {loading ? "Signing In..." : "Sign In"}
         </RainbowButton>
       </form>

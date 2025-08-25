@@ -14,7 +14,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
-import { fetchPaginatedNotes } from "@/lib/actions/Notes.actions";
+import {
+  fetchPaginatedNotes,
+  getAllTeachers,
+} from "@/lib/actions/Notes.actions";
 import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -71,6 +74,14 @@ const defaultQueryOptions = {
   staleTime: 1000 * 60 * 5, // 5 minutes
 };
 
+const useTeacherOptions = () => {
+  return useQuery({
+    queryKey: ["all-teachers"],
+    queryFn: () => getAllTeachers(),
+    staleTime: Infinity,
+  });
+};
+
 const NotesFilter = ({
   subject,
   initialNotes,
@@ -91,6 +102,8 @@ const NotesFilter = ({
 
   // UI State
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+
+  const { data: allTeachers } = useTeacherOptions();
 
   const isNotesFilterPristine =
     selectedFilters.length === 0 &&
@@ -192,7 +205,6 @@ const NotesFilter = ({
   const notes = notesData?.documents ?? [];
   const totalNotes = notesData?.total ?? 0;
   const totalNotePages = Math.ceil(totalNotes / NOTES_PER_PAGE);
-  const uniqueUsers = Array.from(new Set(notes.map((note) => note.users.name)));
 
   const youtubeLinks = youtubeData?.documents ?? [];
   const totalYoutubeLinks = youtubeData?.total ?? 0;
@@ -314,7 +326,7 @@ const NotesFilter = ({
                       <Checkbox checked={selectedUser.length === 0} />
                       <span className="text-sm">All</span>
                     </div>
-                    {uniqueUsers.map((userName) => (
+                    {allTeachers?.map((userName) => (
                       <div
                         key={userName}
                         className="flex items-center gap-2 cursor-pointer"

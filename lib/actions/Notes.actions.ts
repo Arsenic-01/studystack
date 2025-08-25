@@ -1,7 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { DATABASE_ID, db, NOTE_COLLECTION_ID, Query } from "../appwrite";
+import {
+  DATABASE_ID,
+  db,
+  NOTE_COLLECTION_ID,
+  Query,
+  USER_COLLECTION_ID,
+} from "../appwrite";
 import { getDriveClient } from "../googleDrive";
 import { Note } from "../appwrite_types";
 
@@ -183,5 +189,22 @@ export async function fetchPaginatedNotes({
   } catch (error) {
     console.error("Error fetching paginated notes:", error);
     return { documents: [], total: 0 };
+  }
+}
+
+export async function getAllTeachers() {
+  try {
+    const response = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
+      Query.equal("role", "teacher"),
+      Query.limit(100),
+      Query.select(["name"]),
+      Query.orderAsc("name"),
+    ]);
+
+    // Return just an array of teacher names
+    return response.documents.map((doc) => doc.name) as string[];
+  } catch (error) {
+    console.error("Error fetching all teachers:", error);
+    return [];
   }
 }

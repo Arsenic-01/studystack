@@ -51,9 +51,7 @@ export function AlreadyLoggedInCard() {
   if (!user) return null;
 
   const handleContinue = () => {
-    const destination =
-      "role" in user && user.role === "admin" ? "/admin" : "/home";
-    router.push(destination);
+    router.push("/home");
   };
 
   return (

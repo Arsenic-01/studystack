@@ -115,16 +115,18 @@ const Header = () => {
                   </NavigationMenuItem>
                 ))}
 
+                {/* TODO: Add admin dashboard link */}
+
                 {user && "role" in user && user.role === "admin" && (
                   <NavigationMenuItem>
                     <NavigationMenuLink
                       className={twMerge(
                         navigationMenuTriggerStyle(),
-                        pathname.startsWith("/admin") && "bg-accent"
+                        pathname.startsWith("/home") && "bg-accent"
                       )}
                       asChild
                     >
-                      <Link href="/admin">Admin</Link>
+                      <Link href="/home">Admin</Link>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 )}
@@ -195,8 +197,10 @@ const Header = () => {
           {isOpen && (
             <motion.div /* ... */>
               <div className="flex flex-col items-center gap-4 md:hidden pb-5 pt-7">
+                {/* TODO: Add admin dashboard link */}
+
                 {user && "role" in user && user.role === "admin" && (
-                  <Link href={`/admin`} className="... w-full text-center ...">
+                  <Link href={`/home`} className="... w-full text-center ...">
                     Admin
                   </Link>
                 )}

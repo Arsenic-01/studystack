@@ -99,7 +99,7 @@ export const creators = [
   {
     name: "Tanay Hingane",
     role: "Fullstack Developer & Database Management",
-    avatar: "/team/user_pfp/tanay.jpg",
+    avatar: "/team/user_pfp/tanay.jpeg",
   },
   {
     name: "Adarsh Tile",
