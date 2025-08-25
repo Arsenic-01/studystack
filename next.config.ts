@@ -36,16 +36,17 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/ingest/static/:path*",
+        // Changed from /ingest/static/...
+        source: "/api/event/static/:path*",
         destination: "https://eu-assets.i.posthog.com/static/:path*",
       },
       {
-        source: "/ingest/:path*",
+        // Changed from /ingest/...
+        source: "/api/event/:path*",
         destination: "https://eu.i.posthog.com/:path*",
       },
     ];
   },
-  // This is required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
 };
 

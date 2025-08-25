@@ -1,16 +1,14 @@
 "use client";
 
-import React from "react";
+import SearchBar from "@/components/SearchBar";
+import { useUser } from "@/hooks/useUser";
+import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { AnimatePresence, motion } from "framer-motion";
-import { useUser } from "@/hooks/useUser";
-import SearchBar from "@/components/SearchBar";
-import LoginButton from "../Button";
 import { ThemeToggle } from "./navbar_helper_components/ThemeSwitcher";
 
 import {
@@ -22,6 +20,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 import { cn } from "@/lib/utils";
 
 const ProfileCard = dynamic(
@@ -51,6 +50,8 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { user } = useUser();
+
+  const router = useRouter();
 
   // Filter links based on auth status
   const visibleMainNavLinks = mainNavLinks.filter(
@@ -124,7 +125,7 @@ const Header = () => {
                       )}
                       asChild
                     >
-                      <Link href="https://studystack-admin.vercel.app/">
+                      <Link href="http://admin-studystack.vercel.app/">
                         Admin
                       </Link>
                     </NavigationMenuLink>
@@ -142,7 +143,12 @@ const Header = () => {
               {user ? (
                 <ProfileCard />
               ) : (
-                <LoginButton text="Login" className="hidden md:block" />
+                <RainbowButton
+                  className="hidden md:block"
+                  onClick={() => router.push("/")}
+                >
+                  Login
+                </RainbowButton>
               )}
             </div>
             <div className="md:hidden flex items-center">
@@ -199,7 +205,7 @@ const Header = () => {
               <div className="flex flex-col items-center gap-4 md:hidden pb-5 pt-7">
                 {user && "role" in user && user.role === "admin" && (
                   <Link
-                    href={"https://studystack-admin.vercel.app/"}
+                    href={"http://admin-studystack.vercel.app/"}
                     className="... w-full text-center ..."
                   >
                     Admin

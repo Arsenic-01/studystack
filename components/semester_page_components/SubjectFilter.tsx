@@ -48,7 +48,7 @@ const SubjectSearch = ({ sem, initialSubjects }: SubjectSearchProps) => {
             placeholder="Search Subject by Name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-10"
+            className="w-full pl-10 pr-10 text-sm"
           />
           {searchQuery && (
             <X
