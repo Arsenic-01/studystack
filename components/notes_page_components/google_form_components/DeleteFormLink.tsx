@@ -64,7 +64,6 @@ const DeleteFormLink = ({
             ) : (
               "Continue"
             )}
-            Continue
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -1,3 +1,5 @@
+// MemberCard.tsx
+
 "use client";
 
 import Image from "next/image";
@@ -46,18 +48,22 @@ export function MemberCard({ member }: MemberCardProps) {
           />
         </div>
 
-        <div className="flex flex-col flex-grow p-6">
-          {/* Header Info */}
+        <div className="flex flex-col flex-grow px-5 py-6">
           <CardHeader className="p-0">
-            <CardTitle className="text-xl">{member.name}</CardTitle>
+            <div className="flex items-center gap-2 flex-wrap">
+              <CardTitle className="text-xl">{member.name}</CardTitle>
+              {member.role && (
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
+                  {member.role}
+                </span>
+              )}
+            </div>
             <CardDescription>{member.classInfo}</CardDescription>
           </CardHeader>
 
           {/* Quote and Socials */}
           <CardContent className="p-0 pt-4 flex-grow">
-            <p className="text-muted-foreground italic mb-4">
-              &quot;{member.quote}&quot;
-            </p>
+            <p className="text-muted-foreground mb-4">{member.quote}</p>
             <div className="flex items-center gap-1">
               <TooltipProvider delayDuration={0}>
                 {member.socials.map((social) => (
@@ -95,10 +101,22 @@ export function MemberCard({ member }: MemberCardProps) {
       </Card>
 
       {/* Dialog Content */}
-      <DialogContent className="max-w-md sm:max-w-lg">
+      <DialogContent className="lg:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">{member.name}</DialogTitle>
-          <p className="text-muted-foreground text-sm">{member.classInfo}</p>
+          <div className="flex items-center gap-2">
+            <DialogTitle className="text-xl font-bold">
+              {member.name}
+            </DialogTitle>
+            {/* Also adding the badge in the dialog for consistency */}
+            {member.role && (
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
+                {member.role}
+              </span>
+            )}
+          </div>
+          <p className="text-muted-foreground text-sm text-start pb-5">
+            {member.classInfo}
+          </p>
         </DialogHeader>
         <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-4">
           <h3 className="font-semibold text-base">Key Contributions</h3>

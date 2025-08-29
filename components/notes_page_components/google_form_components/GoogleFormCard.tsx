@@ -40,19 +40,19 @@ interface GoogleFormCardProps {
 // Configuration for different link types
 const linkTypeConfig = {
   googleForm: {
-    icon: ClipboardList, // more "form-like"
+    icon: ClipboardList,
     label: "Google Form",
     color: "text-teal-600 dark:text-teal-400",
     bg: "bg-teal-100 dark:bg-teal-900/50",
   },
   assignment: {
-    icon: FileText, // cleaner assignment look
+    icon: FileText,
     label: "Assignment",
     color: "text-indigo-600 dark:text-indigo-400",
     bg: "bg-indigo-100 dark:bg-indigo-900/50",
   },
   other: {
-    icon: Globe, // feels more "generic link"
+    icon: Globe,
     label: "Other Link",
     color: "text-rose-600 dark:text-rose-400",
     bg: "bg-rose-100 dark:bg-rose-900/40",
@@ -69,8 +69,10 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
   const Icon = config.icon;
   const [isEditing, setIsEditing] = useState(false);
 
+  const canModify = user?.name === form.createdBy || user?.role === "admin";
+
   return (
-    <div className="flex text- flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-muted/50">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-y-4 gap-x-2 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-muted/50">
       <div className="flex items-center gap-4 w-full sm:w-auto">
         <div className={`p-2 rounded-full ${config.bg}`}>
           <Icon className={`size-5 ${config.color}`} />
@@ -79,49 +81,56 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold leading-tight">{form.quizName}</h3>
           </div>
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
+          <div className="text-sm text-muted-foreground flex items-center flex-wrap gap-x-2 gap-y-1">
             <User className="h-4 w-4" />
             <span>Added by {form.createdBy}</span>
             <Badge variant="secondary">{config.label}</Badge>
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-2 w-full sm:w-fit self-end sm:self-center">
-        {(user?.name === form.createdBy || user?.role === "admin") && (
-          <>
+
+      <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+        {canModify && (
+          <div className="flex w-full sm:w-auto gap-2">
             <Button
               variant="outline"
-              className="w-full md:w-fit"
+              className="w-full sm:w-auto justify-center"
               onClick={() => setIsEditing(true)}
             >
               <Pencil className="h-4 w-4" />
               Edit Link
-            </Button>{" "}
+            </Button>
             <DeleteFormLink
               id={form.id}
               semester={semester}
               abbreviation={abbreviation}
             />
-          </>
+          </div>
         )}
-        {isEditing && (
-          <EditFormLink
-            open={isEditing}
-            onOpenChange={setIsEditing}
-            id={form.id}
-            url={form.url}
-            quizName={form.quizName}
-            formType={form.formType}
-            semester={form.semester}
-            abbreviation={form.abbreviation}
-          />
-        )}
-        <Button asChild variant="outline" className="w-full sm:w-fit">
-          <a href={form.url} target="_blank" rel="noopener noreferrer">
-            Open <SquareArrowOutUpRight className="size-4" />
+        <Button asChild variant="outline" className="w-full sm:w-auto">
+          <a
+            href={form.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex w-full items-center justify-center gap-2"
+          >
+            Open <SquareArrowOutUpRight className="size-4 ml-1" />
           </a>
         </Button>
       </div>
+
+      {isEditing && (
+        <EditFormLink
+          open={isEditing}
+          onOpenChange={setIsEditing}
+          id={form.id}
+          url={form.url}
+          quizName={form.quizName}
+          formType={form.formType}
+          semester={form.semester}
+          abbreviation={form.abbreviation}
+        />
+      )}
     </div>
   );
 };

@@ -46,7 +46,7 @@ export function CreatorCredit({
   return (
     <div
       className={cn(
-        "fixed bottom-0 right-2 lg:bottom-6 lg:right-6 z-50 w-64 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-card p-4 shadow-lg",
+        "fixed bottom-5 right-2 lg:bottom-20 lg:right-4 z-50 w-64 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-card p-4 shadow-lg",
         "animate-in fade-in slide-in-from-right-5 duration-300",
         "backdrop-blur-3xl bg-opacity-95",
         className

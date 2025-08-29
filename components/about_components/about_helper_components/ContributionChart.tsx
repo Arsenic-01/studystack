@@ -41,20 +41,22 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-type CategoryKey = "coding" | "documentation" | "testing" | "research";
+type CategoryKey = "coding" | "docs" | "testing" | "research" | "database";
 
 const transformDataForChart = (members: TeamMember[]) => {
   const categories: CategoryKey[] = [
     "coding",
-    "documentation",
+    "docs",
     "testing",
     "research",
+    "database",
   ];
   const totals: Record<CategoryKey, number> = {
     coding: 0,
-    documentation: 0,
+    docs: 0,
     testing: 0,
     research: 0,
+    database: 0,
   };
 
   for (const member of members) {
@@ -130,15 +132,18 @@ export function ContributionChart({ members }: ContributionChartProps) {
   const chartData = transformDataForChart(members);
 
   return (
-    <Card className="h-full">
+    <Card className="h-full p-0">
       <CardHeader>
         <CardTitle>Team Contribution Breakdown</CardTitle>
         <CardDescription>
           Relative effort distribution by area of focus across the team.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[280px] w-full">
+      <CardContent className="px-4">
+        <ChartContainer
+          config={chartConfig}
+          className="min-h-[280px] w-full p-0"
+        >
           <BarChart
             accessibilityLayer
             data={chartData}
@@ -152,7 +157,7 @@ export function ContributionChart({ members }: ContributionChartProps) {
               tickLine={false}
               axisLine={false}
               tickMargin={10}
-              width={100}
+              width={70}
             />
             {/* Use the new custom tooltip */}
             <ChartTooltip cursor={false} content={<CustomChartTooltip />} />

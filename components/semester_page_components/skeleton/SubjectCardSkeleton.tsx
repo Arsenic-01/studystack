@@ -1,3 +1,5 @@
+// components/notes_page_components/SubjectCardSkeleton.tsx
+
 import { Skeleton } from "@/components/ui/skeleton";
 
 const SubjectCardSkeleton = () => {

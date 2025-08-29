@@ -1,6 +1,7 @@
+// UserProfilePopover.tsx
 "use client";
 
-import { LogOut } from "lucide-react";
+import { LogOut, KeyRound } from "lucide-react"; // Import KeyRound icon
 import { signOut } from "next-auth/react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/useUser";
+import { ChangePasswordDialog } from "../../auth/auth_helper_components/ChangePasswordDialog";
 
 const getInitials = (name: string) => {
   return name
@@ -36,9 +38,12 @@ export default function UserProfilePopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <Avatar className="h-10 w-10">
-            <AvatarFallback>
+        <Button
+          variant="ghost"
+          className="relative size-6 lg:size-10 rounded-full"
+        >
+          <Avatar className="size-7 lg:size-10">
+            <AvatarFallback className="text-sm lg:text-base">
               {user.name ? getInitials(user.name) : "U"}
             </AvatarFallback>
           </Avatar>
@@ -66,9 +71,19 @@ export default function UserProfilePopover() {
         <Separator />
 
         <div className="p-1">
+          <ChangePasswordDialog>
+            <Button
+              className="w-full justify-between h-9 rounded-sm"
+              variant="ghost"
+            >
+              <span>Change Password</span>
+              <KeyRound className="size-3" />
+            </Button>
+          </ChangePasswordDialog>
+
           <Button
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="w-full justify-between h-9 rounded-sm "
+            className="w-full justify-between h-9 rounded-sm"
             variant="ghost"
           >
             <span>Logout</span>

@@ -28,6 +28,7 @@ export type TeamMember = {
     | "Tanay K. Hingane"
     | "Adarsh S. Tile"
     | "Yadnesh Udar";
+  role?: "Project Lead";
   pfp: string;
   classInfo: "TYCM-Lin 2025" | "TYCM-MAC 2025";
   quote: string;
@@ -35,9 +36,10 @@ export type TeamMember = {
   contributions: string[];
   contributionSplit: {
     coding: number;
-    documentation: number;
+    docs: number;
     testing: number;
     research: number;
+    database: number;
   };
 };
 
@@ -46,9 +48,10 @@ export const teamMembers: TeamMember[] = [
   {
     id: 1,
     name: "Vedant B. Bhor",
+    role: "Project Lead",
     pfp: "/vedantpfp.jpg",
     classInfo: "TYCM-Lin 2025",
-    quote: "I am a dedicated Late Comer! 🕔",
+    quote: "Late? I call it ‘scheduled delay’. 🕒",
     socials: [
       {
         name: "Whatsapp",
@@ -88,18 +91,21 @@ export const teamMembers: TeamMember[] = [
       },
     ],
     contributions: [
-      "Engineered the complete user authentication flow using Appwrite, ensuring secure sign-up, login, and session management.",
+      "Architected the backend logic for resource addition (YouTube links, notes, quizzes) with Appwrite.",
       "Integrated Sentry for real-time error tracking and performance monitoring, enabling proactive bug fixes and improving application stability.",
       "Implemented a high-performance search functionality across all content using Algolia, dramatically improving user experience.",
-      "Co-developed the admin dashboard, focusing on intuitive UI/UX for managing educational materials like quizzes and notes.",
-      "Architected the backend logic for resource addition (YouTube links, notes, quizzes) with Appwrite.",
-      "Led the initial frontend design and component structure for the main landing page.",
+      "Co-developed the admin dashboard, focusing on intuitive UI/UX for managing users and content.",
+      "Integrated PostHog for advanced analytics and user behavior tracking, providing insights to drive future enhancements.",
+      "Optimized the application's performance through code-splitting, lazy loading, and efficient state management.",
+      "Reduced server loads by optimizing database queries and offloading intensive tasks to cloud functions.",
+      "Deployed the application on Vercel, ensuring seamless CI/CD and optimal performance.",
     ],
     contributionSplit: {
       coding: 75,
-      documentation: 5,
+      docs: 5,
       testing: 15,
       research: 30,
+      database: 45,
     },
   },
   {
@@ -107,7 +113,7 @@ export const teamMembers: TeamMember[] = [
     name: "Tanay K. Hingane",
     pfp: "/team/user_pfp/tanay.jpeg",
     classInfo: "TYCM-Lin 2025",
-    quote: "I am a dedicated Low-Battery Guy! 🪫",
+    quote: "Battery low, sarcasm high. 🪫",
     socials: [
       {
         name: "Whatsapp",
@@ -148,17 +154,18 @@ export const teamMembers: TeamMember[] = [
     ],
     contributions: [
       "Structured and managed the Appwrite database collections, ensuring data integrity and efficient querying.",
-      "Implemented NextAuth for alternative authentication pathways and future-proofing the application's security model.",
-      "Developed key UI components for the quiz and notes sections, including dynamic sorting and filtering logic.",
+      "Implemented NextAuth for user authentication pathways and future-proofing the application's security model.",
       "Designed and built the dedicated project portfolio section to showcase our collective work and skills.",
       "Refactored frontend components for the landing page, improving code readability and performance.",
-      "Handled the logic for editing and managing abbreviation links within the admin dashboard.",
+      "Handled the logic for editing and managing abbreviation links within the notes page.",
+      "Implemented a dynamic note sorting mechanism, enhancing accessibility and user experience across multiple subjects and semesters.",
     ],
     contributionSplit: {
       coding: 15,
-      documentation: 55,
+      docs: 55,
       testing: 15,
       research: 30,
+      database: 45,
     },
   },
   {
@@ -166,7 +173,7 @@ export const teamMembers: TeamMember[] = [
     name: "Adarsh S. Tile",
     pfp: "/adarshpfp.jpg",
     classInfo: "TYCM-MAC 2025",
-    quote: "I am a dedicated Trip Skipper! ❌",
+    quote: "Skipping plans like a pro. ❌",
     socials: [
       {
         name: "Whatsapp",
@@ -200,17 +207,20 @@ export const teamMembers: TeamMember[] = [
       },
     ],
     contributions: [
+      "Played a pivotal role in implementing the global search functionality using Algolia, enhancing user experience by enabling quick access to resources.",
       "Designed and developed the 'About Us' page from concept to implementation, creating the component you're looking at now.",
       "Re-architected the video embedding and playback components for better performance and cross-browser compatibility.",
-      "Played a key role in drafting and compiling the official project report and technical documentation.",
+      "Recorded and edited the demo video showcasing the application's features and user interface.",
+      "Played a key role in drafting and compiling the official project report, synopsis and technical docs.",
       "Contributed to UI/UX refinements across the application to ensure a consistent and polished user experience.",
       "Assisted in debugging and resolving frontend issues identified during the development cycle.",
     ],
     contributionSplit: {
       coding: 10,
-      documentation: 40,
+      docs: 40,
       testing: 35,
       research: 25,
+      database: 10,
     },
   },
   {
@@ -218,7 +228,7 @@ export const teamMembers: TeamMember[] = [
     name: "Yadnesh Udar",
     pfp: "/yadneshpfp.jpg",
     classInfo: "TYCM-MAC 2025",
-    quote: "I am a dedicated CEO! 🫡",
+    quote: "CEO – Chief Excuse Officer. 🫡",
     socials: [
       {
         name: "Whatsapp",
@@ -252,17 +262,19 @@ export const teamMembers: TeamMember[] = [
       },
     ],
     contributions: [
-      "Led the project management and coordination efforts, ensuring the team stayed on track with deadlines and objectives.",
-      "Authored a significant portion of the project's official report and comprehensive technical documentation.",
-      "Oversaw the project's overall vision and direction, facilitating communication and collaboration between team members.",
-      "Contributed to ideation and feature planning during the initial stages of the project.",
-      "Ensured all final deliverables met the required academic and technical standards.",
+      "Integration testing for the entire application, ensuring all components work seamlessly together.",
+      "Conducted usability testing sessions to gather user feedback and identify areas for improvement.",
+      "Collaborated with the team to create comprehensive test cases and documentation for future reference.",
+      "Performed cross-browser and device testing to ensure consistent performance and appearance.",
+      "Researched best practices for testing methodologies and tools to enhance the testing process.",
+      "Recommended features and improvements based on testing outcomes and user feedback.",
     ],
     contributionSplit: {
       coding: 0,
-      documentation: 0,
+      docs: 0,
       testing: 35,
       research: 15,
+      database: 0,
     },
   },
 ];

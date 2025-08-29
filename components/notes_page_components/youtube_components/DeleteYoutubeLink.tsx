@@ -63,7 +63,6 @@ const DeleteYoutubeLink = ({
             ) : (
               "Continue"
             )}
-            Continue
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

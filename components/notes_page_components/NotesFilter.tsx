@@ -229,7 +229,7 @@ const NotesFilter = ({
 
   return (
     <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 mb-8">
+      <div className="flex gap-4 sm:gap-10 mb-8">
         <Button
           variant="outline"
           className={`${!subject.semester && "hidden"} w-fit`}
@@ -248,8 +248,13 @@ const NotesFilter = ({
             <Home /> Home
           </Link>
         </Button>
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="hidden md:block text-2xl font-bold tracking-tight">
           {subject.name ? `Notes for ${subject.name}` : "Invalid Subject URL"}
+        </h1>
+        <h1 className="md:hidden text-2xl font-bold tracking-tight">
+          {subject.abbreviation
+            ? `Notes for ${subject.abbreviation.toUpperCase()}`
+            : "Invalid Subject URL"}
         </h1>
       </div>
       {!hasNotesForSubject ? (
