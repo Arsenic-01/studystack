@@ -1,6 +1,5 @@
+import { LinkPreview } from "@/components/ui/link-preview";
 import { Info } from "lucide-react";
-import Link from "next/link";
-import React from "react";
 
 const GuidedBy = () => {
   return (
@@ -8,19 +7,23 @@ const GuidedBy = () => {
       <Info className="w-4 h-4" />
       <div>
         Guided by{" "}
-        <Link
-          href={"mailto:gbkatkade@kkwagh.edu.in"}
+        <LinkPreview
+          url={"mailto:gbkatkade@kkwagh.edu.in"}
+          isStatic
+          imageSrc="/mentor/gbk.jpeg"
           className="font-bold hover:underline hover:underline-offset-4 transition-all ease-in-out duration-300"
         >
           Prof. G.B. Katkade
-        </Link>{" "}
+        </LinkPreview>{" "}
         and{" "}
-        <Link
-          href={"mailto:adtalole@kkwagh.edu.in"}
+        <LinkPreview
+          url={"mailto:adtalole@kkwagh.edu.in"}
+          isStatic
+          imageSrc="/mentor/adt.webp"
           className="font-bold hover:underline hover:underline-offset-4 transition-all ease-in-out duration-300"
         >
           Prof. A.D. Talole
-        </Link>
+        </LinkPreview>
       </div>
     </div>
   );
