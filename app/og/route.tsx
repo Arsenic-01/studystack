@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
           <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
             {/* Your Logo */}
             <img
-              src="https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/logo.png"
+              src="https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/logo.png"
               width="140"
               height="140"
               alt="StudyStack Logo"
