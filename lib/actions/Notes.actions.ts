@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import {
   DATABASE_ID,
   db,
@@ -8,8 +7,8 @@ import {
   Query,
   USER_COLLECTION_ID,
 } from "../appwrite";
-import { getDriveClient } from "../googleDrive";
 import { Note } from "../appwrite_types";
+import { getDriveClient } from "../googleDrive";
 
 export async function fetchNotesBySubject({
   abbreviation,
@@ -60,7 +59,6 @@ export async function deleteNote({ noteId, fileId }: DeleteNoteParams) {
       fileId: fileId,
     });
     await db.deleteDocument(DATABASE_ID!, NOTE_COLLECTION_ID!, noteId);
-    revalidatePath("/admin");
 
     return { success: true };
   } catch (error) {
@@ -113,7 +111,6 @@ export const editNotes = async (data: EditNotesModalFunctionProps) => {
       type_of_file: data.type_of_file,
     });
 
-    revalidatePath("/admin");
     return { success: true };
   } catch (error) {
     console.error("Error updating note:", error);

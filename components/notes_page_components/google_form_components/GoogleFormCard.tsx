@@ -14,7 +14,6 @@ import React, { useState } from "react";
 import DeleteFormLink from "./DeleteFormLink";
 import EditFormLink from "./EditFormLink";
 
-// Define the shape of the 'form' and 'user' props
 interface FormLink {
   id: string;
   url: string;
@@ -37,7 +36,6 @@ interface GoogleFormCardProps {
   abbreviation: string;
 }
 
-// Configuration for different link types
 const linkTypeConfig = {
   googleForm: {
     icon: ClipboardList,
@@ -127,7 +125,6 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
           url={form.url}
           quizName={form.quizName}
           formType={form.formType}
-          semester={form.semester}
           abbreviation={form.abbreviation}
         />
       )}

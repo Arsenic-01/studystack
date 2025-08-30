@@ -355,7 +355,7 @@ export function IconCloud({ icons, images, className }: IconCloudProps) {
     <canvas
       ref={canvasRef}
       width={400}
-      height={300}
+      height={270}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}

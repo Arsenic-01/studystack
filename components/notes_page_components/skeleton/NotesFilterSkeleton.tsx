@@ -10,7 +10,7 @@ const NotesFilterSkeleton = () => {
   return (
     <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 mb-8">
+      <div className="flex gap-4 sm:gap-10 mb-8">
         <Button variant="outline" className="w-fit" asChild>
           <Link href="/">
             <ArrowLeft /> Back

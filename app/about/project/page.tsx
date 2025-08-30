@@ -1,19 +1,24 @@
-import HeroProject from "@/components/project_components/Hero";
-import Architecture from "../../../components/project_components/SystemArchitecture";
-import Team from "@/components/project_components/Team";
-import Citations from "@/components/project_components/Citation";
-import ProjStats from "@/components/project_components/ProjStats";
+import DeepDiveAbout from "@/components/project_components/DeepDiveAbout";
+import ProjectOverviewHero from "@/components/project_components/ProjectOverviewHero";
+import ProjectImpactStats from "@/components/project_components/ProjectStats";
+import ProjectReferences from "@/components/project_components/References";
+import SystemArchitecture from "@/components/project_components/SystemArchitecture";
+import TechStackDisplay from "@/components/project_components/TechStackDisplay";
 
-const AboutPage = () => {
+export default function AboutProjectPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 ">
-      <HeroProject />
-      <Architecture />
-      <ProjStats />
-      <Team />
-      <Citations />
-    </div>
+    <main className="flex flex-col py-20 md:py-24 lg:py-32">
+      <ProjectOverviewHero />
+      <div className="container mx-auto px-5">
+        {/* Added responsive padding */}
+        <div className="flex flex-col items-center gap-12 md:gap-28 lg:gap-36 py-16 md:py-24">
+          <DeepDiveAbout />
+          <SystemArchitecture />
+          <TechStackDisplay />
+          <ProjectImpactStats />
+          <ProjectReferences />
+        </div>
+      </div>
+    </main>
   );
-};
-
-export default AboutPage;
+}

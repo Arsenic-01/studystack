@@ -6,13 +6,12 @@ const Created = () => {
       <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-10 border border-neutral-200 dark:border-neutral-800 pb-5 sm:py-0 px-5 rounded-xl">
         <div className="text-xl font-bold tracking-tighter max-w-lg">
           <div>
-            Diploma students in Computer Technology (MSBTE) struggle with
-            scattered notes, multiple software requirements, and difficult
-            resource retrieval on platforms like Google Classroom. Study Stack
-            simplifies this by providing a centralized, secure, and organized
-            space where teachers upload and students easily access study
-            materials—no more endless searching. Everything you need, all in one
-            place! 🚀
+            Students often deal with notes and resources spread across different
+            channels, with no single shared space to keep everything together.
+            Study Stack brings study materials into one secure, organized hub
+            where teachers upload and students access effortlessly. No more
+            switching between platforms—everything you need, all in one place!
+            🚀
           </div>
         </div>
         <IconGlobe />

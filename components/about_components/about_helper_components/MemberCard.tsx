@@ -49,7 +49,7 @@ export function MemberCard({ member }: MemberCardProps) {
         </div>
 
         <div className="flex flex-col flex-grow px-5 py-6">
-          <CardHeader className="p-0">
+          <CardHeader className="p-0 space-y-0">
             <div className="flex items-center gap-2 flex-wrap">
               <CardTitle className="text-xl">{member.name}</CardTitle>
               {member.role && (
@@ -62,7 +62,7 @@ export function MemberCard({ member }: MemberCardProps) {
           </CardHeader>
 
           {/* Quote and Socials */}
-          <CardContent className="p-0 pt-4 flex-grow">
+          <CardContent className="p-0 pt-3 flex-grow">
             <p className="text-muted-foreground mb-4">{member.quote}</p>
             <div className="flex items-center gap-1">
               <TooltipProvider delayDuration={0}>
@@ -102,7 +102,7 @@ export function MemberCard({ member }: MemberCardProps) {
 
       {/* Dialog Content */}
       <DialogContent className="lg:max-w-lg">
-        <DialogHeader>
+        <DialogHeader className="space-y-0">
           <div className="flex items-center gap-2">
             <DialogTitle className="text-xl font-bold">
               {member.name}
@@ -114,7 +114,7 @@ export function MemberCard({ member }: MemberCardProps) {
               </span>
             )}
           </div>
-          <p className="text-muted-foreground text-sm text-start pb-5">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 text-start pb-3 md:pb-5">
             {member.classInfo}
           </p>
         </DialogHeader>

@@ -37,15 +37,13 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-// --- CHANGE 1: Update props to include formType ---
 const EditFormLink = ({
   open,
   onOpenChange,
   id,
   url,
   quizName,
-  formType: initialFormType, // Receive the initial form type
-  semester,
+  formType: initialFormType,
   abbreviation,
 }: {
   open: boolean;
@@ -55,7 +53,6 @@ const EditFormLink = ({
   url: string;
   quizName: string;
   formType: "googleForm" | "assignment" | "other";
-  semester: string;
   abbreviation: string;
 }) => {
   const { user } = useUser();
@@ -109,8 +106,6 @@ const EditFormLink = ({
         quizName: values.name,
         googleFormLink: values.url,
         formType: values.formType,
-        semester,
-        abbreviation,
       }),
     onSuccess: () => {
       toast.success("Link updated successfully");

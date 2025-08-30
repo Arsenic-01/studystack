@@ -201,12 +201,18 @@ const Header = () => {
         </div>
         <AnimatePresence>
           {isOpen && (
-            <motion.div /* ... */>
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: "auto" }}
+              transition={{ duration: 0.01, ease: "easeInOut" }}
+              exit={{ height: 0 }}
+              className="overflow-hidden"
+            >
               <div className="flex flex-col items-center gap-4 md:hidden pb-5 pt-7">
                 {user && "role" in user && user.role === "admin" && (
                   <Link
                     href={"http://admin-studystack.vercel.app/"}
-                    className="... w-full text-center ..."
+                    className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
                   >
                     Admin
                   </Link>
@@ -216,7 +222,7 @@ const Header = () => {
                   <Link
                     key={item.title}
                     href={item.href}
-                    className="... w-full text-center ..."
+                    className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
                   >
                     {item.title}
                   </Link>
@@ -225,7 +231,7 @@ const Header = () => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="... w-full text-center ..."
+                    className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
                   >
                     {item.name}
                   </Link>

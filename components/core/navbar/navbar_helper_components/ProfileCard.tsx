@@ -40,9 +40,9 @@ export default function UserProfilePopover() {
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          className="relative size-6 lg:size-10 rounded-full"
+          className="relative size-7 lg:size-9 rounded-full"
         >
-          <Avatar className="size-7 lg:size-10">
+          <Avatar className="size-7 lg:size-9">
             <AvatarFallback className="text-sm lg:text-base">
               {user.name ? getInitials(user.name) : "U"}
             </AvatarFallback>
@@ -53,7 +53,7 @@ export default function UserProfilePopover() {
       <PopoverContent className="w-64 p-0 text-sm" align="end">
         <div className="px-3 pt-4 pb-3">
           <p className="font-semibold leading-none">{user.name}</p>
-          <p className="leading-none text-muted-foreground mt-2">
+          <p className="leading-none text-neutral-500 dark:text-neutral-400 mt-2">
             {user.email}
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function UserProfilePopover() {
         {("prnNo" in user || "role" in user) && (
           <>
             <Separator />
-            <div className="p-3 text-muted-foreground">
+            <div className="p-3 text-neutral-500 dark:text-neutral-400">
               {"prnNo" in user && <p className="mb-1">Prn no: {user.prnNo}</p>}
               {"role" in user && <p>Role: {capitalize(String(user.role))}</p>}
             </div>

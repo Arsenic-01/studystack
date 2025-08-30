@@ -1,8 +1,7 @@
 "use server";
 
 import { ID } from "node-appwrite";
-import { DATABASE_ID, db, Query, FORM_COLLECTION_ID } from "../appwrite";
-import { revalidatePath } from "next/cache";
+import { DATABASE_ID, db, FORM_COLLECTION_ID, Query } from "../appwrite";
 
 // Create new Google Form link
 export async function createFormLink({
@@ -76,7 +75,6 @@ export async function fetchPaginatedFormLinks({
   limit: number;
   offset: number;
   filters?: {
-    search?: string;
     formType?: string;
   };
 }) {
@@ -91,16 +89,6 @@ export async function fetchPaginatedFormLinks({
       Query.offset(offset),
     ];
 
-    // --- Dynamically add filter and search queries ---
-
-    // 1. Add search query if a search term is provided
-    // NOTE: For Appwrite Search to work, you must create a full-text index
-    // on the 'title' attribute in your 'forms' collection settings.
-    if (filters?.search && filters.search.trim() !== "") {
-      queries.push(Query.search("title", filters.search));
-    }
-
-    // 2. Add formType filter if it's not 'all'
     if (filters?.formType && filters.formType !== "all") {
       queries.push(Query.equal("formType", filters.formType));
     }
@@ -136,15 +124,11 @@ export async function editFormLink({
   id,
   googleFormLink,
   quizName,
-  semester,
-  abbreviation,
   formType,
 }: {
   id: string;
   googleFormLink: string;
   quizName: string;
-  semester: string;
-  abbreviation: string;
   formType: "googleForm" | "assignment" | "other";
 }) {
   try {
@@ -153,7 +137,6 @@ export async function editFormLink({
       title: quizName,
       formType,
     });
-    revalidatePath(`/semester/${semester}/${abbreviation}`);
     return { success: true };
   } catch (error) {
     console.error("Error updating Google Form link:", error);
@@ -165,7 +148,6 @@ export async function editFormLink({
 export async function deleteFormLink({ id }: { id: string }) {
   try {
     await db.deleteDocument(DATABASE_ID!, FORM_COLLECTION_ID!, id);
-    revalidatePath("/admin");
     return { success: true };
   } catch (error) {
     console.error("Error deleting Google Form link:", error);

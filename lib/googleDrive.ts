@@ -13,7 +13,7 @@ async function refreshAndStoreToken(currentDBToken: {
 }) {
   console.log("Database token is stale. Attempting to acquire lock...");
 
-  // 1. ACQUIRE LOCK: Instantly update DB with a short grace period
+  // ACQUIRE LOCK: Instantly update DB with a short grace period
   const lockExpiresAt = Date.now() + REFRESH_LOCK_GRACE_PERIOD;
   await db.updateDocument(
     process.env.DATABASE_ID!,
@@ -26,7 +26,7 @@ async function refreshAndStoreToken(currentDBToken: {
   );
 
   try {
-    // 2. PERFORM REFRESH: Now safely get the new token from Google
+    // PERFORM REFRESH: Now safely get the new token from Google
     const tokenUrl = "https://oauth2.googleapis.com/token";
     const params = new URLSearchParams();
     params.append("client_id", process.env.GOOGLE_CLIENT_ID!);
@@ -41,7 +41,7 @@ async function refreshAndStoreToken(currentDBToken: {
       throw new Error(`Google API Error: ${JSON.stringify(tokenData)}`);
     }
 
-    // 3. RELEASE LOCK: Update DB with the real token and its long expiry
+    // RELEASE LOCK: Update DB with the real token and its long expiry
     const newExpiresAt = Date.now() + tokenData.expires_in * 1000;
     await db.updateDocument(
       process.env.DATABASE_ID!,
