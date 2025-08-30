@@ -23,10 +23,13 @@ const techCategories: { [key: string]: TechItem[] } = {
     { name: "React", logo: "/skill/React.svg", inversion: "none" },
     { name: "TypeScript", logo: "/skill/Typescript.svg", inversion: "none" },
     { name: "Tailwind CSS", logo: "/skill/TailwindCSS.svg", inversion: "none" },
-    { name: "shadcn/ui", logo: "/skill/Shadcn.svg", inversion: "dark" },
+    { name: "shadcn/ui", logo: "/skill/ShadcnUI.svg", inversion: "dark" },
     { name: "Figma", logo: "/skill/Figma.svg", inversion: "none" },
+    { name: "Motion", logo: "/skill/Motion.svg", inversion: "dark" },
+    { name: "Aceternity", logo: "/skill/Aceternity.png", inversion: "dark" },
+    { name: "MagicUI", logo: "/skill/MagicUI.svg", inversion: "none" },
   ],
-  "State & Form Management": [
+  "State Management & Validation": [
     {
       name: "TanStack Query",
       logo: "/skill/ReactQuery.svg",
@@ -42,6 +45,16 @@ const techCategories: { [key: string]: TechItem[] } = {
       logo: "/skill/NextAuth.png",
       inversion: "none",
     },
+    {
+      name: "JWT",
+      logo: "/skill/JWT.svg",
+      inversion: "none",
+    },
+    {
+      name: "Zod",
+      logo: "/skill/Zod.svg",
+      inversion: "none",
+    },
   ],
   "Backend & Database": [
     { name: "Appwrite", logo: "/skill/Appwrite.svg", inversion: "none" },
@@ -50,11 +63,18 @@ const techCategories: { [key: string]: TechItem[] } = {
   ],
   "Deployment & Tooling": [
     { name: "Vercel", logo: "/skill/Vercel.svg", inversion: "light" },
-    { name: "Docker", logo: "/skill/Docker.svg", inversion: "none" },
-    { name: "Turbopack", logo: "/skill/TurbopackLight.svg", inversion: "none" },
+    { name: "Turbopack", logo: "/skill/TurboRepo.svg", inversion: "dark" },
     { name: "Postman", logo: "/skill/Postman.svg", inversion: "none" },
-    { name: "VS Code", logo: "/skill/VSCode.svg", inversion: "none" },
-    { name: "GitHub", logo: "/skill/Github.svg", inversion: "light" },
+    { name: "GitHub", logo: "/skill/Github.svg", inversion: "dark" },
+    { name: "Docker", logo: "/skill/Docker.svg", inversion: "none" },
+  ],
+  "Other tools": [
+    { name: "Algolia", logo: "/skill/Algolia.svg", inversion: "none" },
+    { name: "HeroUI", logo: "/skill/HeroUI.svg", inversion: "dark" },
+    { name: "PostHog", logo: "/skill/Posthog.svg", inversion: "none" },
+    { name: "Sentry", logo: "/skill/Sentry.svg", inversion: "none" },
+    { name: "Resend", logo: "/skill/Resend.svg", inversion: "dark" },
+    { name: "Figma", logo: "/skill/Figma.svg", inversion: "none" },
   ],
 };
 
@@ -71,7 +91,7 @@ export default function TechStackDisplay() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-5 gap-x-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-5 lg:gap-y-7 gap-x-7">
         {Object.entries(techCategories).map(([category, techs]) => (
           <div
             key={category}
