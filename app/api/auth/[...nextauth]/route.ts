@@ -10,9 +10,9 @@ import { User } from "next-auth";
 
 const client = new Client();
 client
-  .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT!) // Your Appwrite endpoint
-  .setProject(process.env.PROJECT_ID!) // Your Project ID
-  .setKey(process.env.API_KEY!); // Server API key
+  .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT!)
+  .setProject(process.env.PROJECT_ID!)
+  .setKey(process.env.API_KEY!);
 
 const databases = new Databases(client);
 const databaseId = process.env.DATABASE_ID!;

@@ -91,6 +91,7 @@ export const teamMembers: TeamMember[] = [
       },
     ],
     contributions: [
+      "Designed and developed the entire frontend using Next.js, Tailwind CSS, UI Libraries and Framer Motion, ensuring a responsive and user-friendly interface.",
       "Architected the backend logic for resource addition (YouTube links, notes, quizzes) with Appwrite.",
       "Integrated Sentry for real-time error tracking and performance monitoring, enabling proactive bug fixes and improving application stability.",
       "Implemented a high-performance search functionality across all content using Algolia, dramatically improving user experience.",

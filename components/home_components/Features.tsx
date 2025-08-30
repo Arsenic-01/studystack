@@ -1,65 +1,54 @@
 import { cn } from "@/lib/utils";
 import {
   BookOpen,
-  Database,
-  GraduationCap,
-  Laptop,
+  CloudCog,
+  GaugeCircle,
   LayoutDashboard,
-  Upload,
+  Shield,
+  Zap,
 } from "lucide-react";
 import type React from "react";
 
 export default function Features() {
   const features = [
     {
-      title: "Centralized Learning Hub",
+      title: "Role-Based Access Control",
       description:
-        "Access all study materials, notes, and resources in one centralized platform designed specifically for K.K. Wagh Polytechnic students.",
+        "Distinct roles for students, teachers, and admins provide secure, tailored access to platform features.",
+      icon: <Shield className="w-6 h-6" />,
+    },
+    {
+      title: "Centralized Resource Hub",
+      description:
+        "All your notes, videos, and resources, perfectly organized by subject in one central location.",
       icon: <BookOpen className="w-6 h-6" />,
     },
     {
-      title: "Teacher Uploads",
+      title: "Instant Search",
       description:
-        "Teachers can easily upload and manage study materials, ensuring students have access to the most up-to-date course content.",
-      icon: <Upload className="w-6 h-6" />,
+        "Instantly find any resource with our powerful, typo-tolerant search powered by Algolia.",
+      icon: <Zap className="w-6 h-6" />,
     },
     {
-      title: "Comprehensive Admin Panel",
+      title: "Powerful Admin Dashboard",
       description:
-        "Powerful administrative tools for user management, content moderation, and detailed analytics of platform usage.",
+        "Admins can easily manage all users, oversee content, and monitor detailed platform analytics.",
       icon: <LayoutDashboard className="w-6 h-6" />,
     },
-    // {
-    //   title: "User Management",
-    //   description:
-    //     "Efficient user administration with capabilities to add, edit, and manage student and teacher accounts.",
-    //   icon: <Users className="w-6 h-6" />,
-    // },
     {
-      title: "Cloud Storage Integration",
+      title: "High Performance & Reliability",
       description:
-        "Secure and reliable storage system powered by Appwrite, ensuring fast access to educational resources.",
-      icon: <Database className="w-6 h-6" />,
+        "A fast, responsive interface with Sentry error monitoring ensures a smooth and reliable experience.",
+      icon: <GaugeCircle className="w-6 h-6" />,
     },
     {
-      title: "Modern Tech Stack",
+      title: "Secure Cloud Storage",
       description:
-        "Built with Next.js, Turbopack, and React for optimal performance and a seamless user experience.",
-      icon: <Laptop className="w-6 h-6" />,
+        "Secure and scalable cloud storage for all your course materials, powered by Appwrite.",
+      icon: <CloudCog className="w-6 h-6" />,
     },
-    {
-      title: "Exam Preparation",
-      description:
-        "Structured content organization helping students excel in coursework and achieve top examination scores.",
-      icon: <GraduationCap className="w-6 h-6" />,
-    },
-    // {
-    //   title: "Computer Technology Focus",
-    //   description:
-    //     "Specialized platform tailored for Computer Technology (CM) department students at K.K. Wagh Polytechnic, Nashik.",
-    //   icon: <School className="w-6 h-6" />,
-    // },
   ];
+
   return (
     <div className="flex flex-col justify-center items-center pt-28 pb-10">
       <div className="flex flex-col gap-5  text-center">

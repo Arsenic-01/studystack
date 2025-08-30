@@ -228,10 +228,10 @@ export default function SearchBar() {
         <CommandList>
           <CommandEmpty>
             {loading
-              ? "Summoning the digital librarian..."
+              ? "Scanning the index..."
               : query.trim()
-                ? "No scrolls found for that incantation."
-                : "Lost in the library? Start typing to find your way."}
+                ? `No results found for "${query}".`
+                : "Search for subjects, notes, quizzes, and more."}
           </CommandEmpty>
 
           {Object.entries(groupedHits).map(([type, items]) => (

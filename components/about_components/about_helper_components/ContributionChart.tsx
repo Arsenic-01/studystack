@@ -25,19 +25,19 @@ import {
 const chartConfig = {
   vedant: {
     label: "Vedant B. Bhor",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
   tanay: {
     label: "Tanay K. Hingane",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   },
   adarsh: {
     label: "Adarsh S. Tile",
-    color: "hsl(var(--chart-3))",
+    color: "var(--chart-3)",
   },
   yadnesh: {
     label: "Yadnesh Udar",
-    color: "hsl(var(--chart-4))",
+    color: "var(--chart-4)",
   },
 } satisfies ChartConfig;
 

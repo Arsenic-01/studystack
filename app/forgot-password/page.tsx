@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { forgotPasswordSchema } from "@/components/validation_schema/validation";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Forgot Password",
+  description:
+    "Forgot your password? Don't worry, we got you covered. Enter your PRN number and email address to reset your password.",
+};
 
 export default function ForgotPassword() {
   const [message, setMessage] = useState("");

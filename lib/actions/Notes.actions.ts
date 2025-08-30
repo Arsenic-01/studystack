@@ -1,51 +1,15 @@
 "use server";
 
 import {
+  CACHE_COLLECTION_ID,
   DATABASE_ID,
   db,
   NOTE_COLLECTION_ID,
   Query,
-  USER_COLLECTION_ID,
+  UPLOADERS_CACHE_DOCUMENT_ID,
 } from "../appwrite";
 import { Note } from "../appwrite_types";
 import { getDriveClient } from "../googleDrive";
-
-export async function fetchNotesBySubject({
-  abbreviation,
-}: {
-  abbreviation: string;
-}) {
-  if (!abbreviation) return [];
-
-  try {
-    const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!, [
-      Query.equal("abbreviation", abbreviation),
-    ]);
-
-    return response.documents.map((doc) => ({
-      noteId: doc.$id,
-      title: doc.title,
-      description: doc.description,
-      createdAt: doc.$createdAt,
-      fileId: doc.fileId,
-      semester: doc.semester || "",
-      type_of_file: doc.type_of_file || "",
-      unit: doc.unit || [],
-      users: {
-        name: doc.userName || "Unknown User",
-        userId: doc.userId || "",
-      },
-      abbreviation: doc.abbreviation || "",
-      fileUrl: doc.fileUrl || "",
-      mimeType: doc.mimeType || "",
-      fileSize: doc.fileSize || "",
-      thumbNail: doc.thumbNail || "",
-    }));
-  } catch (error) {
-    console.error("Error fetching notes:", error);
-    return [];
-  }
-}
 
 interface DeleteNoteParams {
   noteId: string;
@@ -66,35 +30,6 @@ export async function deleteNote({ noteId, fileId }: DeleteNoteParams) {
     return { success: false, error: "Failed to delete note." };
   }
 }
-
-export const fetchAllNotes = async () => {
-  try {
-    const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!);
-
-    return response.documents.map((doc) => ({
-      noteId: doc.$id,
-      title: doc.title,
-      description: doc.description,
-      createdAt: doc.$createdAt,
-      fileId: doc.fileId,
-      semester: doc.semester || "",
-      type_of_file: doc.type_of_file || "",
-      unit: doc.unit || [],
-      users: {
-        name: doc.userName || "Unknown User",
-        userId: doc.userId || "",
-      },
-      abbreviation: doc.abbreviation || "",
-      fileUrl: doc.fileUrl || "",
-      mimeType: doc.mimeType || "",
-      fileSize: doc.fileSize || "",
-      thumbNail: doc.thumbNail || "",
-    }));
-  } catch (error) {
-    console.error("Error fetching notes:", error);
-    return [];
-  }
-};
 
 export interface EditNotesModalFunctionProps {
   noteId: string;
@@ -189,19 +124,35 @@ export async function fetchPaginatedNotes({
   }
 }
 
-export async function getAllTeachers() {
-  try {
-    const response = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
-      Query.equal("role", "teacher"),
-      Query.limit(100),
-      Query.select(["name"]),
-      Query.orderAsc("name"),
-    ]);
+interface UploaderCache {
+  all: string[];
+  [subjectAbbreviation: string]: string[];
+}
 
-    // Return just an array of teacher names
-    return response.documents.map((doc) => doc.name) as string[];
+async function getUploaderOptions(): Promise<UploaderCache> {
+  try {
+    const document = await db.getDocument(
+      DATABASE_ID!,
+      CACHE_COLLECTION_ID!,
+      UPLOADERS_CACHE_DOCUMENT_ID!
+    );
+
+    // The data is stored as a string, so we need to parse it
+    if (document.data) {
+      return JSON.parse(document.data) as UploaderCache;
+    }
+
+    return { all: [] }; // Return empty state if data is not available
   } catch (error) {
-    console.error("Error fetching all teachers:", error);
-    return [];
+    console.error("Error fetching uploader cache:", error);
+    // Return a default empty object on error so the UI doesn't crash
+    return { all: [] };
   }
+}
+
+export async function getUploadersForSubject(abbreviation: string) {
+  if (!abbreviation) return [];
+  const options = await getUploaderOptions();
+  // The cache object has keys for each subject abbreviation
+  return options[abbreviation] || [];
 }

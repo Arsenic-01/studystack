@@ -16,7 +16,7 @@ import {
 import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
 import {
   fetchPaginatedNotes,
-  getAllTeachers,
+  getUploadersForSubject,
 } from "@/lib/actions/Notes.actions";
 import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
@@ -74,14 +74,6 @@ const defaultQueryOptions = {
   staleTime: 1000 * 60 * 5, // 5 minutes
 };
 
-const useTeacherOptions = () => {
-  return useQuery({
-    queryKey: ["all-teachers"],
-    queryFn: () => getAllTeachers(),
-    staleTime: Infinity,
-  });
-};
-
 const NotesFilter = ({
   subject,
   initialNotes,
@@ -103,6 +95,13 @@ const NotesFilter = ({
   // UI State
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
 
+  const useTeacherOptions = () => {
+    return useQuery({
+      queryKey: ["all-teachers"],
+      queryFn: () => getUploadersForSubject(subject.abbreviation),
+      staleTime: Infinity,
+    });
+  };
   const { data: allTeachers } = useTeacherOptions();
 
   const isNotesFilterPristine =

@@ -2,11 +2,11 @@ import { IconCloud } from "../../ui/magicui/icon-cloud";
 
 export function IconGlobe() {
   const images = [
-    "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Typescript.svg",
+    "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/TypeScript.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Appwrite.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Docker.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Figma.svg",
-    "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Github.svg",
+    "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/GitHub.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Next.js.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Node.js.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Postman.svg",
@@ -23,7 +23,7 @@ export function IconGlobe() {
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Posthog.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Resend.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Drive.svg",
-    "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assetsskill/Tanstack.svg",
+    "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Tanstack.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Zod.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/NextAuth.png",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/JWT.svg",

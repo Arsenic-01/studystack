@@ -1,8 +1,7 @@
 "use server";
-import { revalidatePath } from "next/cache";
-import { DATABASE_ID, db, SUBJECT_COLLECTION_ID, Query } from "../appwrite";
-import { Subject } from "../appwrite_types";
 import { AppwriteException } from "node-appwrite";
+import { DATABASE_ID, db, Query, SUBJECT_COLLECTION_ID } from "../appwrite";
+import { Subject } from "../appwrite_types";
 
 export async function fetchSubject({ abbreviation }: { abbreviation: string }) {
   try {
@@ -45,54 +44,20 @@ export async function fetchAllSubjects() {
   }
 }
 
-export const deleteSubject = async ({ subjectId }: { subjectId: string }) => {
+export async function fetchAllSubjectsForSitemap() {
   try {
-    await db.deleteDocument(DATABASE_ID!, SUBJECT_COLLECTION_ID!, subjectId);
-
-    revalidatePath("/admin/subjects");
-
-    return { success: true };
-  } catch (error) {
-    console.error("Error deleting subject:", error);
-    return { success: false, error: (error as Error).message };
-  }
-};
-
-export const updateSubject = async (subject: Subject) => {
-  try {
-    // Exclude subjectId from the data payload as it's the document ID
-    const { subjectId, ...updateData } = subject;
-
-    await db.updateDocument(
+    const response = await db.listDocuments(
       DATABASE_ID!,
       SUBJECT_COLLECTION_ID!,
-      subjectId,
-      updateData
+      [Query.limit(5000), Query.select(["semester", "abbreviation"])]
     );
 
-    revalidatePath("/admin/subjects");
-
-    return { success: true };
+    return response.documents.map((doc) => ({
+      sem: doc.semester as number,
+      sub: doc.abbreviation as string,
+    }));
   } catch (error) {
-    console.error("Error updating subject:", error);
-    return { success: false, error: (error as Error).message };
+    console.error("Error fetching all subjects for sitemap:", error);
+    return [];
   }
-};
-
-export const createSubject = async (subject: Subject) => {
-  try {
-    await db.createDocument(
-      DATABASE_ID!,
-      SUBJECT_COLLECTION_ID!,
-      subject.subjectId,
-      subject
-    );
-
-    revalidatePath("/admin/subjects");
-
-    return { success: true };
-  } catch (error) {
-    console.error("Error creating subject:", error);
-    return { success: false, error: (error as Error).message };
-  }
-};
+}

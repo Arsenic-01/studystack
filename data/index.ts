@@ -1,6 +1,8 @@
 // data/index.ts
 import { FaGlobe, FaInstagram, FaYoutube } from "react-icons/fa6";
 
+export const hostedAt = "https://studystack01.vercel.app";
+
 export const semester = [
   {
     key: "1",
@@ -31,62 +33,79 @@ export const accordianItems = [
   {
     title: "What is StudyStack?",
     content:
-      "StudyStack is a centralized platform for Computer Technology (CM) students at K.K. Wagh Polytechnic, Nashik, providing all necessary notes and resources in one place.",
+      "StudyStack is a dedicated digital ecosystem for Computer Technology (CM) students at K.K. Wagh Polytechnic, Nashik. It serves as a single, centralized hub for all academic materials, including notes, video links, and study guides.",
   },
   {
     title: "Why was StudyStack created?",
     content:
-      "StudyStack was designed to help students easily access essential study materials, enabling them to excel in their coursework and achieve top scores in their exams.",
+      "The project was born out of the need to solve a common student problem: disorganized and scattered study materials. StudyStack was built to streamline access to essential resources, ensuring every student has the up-to-date information they need to succeed academically.",
   },
   {
     title: "Who developed StudyStack?",
     content:
-      "StudyStack was created by students Vedant B. Bhor and Tanay K. Hingane, who share a passion for technology and education.",
+      "StudyStack is a collaborative final-year project developed by a team of dedicated students: Vedant Bhor, Tanay Hingane, Adarsh Tile, and Yadnesh Udar. The project was completed under the expert guidance of our faculty mentors, Prof. A. D. Talole and Prof. G. B. Katkade.",
   },
   {
-    title: "Who can use StudyStack?",
+    title: "Who is this platform for?",
     content:
-      "StudyStack is free to use for any student enrolled in the Computer Technology course, provided they have valid login credentials.",
+      "While primarily designed for students and faculty of the Computer Technology department at K.K. Wagh Polytechnic, StudyStack is free to use for any student with valid login credentials provided by the institution.",
   },
   {
     title: "How does StudyStack work?",
     content:
-      "StudyStack allows teachers and faculty to upload subject-specific notes and resources, which students can access conveniently. It functions similarly to Google Classroom but with enhanced usability.",
+      "StudyStack operates on a role-based system. Teachers and faculty can easily upload and manage subject-specific resources. Students can then log in to access this organized content anytime. It offers a user experience similar to Google Classroom but is tailored specifically for our curriculum's needs.",
   },
   {
     title: "What technologies power StudyStack?",
     content:
-      "StudyStack is built using Next.js for the frontend + turbopack, Tailwind CSS for styling, Appwrite for backend services, React for UI components, and Framer Motion for animations.",
+      "StudyStack is built on a modern, robust tech stack: \n • Frontend: Next.js & React \n • Styling: Tailwind CSS \n • Backend & Database: Appwrite (Self-hosted) \n • Authentication: NextAuth \n • Error Monitoring: Sentry \n This combination ensures a fast, secure, and reliable experience for all users.",
   },
   {
-    title: "Is StudyStack open-source?",
+    title: "Is this project open-source?",
     content:
-      "Yes! StudyStack is an open-source project. You can explore the source code on GitHub: https://github.com/Arsenic-01/studystack",
+      "Yes! We believe in the power of collaborative development. StudyStack is an open-source project, and we welcome contributions. You can explore the full source code on GitHub: https://github.com/Arsenic-01/studystack",
   },
   {
-    title: "Can I use studystack from multiple devices?",
+    title: "Can I use StudyStack on multiple devices?",
     content:
-      "No, studystack is a single-user application. You can only use it from a single device. This is to ensure that your data is secure and easy to manage.",
+      "Yes, absolutely! StudyStack is a modern web application built for flexibility. As long as you have your login credentials, you can securely access your account and all its resources from any device with a web browser, including your laptop, tablet, or smartphone.",
+  },
+  {
+    title: "How is the content kept up-to-date?",
+    content:
+      "All academic materials on the platform are uploaded and managed directly by the subject teachers and authorized faculty members, ensuring that the resources are always relevant, accurate, and current with the syllabus.",
   },
 ];
-
-export const footerLinks = [
+export const mainFooterLinks = [
   {
-    title: "KKWP",
-    href: "https://poly.kkwagh.edu.in/",
-  },
-  {
-    title: "About",
-    href: "/about",
+    title: "MSBTE",
+    href: "https://msbte.org.in/",
   },
   {
     title: "Contact",
-    //    href: "https://docs.google.com/forms/d/e/1FAIpQLSeCgACy0cfy08L_CGsxputmIIqvh-aD4uUE7B-sX1oIzqwZ9g/viewform?usp=sharing",
     href: "/contact",
   },
+];
+
+export const aboutPopoverLinks = [
   {
-    title: "MSBTE",
-    href: "https://msbte.ac.in/",
+    title: "Our Team",
+    href: "/about",
+  },
+  {
+    title: "The Project",
+    href: "/about/project",
+  },
+];
+
+export const legalPopoverLinks = [
+  {
+    title: "Privacy Policy",
+    href: "/privacy-policy",
+  },
+  {
+    title: "Cookie Policy",
+    href: "/cookie-policy",
   },
 ];
 
@@ -94,22 +113,26 @@ export const creators = [
   {
     name: "Vedant Bhor",
     role: "Lead Developer",
-    avatar: "/team/user_pfp/vedant.jpeg",
+    avatar:
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/vedant.jpg",
   },
   {
     name: "Tanay Hingane",
     role: "Fullstack Developer & Database Management",
-    avatar: "/team/user_pfp/tanay.jpeg",
+    avatar:
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/tanay.jpeg",
   },
   {
     name: "Adarsh Tile",
     role: "Frontend Developer & Project Documentation",
-    avatar: "/team/user_pfp/adarsh.jpeg",
+    avatar:
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/adarsh.jpg",
   },
   {
     name: "Yadnesh Udar",
     role: "Project Report",
-    avatar: "/team/user_pfp/yadnesh.png",
+    avatar:
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/yadnesh.jpg",
   },
 ];
 

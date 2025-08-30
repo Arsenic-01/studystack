@@ -144,7 +144,10 @@ const EditYoutubeLink = ({
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="mt-2 px-3 w-full md:w-fit">
+                <Button
+                  type="submit"
+                  className="mt-2 lg:mt-0 px-3 w-full md:w-fit"
+                >
                   <span className="sr-only">Update Link</span>
                   <span className="md:hidden">Update Youtube Link</span>
                   <Edit />

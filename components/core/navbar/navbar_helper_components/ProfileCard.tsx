@@ -53,7 +53,7 @@ export default function UserProfilePopover() {
       <PopoverContent className="w-64 p-0 text-sm" align="end">
         <div className="px-3 pt-4 pb-3">
           <p className="font-semibold leading-none">{user.name}</p>
-          <p className="leading-none text-neutral-500 dark:text-neutral-400 mt-2">
+          <p className="leading-none text-neutral-700 dark:text-neutral-400 mt-2">
             {user.email}
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function UserProfilePopover() {
         {("prnNo" in user || "role" in user) && (
           <>
             <Separator />
-            <div className="p-3 text-neutral-500 dark:text-neutral-400">
+            <div className="p-3 text-neutral-700 dark:text-neutral-400">
               {"prnNo" in user && <p className="mb-1">Prn no: {user.prnNo}</p>}
               {"role" in user && <p>Role: {capitalize(String(user.role))}</p>}
             </div>
@@ -73,7 +73,7 @@ export default function UserProfilePopover() {
         <div className="p-1">
           <ChangePasswordDialog>
             <Button
-              className="w-full justify-between h-9 rounded-sm"
+              className="w-full justify-between h-9 rounded-[4px]"
               variant="ghost"
             >
               <span>Change Password</span>
@@ -83,7 +83,7 @@ export default function UserProfilePopover() {
 
           <Button
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="w-full justify-between h-9 rounded-sm"
+            className="w-full justify-between h-9 rounded-[4px]"
             variant="ghost"
           >
             <span>Logout</span>

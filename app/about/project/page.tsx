@@ -4,6 +4,13 @@ import ProjectImpactStats from "@/components/project_components/ProjectStats";
 import ProjectReferences from "@/components/project_components/References";
 import SystemArchitecture from "@/components/project_components/SystemArchitecture";
 import TechStackDisplay from "@/components/project_components/TechStackDisplay";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "The Project",
+  description:
+    "Learn more about the StudyStack project and how it was created.",
+};
 
 export default function AboutProjectPage() {
   return (

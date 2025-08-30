@@ -31,7 +31,7 @@ const techCategories: { [key: string]: TechItem[] } = {
     },
     {
       name: "TypeScript",
-      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Typescript.svg",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/TypeScript.svg",
       inversion: "none",
     },
     {
@@ -105,7 +105,7 @@ const techCategories: { [key: string]: TechItem[] } = {
     },
     {
       name: "Drive API",
-      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/drive.svg",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Drive.svg",
       inversion: "none",
     },
   ],
@@ -127,7 +127,7 @@ const techCategories: { [key: string]: TechItem[] } = {
     },
     {
       name: "GitHub",
-      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Github.svg",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/GitHub.svg",
       inversion: "dark",
     },
     {

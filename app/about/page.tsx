@@ -1,6 +1,13 @@
 import { AboutGrid } from "@/components/about_components/AboutGrid";
 import Created from "@/components/about_components/Created";
 import GuidedBy from "@/components/about_components/about_helper_components/GuidedBy";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Learn more about the StudyStack team and how we created this platform.",
+};
 
 const AboutPage = () => {
   return (

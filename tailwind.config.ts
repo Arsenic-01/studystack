@@ -11,39 +11,13 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        green: {
-          "500": "#24AE7C",
-          "700": "#0D2A1F",
-        },
-        light: {
-          "200": "#E8E9E9",
-        },
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        "color-1": "hsl(var(--color-1))",
-        "color-2": "hsl(var(--color-2))",
-        "color-3": "hsl(var(--color-3))",
-        "color-4": "hsl(var(--color-4))",
-        "color-5": "hsl(var(--color-5))",
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
       animation: {
-        rainbow: "rainbow var(--speed, 2s) infinite linear",
+        rainbow: "rainbow var(--speed, 4s) infinite linear",
         spotlight: "spotlight 2s ease .75s 1 forwards",
         "shiny-text": "shiny-text 8s infinite",
         scroll:

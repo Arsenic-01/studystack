@@ -6,7 +6,30 @@ import { fetchPaginatedNotes } from "@/lib/actions/Notes.actions";
 import { fetchSubject } from "@/lib/actions/Subjects.actions";
 import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { AlertCircle } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
+
+type Props = {
+  params: { sub: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { sub: subjectAbbr } = await params;
+
+  const subject = await fetchSubject({ abbreviation: subjectAbbr });
+
+  // If no subject is found, return a fallback title
+  if (!subject) {
+    return {
+      title: "Subject Not Found",
+    };
+  }
+
+  return {
+    title: `${subject.abbreviation.toUpperCase()} Notes`,
+    description: `Access all resources for ${subject.name} (${subject.abbreviation.toUpperCase()}).`,
+  };
+}
 
 const NOTES_PER_PAGE = 6;
 const LINKS_PER_PAGE = 3;
@@ -22,7 +45,7 @@ const Page = async ({ params }: { params: { sub: string } }) => {
     return <ErrorUI />;
   }
 
-  // 2. ✅ FETCH ALL OTHER DATA ON THE SERVER IN PARALLEL
+  // 2. FETCH ALL OTHER DATA ON THE SERVER IN PARALLEL
   // We use Promise.all to fetch notes, youtube links, and quizzes at the same time for max speed.
   const [notes, youtubeLinks, googleFormLinks] = await Promise.all([
     fetchPaginatedNotes({
