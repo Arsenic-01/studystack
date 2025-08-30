@@ -7,13 +7,6 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { resetPasswordSchema } from "@/components/validation_schema/validation";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Reset Password",
-  description:
-    "Reset your password for StudyStack. Enter your new password and confirm it to complete the password reset process.",
-};
 
 export default function ResetPassword() {
   const router = useRouter();
