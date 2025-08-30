@@ -1,6 +1,5 @@
 // components/project_components/ProjectOverviewHero.tsx
 
-import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { RainbowButton } from "../ui/rainbow-button";
@@ -27,11 +26,6 @@ export default function ProjectOverviewHero() {
           educational experience for students, teachers, and administrators.
         </p>
         <div className="mt-10 flex justify-center gap-4">
-          {/* <Button asChild>
-            <Link href="#deep-dive">
-              Learn Our Story <ArrowDown className="size-4" />
-            </Link>
-          </Button> */}
           <Link href="#deep-dive">
             <RainbowButton className="flex items-center gap-2">
               Learn Our Story <ArrowDown className="size-4" />
