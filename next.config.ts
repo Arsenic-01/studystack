@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "api.microlink.io",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.jsdelivr.net",
+      },
     ],
   },
   experimental: {

@@ -29,7 +29,9 @@ export const FuzzyOverlay = () => {
       }}
       style={{
         backgroundImage:
-          theme === "dark" ? 'url("/black-noise.png")' : 'url("/noise.png")',
+          theme === "dark"
+            ? 'url("https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/not_found_bg/black-noise.png")'
+            : 'url("https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/not_found_bg/noise.png")',
       }}
       className="pointer-events-none absolute -inset-[100%] opacity-[15%]"
     />

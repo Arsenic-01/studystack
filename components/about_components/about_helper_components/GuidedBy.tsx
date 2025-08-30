@@ -10,7 +10,7 @@ const GuidedBy = () => {
         <LinkPreview
           url={"mailto:gbkatkade@kkwagh.edu.in"}
           isStatic
-          imageSrc="/mentor/gbk.jpeg"
+          imageSrc="https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/mentor/gbk.jpeg"
           className="font-bold hover:underline hover:underline-offset-4 transition-all ease-in-out duration-300"
         >
           Prof. G.B. Katkade
@@ -19,7 +19,7 @@ const GuidedBy = () => {
         <LinkPreview
           url={"mailto:adtalole@kkwagh.edu.in"}
           isStatic
-          imageSrc="/mentor/adt.webp"
+          imageSrc="https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/mentor/adt.webp"
           className="font-bold hover:underline hover:underline-offset-4 transition-all ease-in-out duration-300"
         >
           Prof. A.D. Talole

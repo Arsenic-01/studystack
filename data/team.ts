@@ -49,7 +49,7 @@ export const teamMembers: TeamMember[] = [
     id: 1,
     name: "Vedant B. Bhor",
     role: "Project Lead",
-    pfp: "/team/user_pfp/vedant.jpg",
+    pfp: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/vedant.jpg",
     classInfo: "TYCM-Lin 2025",
     quote: "Late? I call it ‘scheduled delay’. 🕒",
     socials: [
@@ -111,7 +111,7 @@ export const teamMembers: TeamMember[] = [
   {
     id: 2,
     name: "Tanay K. Hingane",
-    pfp: "/team/user_pfp/tanay.jpeg",
+    pfp: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/tanay.jpeg",
     classInfo: "TYCM-Lin 2025",
     quote: "Battery low, sarcasm high. 🪫",
     socials: [
@@ -171,7 +171,7 @@ export const teamMembers: TeamMember[] = [
   {
     id: 3,
     name: "Adarsh S. Tile",
-    pfp: "/team/user_pfp/adarsh.jpg",
+    pfp: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/adarsh.jpg",
     classInfo: "TYCM-MAC 2025",
     quote: "Skipping plans like a pro. ❌",
     socials: [
@@ -226,7 +226,7 @@ export const teamMembers: TeamMember[] = [
   {
     id: 4,
     name: "Yadnesh Udar",
-    pfp: "/team/user_pfp/yadnesh.jpg",
+    pfp: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/yadnesh.jpg",
     classInfo: "TYCM-MAC 2025",
     quote: "CEO – Chief Excuse Officer. 🫡",
     socials: [

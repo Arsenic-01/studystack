@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/title_logo.png" sizes="any" />
+        <link rel="icon" href="/favicon.png" sizes="any" />
       </head>
       <body className={`${dmSans.className} antialiased`}>
         <Providers>

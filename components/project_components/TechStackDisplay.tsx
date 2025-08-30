@@ -19,62 +19,154 @@ type TechItem = {
 
 const techCategories: { [key: string]: TechItem[] } = {
   "Frontend & UI/UX": [
-    { name: "Next.js", logo: "/skill/Next.js.svg", inversion: "light" },
-    { name: "React", logo: "/skill/React.svg", inversion: "none" },
-    { name: "TypeScript", logo: "/skill/Typescript.svg", inversion: "none" },
-    { name: "Tailwind CSS", logo: "/skill/TailwindCSS.svg", inversion: "none" },
-    { name: "shadcn/ui", logo: "/skill/ShadcnUI.svg", inversion: "dark" },
-    { name: "Figma", logo: "/skill/Figma.svg", inversion: "none" },
-    { name: "Motion", logo: "/skill/Motion.svg", inversion: "dark" },
-    { name: "Aceternity", logo: "/skill/Aceternity.png", inversion: "dark" },
-    { name: "MagicUI", logo: "/skill/MagicUI.svg", inversion: "none" },
+    {
+      name: "Next.js",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Next.js.svg",
+      inversion: "light",
+    },
+    {
+      name: "React",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/React.svg",
+      inversion: "none",
+    },
+    {
+      name: "TypeScript",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Typescript.svg",
+      inversion: "none",
+    },
+    {
+      name: "Tailwind CSS",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/TailwindCSS.svg",
+      inversion: "none",
+    },
+    {
+      name: "shadcn/ui",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/ShadcnUI.svg",
+      inversion: "dark",
+    },
+    {
+      name: "Figma",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Figma.svg",
+      inversion: "none",
+    },
+    {
+      name: "Motion",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Motion.svg",
+      inversion: "dark",
+    },
+    {
+      name: "Aceternity",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Aceternity.png",
+      inversion: "dark",
+    },
+    {
+      name: "MagicUI",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/MagicUI.svg",
+      inversion: "none",
+    },
   ],
   "State Management & Validation": [
     {
       name: "TanStack Query",
-      logo: "/skill/ReactQuery.svg",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/ReactQuery.svg",
       inversion: "none",
     },
     {
       name: "React Hook Form",
-      logo: "/skill/ReactHookForm.svg",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/ReactHookForm.svg",
       inversion: "none",
     },
     {
       name: "NextAuth",
-      logo: "/skill/NextAuth.png",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/NextAuth.png",
       inversion: "none",
     },
     {
       name: "JWT",
-      logo: "/skill/JWT.svg",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/JWT.svg",
       inversion: "none",
     },
     {
       name: "Zod",
-      logo: "/skill/Zod.svg",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Zod.svg",
       inversion: "none",
     },
   ],
   "Backend & Database": [
-    { name: "Appwrite", logo: "/skill/Appwrite.svg", inversion: "none" },
-    { name: "Node.js", logo: "/skill/Node.js.svg", inversion: "none" },
-    { name: "Drive API", logo: "/skill/drive.svg", inversion: "none" },
+    {
+      name: "Appwrite",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Appwrite.svg",
+      inversion: "none",
+    },
+    {
+      name: "Node.js",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Node.js.svg",
+      inversion: "none",
+    },
+    {
+      name: "Drive API",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/drive.svg",
+      inversion: "none",
+    },
   ],
   "Deployment & Tooling": [
-    { name: "Vercel", logo: "/skill/Vercel.svg", inversion: "light" },
-    { name: "Turbopack", logo: "/skill/TurboRepo.svg", inversion: "dark" },
-    { name: "Postman", logo: "/skill/Postman.svg", inversion: "none" },
-    { name: "GitHub", logo: "/skill/Github.svg", inversion: "dark" },
-    { name: "Docker", logo: "/skill/Docker.svg", inversion: "none" },
+    {
+      name: "Vercel",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Vercel.svg",
+      inversion: "light",
+    },
+    {
+      name: "Turbopack",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/TurboRepo.svg",
+      inversion: "dark",
+    },
+    {
+      name: "Postman",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Postman.svg",
+      inversion: "none",
+    },
+    {
+      name: "GitHub",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Github.svg",
+      inversion: "dark",
+    },
+    {
+      name: "Docker",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Docker.svg",
+      inversion: "none",
+    },
   ],
   "Other tools": [
-    { name: "Algolia", logo: "/skill/Algolia.svg", inversion: "none" },
-    { name: "HeroUI", logo: "/skill/HeroUI.svg", inversion: "dark" },
-    { name: "PostHog", logo: "/skill/Posthog.svg", inversion: "none" },
-    { name: "Sentry", logo: "/skill/Sentry.svg", inversion: "none" },
-    { name: "Resend", logo: "/skill/Resend.svg", inversion: "dark" },
-    { name: "Figma", logo: "/skill/Figma.svg", inversion: "none" },
+    {
+      name: "Algolia",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Algolia.svg",
+      inversion: "none",
+    },
+    {
+      name: "HeroUI",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/HeroUI.svg",
+      inversion: "dark",
+    },
+    {
+      name: "PostHog",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Posthog.svg",
+      inversion: "none",
+    },
+    {
+      name: "Sentry",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Sentry.svg",
+      inversion: "none",
+    },
+    {
+      name: "Resend",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Resend.svg",
+      inversion: "dark",
+    },
+    {
+      name: "Figma",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Figma.svg",
+      inversion: "none",
+    },
   ],
 };
 

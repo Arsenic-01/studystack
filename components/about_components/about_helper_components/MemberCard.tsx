@@ -114,7 +114,7 @@ export function MemberCard({ member }: MemberCardProps) {
               </span>
             )}
           </div>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 text-start pb-3 md:pb-5">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 text-start pb-3">
             {member.classInfo}
           </p>
         </DialogHeader>
