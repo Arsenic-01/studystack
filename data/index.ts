@@ -94,7 +94,7 @@ export const creators = [
   {
     name: "Vedant Bhor",
     role: "Lead Developer",
-    avatar: "/vedantpfp.jpg",
+    avatar: "/team/user_pfp/vedant.jpeg",
   },
   {
     name: "Tanay Hingane",
@@ -104,12 +104,12 @@ export const creators = [
   {
     name: "Adarsh Tile",
     role: "Frontend Developer & Project Documentation",
-    avatar: "/adarshpfp.jpg",
+    avatar: "/team/user_pfp/adarsh.jpeg",
   },
   {
     name: "Yadnesh Udar",
     role: "Project Report",
-    avatar: "/yadneshpfp.jpg",
+    avatar: "/team/user_pfp/yadnesh.png",
   },
 ];
 
@@ -142,158 +142,6 @@ export const footerIcons = [
   },
 ];
 
-export const tsc = [
-  {
-    id: 1,
-    name: "tanay.h03",
-    designation: "Discord",
-    image: "/about_tooltip_logos/Discord.png",
-    href: "https://discord.com/users/1198554997386915880",
-  },
-  {
-    id: 2,
-    name: "TanayHingane",
-    designation: "Github",
-    image: "/about_tooltip_logos/Git.png",
-    href: "https://github.com/TanayHingane",
-  },
-  {
-    id: 3,
-    name: "tanayhingane03@gmail.com",
-    designation: "Gmail",
-    image: "/about_tooltip_logos/Email.webp",
-    href: "mailto:tanayhingane03@gmail.com.com?subject=Approach%20via%20Study%20Stack%20webapp&body=Hey%20there!%2C%20I%20am%20___%20and%20I%20wanted%20to%20contact%20you%20because%20___",
-  },
-  {
-    id: 4,
-    name: "Tanay Hingane",
-    designation: "Linkedin",
-    image: "/about_tooltip_logos/Linkedin.webp",
-    href: "http://www.linkedin.com/in/TanayHingane",
-  },
-  {
-    id: 5,
-    name: "Victus03",
-    designation: "Portfolio",
-    image: "/about_tooltip_logos/Website.png",
-    href: "https://tanayhingane03.vercel.app/",
-  },
-  {
-    id: 6,
-    name: "tanay.h03",
-    designation: "Snapchat",
-    image: "/about_tooltip_logos/Snapchat.webp",
-    href: "https://www.snapchat.com/add/tanay.h03?share_id=L1uzTRlecFo&locale=en-IN",
-  },
-];
-
-export const vsc = [
-  {
-    id: 1,
-    name: "itsmehomie",
-    designation: "Discord",
-    image: "/about_tooltip_logos/Discord.png",
-    href: "https://discord.com/users/862682607162359819",
-  },
-  {
-    id: 2,
-    name: "Arsenic-01",
-    designation: "Github",
-    image: "/about_tooltip_logos/Git.png",
-    href: "https://github.com/Arsenic-01/",
-  },
-  {
-    id: 3,
-    name: "vedbhor25@gmail.com",
-    designation: "Gmail",
-    image: "/about_tooltip_logos/Email.webp",
-    href: "mailto:vedbhor25@gmail.com?subject=Approach%20via%20Study%20Stack%20webapp&body=Hey%20there!%2C%20I%20am%20___%20and%20I%20wanted%20to%20contact%20you%20because%20___",
-  },
-  {
-    id: 4,
-    name: "Vedant Bhor",
-    designation: "Linkedin",
-    image: "/about_tooltip_logos/Linkedin.webp",
-    href: "https://www.linkedin.com/in/vedant-bhor-39287828b/",
-  },
-  {
-    id: 5,
-    name: "Arsenic",
-    designation: "Portfolio",
-    image: "/about_tooltip_logos/Website.png",
-    href: "https://vedantbhor.vercel.app/",
-  },
-  {
-    id: 6,
-    name: "arsenic_vedant",
-    designation: "Snapchat",
-    image: "/about_tooltip_logos/Snapchat.webp",
-    href: "https://www.snapchat.com/add/arsenic_vedant?share_id=U01iwIWZbqQ&locale=en-IN",
-  },
-];
-
-export const ysc = [
-  {
-    id: 1,
-    name: "yadnesh_udar.",
-    designation: "Discord",
-    image: "/about_tooltip_logos/Discord.png",
-    href: "https://discord.com/yadnesh_udar",
-  },
-  {
-    id: 2,
-    name: "Yadnesh Udar",
-    designation: "Github",
-    image: "/about_tooltip_logos/Git.png",
-    href: "https://github.com/Yadneshudar13",
-  },
-  {
-    id: 3,
-    name: "yadneshudar@gmail.com",
-    designation: "Gmail",
-    image: "/about_tooltip_logos/Email.webp",
-    href: "mailto:yadneshudar@gmail.com?subject=Approach%20via%20Study%20Stack%20webapp&body=Hey%20there!%2C%20I%20am%20___%20and%20I%20wanted%20to%20contact%20you%20because%20___",
-  },
-  {
-    id: 4,
-    name: "Yadnesh Udar",
-    designation: "Linkedin",
-    image: "/about_tooltip_logos/Linkedin.webp",
-    href: " https://www.linkedin.com/in/yadnesh-udar-a0b9922b7",
-  },
-];
-
-export const asc = [
-  {
-    id: 1,
-    name: "astile1424",
-    designation: "Discord",
-    image: "/about_tooltip_logos/Discord.png",
-    href: "https://discord.com/users/1235115974534103091",
-  },
-  {
-    id: 2,
-    name: "Adarsh Tile",
-    designation: "Github",
-    image: "/about_tooltip_logos/Git.png",
-    href: "https://github.com/AdarshSanskar",
-  },
-  {
-    id: 3,
-    name: "astile1424@gmail.com",
-    designation: "Gmail",
-    image: "/about_tooltip_logos/Email.webp",
-    href: "mailto:astile1424@gmail.com?subject=Approach%20via%20Study%20Stack%20webapp&body=Hey%20there!%2C%20I%20am%20___%20and%20I%20wanted%20to%20contact%20you%20because%20___",
-  },
-  {
-    id: 4,
-    name: "Adarsh Tile",
-    designation: "Linkedin",
-    image: "/about_tooltip_logos/Linkedin.webp",
-    href: "www.linkedin.com/in/tile-adarsh",
-  },
-];
-
 export const gb = [
   {
     id: 1,
@@ -306,63 +154,5 @@ export const gb = [
     name: "Mr A.D.Talole",
     designation: "Lecturer(CM Dept)",
     image: "/talolesir.webp",
-  },
-];
-
-export const vedant_ps = [
-  { id: 1, name: "Sentry", color: "danger" },
-  { id: 2, name: "Auth", color: "primary" },
-  { id: 9, name: "Algolia Search", color: "success" },
-  { id: 3, name: "Admin Dashboard", color: "warning", credit: 0.5 },
-  { id: 4, name: "Youtube Links", color: "secondary" },
-  { id: 5, name: "Quiz Addition", color: "danger", credit: 0.5 },
-  { id: 7, name: "Notes Addition", color: "info" },
-  { id: 6, name: "Frontend of Landing Page", color: "success", credit: 0.5 },
-  { id: 8, name: "Appwrite Backend", color: "default" },
-];
-
-export const tanay_ps = [
-  { id: 1, name: "Quiz Addition", color: "danger", credit: 0.5 },
-  { id: 2, name: "Admin Dashboard", color: "warning", credit: 0.5 },
-  { id: 3, name: "Frontend of Landing Page", color: "success", credit: 0.5 },
-  { id: 4, name: "Notes Sorting", color: "info" },
-  { id: 5, name: "Abbr Link Edit", color: "primary" },
-  { id: 6, name: "Project Portfolio", color: "default" },
-  { id: 7, name: "Next Auth", color: "secondary" },
-  { id: 8, name: "Database Management", color: "default" },
-];
-
-export const yadnesh_ps = [
-  {
-    id: 1,
-    name: "Project Report",
-    color: "danger",
-  },
-  {
-    id: 2,
-    name: "ProjectDocumentation",
-    color: "success",
-  },
-];
-export const adarsh_ps = [
-  {
-    id: 1,
-    name: "Video Rebuild",
-    color: "danger",
-  },
-  {
-    id: 2,
-    name: "Project Report",
-    color: "success",
-  },
-  {
-    id: 3,
-    name: "Project Documentation",
-    color: "warning",
-  },
-  {
-    id: 4,
-    name: "About Page",
-    color: "info",
   },
 ];

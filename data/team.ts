@@ -49,7 +49,7 @@ export const teamMembers: TeamMember[] = [
     id: 1,
     name: "Vedant B. Bhor",
     role: "Project Lead",
-    pfp: "/vedantpfp.jpg",
+    pfp: "/team/user_pfp/vedant.jpg",
     classInfo: "TYCM-Lin 2025",
     quote: "Late? I call it ‘scheduled delay’. 🕒",
     socials: [
@@ -171,7 +171,7 @@ export const teamMembers: TeamMember[] = [
   {
     id: 3,
     name: "Adarsh S. Tile",
-    pfp: "/adarshpfp.jpg",
+    pfp: "/team/user_pfp/adarsh.jpg",
     classInfo: "TYCM-MAC 2025",
     quote: "Skipping plans like a pro. ❌",
     socials: [
@@ -226,7 +226,7 @@ export const teamMembers: TeamMember[] = [
   {
     id: 4,
     name: "Yadnesh Udar",
-    pfp: "/yadneshpfp.jpg",
+    pfp: "/team/user_pfp/yadnesh.jpg",
     classInfo: "TYCM-MAC 2025",
     quote: "CEO – Chief Excuse Officer. 🫡",
     socials: [
