@@ -73,7 +73,7 @@ export default function ProjectReferences() {
           and robust documentation in technology and education.
         </p>
       </div>
-      <div className="grid md:grid-cols-2 gap-5 lg:gap-8">
+      <div className="grid md:grid-cols-2 gap-5 lg:gap-7">
         {references.map((ref, index) => (
           <div
             key={index}

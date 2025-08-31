@@ -108,6 +108,11 @@ const techCategories: { [key: string]: TechItem[] } = {
       logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Drive.svg",
       inversion: "none",
     },
+    {
+      name: "Serverless Functions",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Lambda.svg",
+      inversion: "none",
+    },
   ],
   "Deployment & Tooling": [
     {

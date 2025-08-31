@@ -15,7 +15,7 @@ export default function DeepDiveAbout() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-5 lg:gap-16">
+      <div className="grid md:grid-cols-3 gap-5 lg:gap-7">
         {/* Problem */}
         <div className="flex flex-col items-center text-center p-6 border border-neutral-300 dark:border-neutral-800 rounded-xl bg-card/50 shadow-sm hover:shadow-md">
           <div className="p-3 mb-6 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400">

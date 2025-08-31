@@ -72,7 +72,7 @@ export default function ProjectImpactStats() {
           support our academic community.
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 lg:gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 lg:gap-7">
         {stats.map((stat) => (
           <StatCard
             key={stat.label}

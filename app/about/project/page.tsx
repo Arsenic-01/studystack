@@ -18,7 +18,7 @@ export default function AboutProjectPage() {
       <ProjectOverviewHero />
       <div className="container mx-auto px-5">
         {/* Added responsive padding */}
-        <div className="flex flex-col items-center gap-12 md:gap-28 lg:gap-36 py-16 md:py-24">
+        <div className="flex flex-col items-center gap-12 md:gap-28 py-16 md:py-24">
           <DeepDiveAbout />
           <SystemArchitecture />
           <TechStackDisplay />
