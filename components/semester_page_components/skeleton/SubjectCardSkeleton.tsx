@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const SubjectCardSkeleton = () => {
   return (
-    <div className="max-w-5xl flex flex-col items-start overflow-x-clip rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-900 dark:bg-neutral-950 dark:text-neutral-50 my-5 gap-3 justify-center w-full py-5 md:py-10 px-4 md:px-10">
+    <div className="max-w-5xl flex flex-col items-start overflow-x-clip rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-900 dark:bg-neutral-950 dark:text-neutral-50 my-4 gap-3 justify-center w-full py-5 md:py-10 px-4 md:px-10">
       <div>
         <div className="flex items-center gap-2 overflow-x-clip">
           <Skeleton className="h-7 md:h-8 w-32" />
