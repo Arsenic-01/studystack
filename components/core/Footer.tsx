@@ -78,7 +78,7 @@ const Footer = () => {
                 src="/title_logo.png"
                 alt="Study Stack Logo"
                 width={35}
-                height={35}
+                height={29}
                 className="select-none pointer-events-none invert dark:invert-0"
               />
               <span className="select-none text-lg font-medium text-neutral-900 dark:text-neutral-50">
