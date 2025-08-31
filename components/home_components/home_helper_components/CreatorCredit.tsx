@@ -104,6 +104,11 @@ export function CreatorCredit({
         {guide.map((guide, index) => (
           <div key={index} className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
+              <AvatarImage
+                src={guide.avatar}
+                alt={guide.name}
+                className="select-none pointer-events-none"
+              />
               <AvatarFallback className="bg-primary/10 text-primary text-xs">
                 {guide.name
                   .split(" ")

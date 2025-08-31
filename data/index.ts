@@ -147,7 +147,7 @@ export const creators = [
 export const guide = [
   {
     name: "AD. Talole",
-    role: "Lecturer",
+    role: "Lecturer, Computer Department",
     avatar:
       "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/mentor/adt.webp",
   },
