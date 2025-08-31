@@ -125,7 +125,7 @@ export default function HeroVideoDialog({
                 <motion.button className="absolute -top-16 right-0 rounded-full bg-neutral-900/50 p-2 text-xl text-white ring-1 backdrop-blur-md dark:bg-neutral-100/50 dark:text-black">
                   <XIcon className="size-5" />
                 </motion.button>
-                <div className="relative isolate z-[1] size-full overflow-hidden rounded-2xl border-2 border-neutral-200 dark:border-neutral-800">
+                <div className="relative isolate z-[1] size-full overflow-hidden rounded-2xl border-2 border-neutral-300 dark:border-neutral-800">
                   <iframe
                     src={`${videoSrc}?mute=1`} // Ensure the video starts muted
                     className="size-full rounded-2xl"

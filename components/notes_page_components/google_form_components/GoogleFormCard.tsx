@@ -70,7 +70,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
   const canModify = user?.name === form.createdBy || user?.role === "admin";
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-y-4 gap-x-2 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-muted/50">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-y-4 gap-x-2 p-4 border border-neutral-300 dark:border-neutral-800 rounded-lg hover:bg-muted/50">
       <div className="flex items-center gap-4 w-full sm:w-auto">
         <div className={`p-2 rounded-full ${config.bg}`}>
           <Icon className={`size-5 ${config.color}`} />

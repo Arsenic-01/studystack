@@ -11,7 +11,7 @@ import GoogleFormModal from "./google_form_components/FormModal";
 const SubjectCard = ({ subject }: { subject: Subject }) => {
   const router = useRouter();
   return (
-    <div className="flex flex-col items-start rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 my-5  gap-3 justify-center w-full  py-5 md:py-10 px-4 md:px-10">
+    <div className="flex flex-col items-start rounded-xl border border-neutral-300 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 my-5  gap-3 justify-center w-full  py-5 md:py-10 px-4 md:px-10">
       <div>
         <h2 className="text-xl md:text-2xl font-bold">
           Subject:{" "}

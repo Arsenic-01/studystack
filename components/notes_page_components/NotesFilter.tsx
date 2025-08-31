@@ -257,7 +257,7 @@ const NotesFilter = ({
         </h1>
       </div>
       {!hasNotesForSubject ? (
-        <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg px-10 py-20 text-center my-8">
+        <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg px-10 py-20 text-center my-8">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="bg-neutral-100 dark:bg-neutral-800 rounded-full p-3">
               <FileQuestion className="h-8 w-8 text-neutral-500" />
@@ -391,7 +391,7 @@ const NotesFilter = ({
               </p>
             </>
           ) : (
-            <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
+            <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
               <div className="flex flex-col items-center justify-center gap-4">
                 <div className="bg-neutral-100 dark:bg-neutral-800 rounded-full p-3">
                   <FileQuestion className="h-8 w-8 text-neutral-500" />
@@ -529,7 +529,7 @@ const NotesFilter = ({
                 />
               </>
             ) : (
-              <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
+              <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
                 <div className="flex flex-col items-center justify-center gap-4">
                   <div className="bg-neutral-100 dark:bg-neutral-800 rounded-full p-3">
                     <FileQuestion className="h-8 w-8 text-neutral-500" />

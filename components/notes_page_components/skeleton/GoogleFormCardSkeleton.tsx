@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const GoogleFormCardSkeleton = () => {
   return (
-    <div className="flex items-center gap-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg">
+    <div className="flex items-center gap-4 p-4 border border-neutral-300 dark:border-neutral-800 rounded-lg">
       <Skeleton className="h-12 w-12 rounded-full" />
       <div className="flex-grow space-y-2">
         <Skeleton className="h-5 w-3/5" />

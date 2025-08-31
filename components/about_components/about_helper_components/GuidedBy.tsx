@@ -3,7 +3,7 @@ import { Info } from "lucide-react";
 
 const GuidedBy = () => {
   return (
-    <div className="border border-neutral-200 dark:border-neutral-800 p-5 rounded-xl flex gap-5 items-center justify-start">
+    <div className="border border-neutral-300 dark:border-neutral-800 p-5 rounded-xl flex gap-5 items-center justify-start">
       <Info className="w-4 h-4" />
       <div>
         Guided by{" "}

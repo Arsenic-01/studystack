@@ -86,7 +86,7 @@ const SubjectSearch = ({ sem, initialSubjects }: SubjectSearchProps) => {
             </div>
           ))
         ) : (
-          <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
+          <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
             <div className="flex flex-col items-center justify-center gap-4">
               <Library className="h-8 w-8 text-neutral-500" />
               <h3 className="text-lg font-medium">No Subjects Found</h3>

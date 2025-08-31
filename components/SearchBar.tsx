@@ -202,12 +202,12 @@ export default function SearchBar() {
   return (
     <>
       <button
-        className="hidden lg:inline-flex bg-background items-center text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 h-9 rounded-md border border-neutral-200 dark:border-neutral-800 px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
+        className="hidden lg:inline-flex bg-background items-center text-foreground placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-ring/50 h-9 rounded-md border border-neutral-300 dark:border-neutral-800 px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
         onClick={() => setOpen(true)}
       >
         <SearchIcon className="text-muted-foreground/80 -ms-1 me-3" size={16} />
         <span className="text-muted-foreground/70">Search</span>
-        <kbd className="bg-background text-muted-foreground/70 ms-7 -me-1 inline-flex h-5 items-center rounded border border-neutral-200 dark:border-neutral-800 px-1 font-[inherit] text-[0.625rem] font-medium">
+        <kbd className="bg-background text-muted-foreground/70 ms-7 -me-1 inline-flex h-5 items-center rounded border border-neutral-300 dark:border-neutral-800 px-1 font-[inherit] text-[0.625rem] font-medium">
           ⌘K
         </kbd>
       </button>

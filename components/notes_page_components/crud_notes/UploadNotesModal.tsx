@@ -285,7 +285,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
               )}
             />
             {/* File Upload */}
-            <div className="w-full min-h-32 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+            <div className="w-full min-h-32 border border-dashed bg-white dark:bg-black border-neutral-300 dark:border-neutral-800 rounded-lg">
               <FileUpload onChange={handleFileSelect} />
             </div>
             {uploading && uploadProgress !== null && (
