@@ -3,7 +3,7 @@ import { IconCloud } from "../../ui/magicui/icon-cloud";
 export function IconGlobe() {
   const images = [
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/TypeScript.svg",
-    "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Appwrite.svg",
+    "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Appwriter.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Docker.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Figma.svg",
     "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/GitHub.svg",

@@ -95,7 +95,7 @@ const techCategories: { [key: string]: TechItem[] } = {
   "Backend & Database": [
     {
       name: "Appwrite",
-      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Appwrite.svg",
+      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Appwriter.svg",
       inversion: "none",
     },
     {
