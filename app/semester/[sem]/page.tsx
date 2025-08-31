@@ -1,6 +1,6 @@
+import NotFound from "@/app/not-found";
 import SubjectSearch from "@/components/semester_page_components/SubjectFilter";
 import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
-import { ErrorUI } from "./[sub]/page";
 import { Metadata } from "next";
 
 type Props = {
@@ -22,14 +22,7 @@ const Page = async ({ params }: { params: { sem: string } }) => {
   const subjects = await fetchSubjectsBySemester(Number(sem));
 
   if (!subjects || subjects.length === 0) {
-    return (
-      <ErrorUI
-        title="Invalid Semester URL"
-        message="No subjects found for this semester. Please check the URL or go back home."
-        actionLabel="Go Home"
-        actionHref="/home"
-      />
-    );
+    return <NotFound />;
   }
 
   return (

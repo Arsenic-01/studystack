@@ -3,12 +3,22 @@ import { AppwriteException } from "node-appwrite";
 import { DATABASE_ID, db, Query, SUBJECT_COLLECTION_ID } from "../appwrite";
 import { Subject } from "../appwrite_types";
 
-export async function fetchSubject({ abbreviation }: { abbreviation: string }) {
+export async function fetchSubject({
+  abbreviation,
+  semester,
+}: {
+  abbreviation: string;
+  semester: string;
+}) {
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
       SUBJECT_COLLECTION_ID!,
-      [Query.equal("abbreviation", abbreviation), Query.limit(1)]
+      [
+        Query.equal("abbreviation", abbreviation),
+        Query.equal("semester", semester),
+        Query.limit(1),
+      ]
     );
     return response.documents[0] as unknown as Subject;
   } catch (error) {

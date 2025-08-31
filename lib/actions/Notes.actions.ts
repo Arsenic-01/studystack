@@ -19,10 +19,10 @@ interface DeleteNoteParams {
 export async function deleteNote({ noteId, fileId }: DeleteNoteParams) {
   try {
     const drive = await getDriveClient();
+    await db.deleteDocument(DATABASE_ID!, NOTE_COLLECTION_ID!, noteId);
     await drive.files.delete({
       fileId: fileId,
     });
-    await db.deleteDocument(DATABASE_ID!, NOTE_COLLECTION_ID!, noteId);
 
     return { success: true };
   } catch (error) {
