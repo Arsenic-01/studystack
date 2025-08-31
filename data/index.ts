@@ -149,13 +149,13 @@ export const guide = [
     name: "AD. Talole",
     role: "Lecturer, Computer Department",
     avatar:
-      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/mentor/adt.webp",
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/mentor/adt.webp",
   },
   {
     name: "GB. Katkade",
     role: "HOD, Computer Department",
     avatar:
-      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/mentor/gbk.jpeg",
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/mentor/gbk.jpeg",
   },
 ];
 
