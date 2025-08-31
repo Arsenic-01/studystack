@@ -1,5 +1,4 @@
 import { MetadataRoute } from "next";
-// Import the new, real data fetching function
 import { fetchAllSubjectsForSitemap } from "@/lib/actions/Subjects.actions";
 import { hostedAt } from "@/data";
 
@@ -13,6 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/contact",
     "/privacy-policy",
     "/cookie-policy",
+    "/copyright-policy",
+    "/terms-and-conditions",
     "/forgot-password",
     "/reset-password",
   ];

@@ -9,18 +9,18 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <main className="bg-white dark:bg-black text-black dark:text-white py-24 md:py-28 lg:py-32 px-5">
-      <div className="container mx-auto max-w-4xl sm:mt-4">
-        <div className="bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-lg">
+      <div className="container mx-auto max-w-5xl sm:mt-4">
+        <div className="bg-white dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded-lg shadow-lg">
           <div className="p-6 text-center pb-4">
             <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">
-              Privacy Policy for StudyStack
+              Privacy Policy
             </h1>
             <p className="text-neutral-500 dark:text-neutral-400 text-sm">
               <strong>Last Updated:</strong> August 31, 2025
             </p>
           </div>
 
-          <hr className="border-neutral-200 dark:border-neutral-800 mx-6 mb-6" />
+          <hr className="border-neutral-300 dark:border-neutral-800 mx-6 mb-6" />
 
           <div className="space-y-8 px-6 pb-6">
             {/* Section 1 */}
@@ -210,7 +210,7 @@ export default function PrivacyPolicyPage() {
               </h2>
               <p className="text-neutral-500 dark:text-neutral-400 leading-relaxed text-base">
                 If you have any questions about this Privacy Policy, please
-                contact us or your project guide, Prof. A. D. Talole or Prof. G.
+                contact us or our project guide, Prof. A. D. Talole or Prof. G.
                 B. Katkade.
               </p>
             </div>

@@ -107,6 +107,14 @@ export const legalPopoverLinks = [
     title: "Cookie Policy",
     href: "/cookie-policy",
   },
+  {
+    title: "Copyright Policy",
+    href: "/copyright-policy",
+  },
+  {
+    title: "Terms & Conditions",
+    href: "/terms-and-conditions",
+  },
 ];
 
 export const creators = [
@@ -140,10 +148,14 @@ export const guide = [
   {
     name: "AD. Talole",
     role: "Lecturer",
+    avatar:
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/mentor/adt.webp",
   },
   {
     name: "GB. Katkade",
     role: "HOD, Computer Department",
+    avatar:
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/mentor/gbk.jpeg",
   },
 ];
 

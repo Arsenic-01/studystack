@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 export default function CookiePolicyPage() {
   return (
     <main className="bg-white dark:bg-black text-black dark:text-white py-24 md:py-28 lg:py-32 px-5">
-      <div className="container mx-auto max-w-4xl sm:mt-4">
-        <div className="bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-lg">
+      <div className="container mx-auto max-w-5xl sm:mt-4">
+        <div className="bg-white dark:bg-neutral-950 border border-neutral-300 dark:border-neutral-800 rounded-lg shadow-lg">
           <div className="p-6 text-center pb-4">
             <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">
               Cookie Policy
@@ -20,7 +20,7 @@ export default function CookiePolicyPage() {
             </p>
           </div>
 
-          <hr className="border-neutral-200 dark:border-neutral-800 mx-6 mb-6" />
+          <hr className="border-neutral-300 dark:border-neutral-800 mx-6 mb-6" />
 
           <div className="space-y-8 px-6 pb-6">
             {/* Section 1 */}

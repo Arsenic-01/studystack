@@ -105,15 +105,6 @@ body {
   display: none !important;
 }
 
-/* globals.css */
-.recharts-grid-light {
-  stroke: #e5e7eb; /* light mode: gray-200 */
-}
-
-.dark .recharts-grid-light {
-  stroke: #4b5563; /* dark mode: gray-600 */
-}
-
 @theme inline {
   --animate-rainbow: rainbow var(--speed, 2s) infinite linear;
 
