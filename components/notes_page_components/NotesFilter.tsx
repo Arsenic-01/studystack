@@ -228,7 +228,7 @@ const NotesFilter = ({
 
   return (
     <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
-      <div className="flex gap-4 sm:gap-10 mb-8">
+      <div className="flex gap-4 sm:gap-10 mb-4">
         <Button
           variant="outline"
           className={`${!subject.semester && "hidden"} w-fit`}
