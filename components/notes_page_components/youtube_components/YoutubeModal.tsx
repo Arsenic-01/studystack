@@ -26,6 +26,7 @@ import { FaYoutube } from "react-icons/fa6";
 import { toast } from "sonner";
 import { useUser } from "@/hooks/useUser";
 import { createYoutubeLink } from "@/lib/actions/Youtube.actions";
+import { useQueryClient } from "@tanstack/react-query";
 
 const YoutubeModal = ({
   abbreviation,
@@ -35,6 +36,7 @@ const YoutubeModal = ({
   semester: string;
 }) => {
   const { user } = useUser();
+  const queryClient = useQueryClient();
   // Initialize form with react-hook-form and Zod validation
   const form = useForm({
     resolver: zodResolver(youtubeSchema),
@@ -60,6 +62,7 @@ const YoutubeModal = ({
       if (!response.success) throw new Error(response.error);
       toast.success("YouTube link added successfully!");
       form.reset();
+      queryClient.invalidateQueries({ queryKey: ["youtube", abbreviation] });
     } catch (error) {
       console.error("Error uploading YouTube link:", error);
       toast.error(

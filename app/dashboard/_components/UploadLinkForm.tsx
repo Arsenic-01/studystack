@@ -24,7 +24,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
 import { createFormLink } from "@/lib/actions/Form.actions";
 import { dashboardLinkSchema } from "@/components/validation_schema/dashboard_schema";
@@ -34,7 +34,7 @@ type UploadLinkValues = z.infer<typeof dashboardLinkSchema>;
 export default function UploadLinkForm() {
   const { user } = useUser();
   const [uploading, setUploading] = useState(false);
-
+  const queryClient = useQueryClient();
   const form = useForm<UploadLinkValues>({
     resolver: zodResolver(dashboardLinkSchema),
     defaultValues: {
@@ -72,6 +72,7 @@ export default function UploadLinkForm() {
       if (!result.success) throw new Error(result.error);
       toast.success("Link added successfully!");
       form.reset();
+      queryClient.invalidateQueries({ queryKey: ["forms", values.subject] });
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to add link."

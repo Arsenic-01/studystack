@@ -23,7 +23,7 @@ import { useUser } from "@/hooks/useUser";
 import { saveNoteMetadata } from "@/lib/actions/Notes.actions";
 import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -48,7 +48,7 @@ export default function UploadNotesForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-
+  const queryClient = useQueryClient();
   const form = useForm<UploadNoteFormValues>({
     resolver: zodResolver(dashboardUploadNoteSchema),
     defaultValues: {
@@ -169,6 +169,7 @@ export default function UploadNotesForm() {
       }
 
       toast.success("File Uploaded Successfully! 🎉");
+      queryClient.invalidateQueries({ queryKey: ["notes", values.subject] });
       router.refresh(); // Re-fetches data for the dashboard
       form.reset();
       setSelectedFile(null);

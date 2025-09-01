@@ -22,7 +22,7 @@ import { useUser } from "@/hooks/useUser";
 import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
 import { createYoutubeLink } from "@/lib/actions/Youtube.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Upload } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -34,6 +34,7 @@ type UploadYoutubeValues = z.infer<typeof dashboardYoutubeSchema>;
 export default function UploadYoutubeForm() {
   const { user } = useUser();
   const [uploading, setUploading] = useState(false);
+  const queryClient = useQueryClient();
 
   const form = useForm<UploadYoutubeValues>({
     resolver: zodResolver(dashboardYoutubeSchema),
@@ -65,6 +66,7 @@ export default function UploadYoutubeForm() {
       if (!result.success) throw new Error(result.error);
       toast.success("YouTube link added successfully!");
       form.reset();
+      queryClient.invalidateQueries({ queryKey: ["youtube", values.subject] });
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to add youtube link."

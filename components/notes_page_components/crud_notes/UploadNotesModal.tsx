@@ -27,6 +27,7 @@ import {
 import { uploadNoteSchema } from "@/components/validation_schema/validation";
 import { saveNoteMetadata } from "@/lib/actions/Notes.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Upload } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -61,7 +62,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
       description: "",
     },
   });
-
+  const queryClient = useQueryClient();
   const directUploadToDrive = (uploadUrl: string, file: File): Promise<any> => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -167,6 +168,7 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
       closeModal();
       form.reset();
       setSelectedFile(null);
+      queryClient.invalidateQueries({ queryKey: ["notes", abbreviation] });
     } catch (err: unknown) {
       console.error("Upload process failed", err);
       toast.error(

@@ -39,6 +39,7 @@ import { createFormLink } from "@/lib/actions/Form.actions";
 import { useState } from "react";
 import { FaLink } from "react-icons/fa6";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const GoogleFormModal = ({
   abbreviation,
@@ -48,6 +49,7 @@ const GoogleFormModal = ({
   semester: string;
 }) => {
   const { user } = useUser();
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm<LinkSchemaType>({
@@ -105,6 +107,7 @@ const GoogleFormModal = ({
       toast.success("Link added successfully!");
       form.reset();
       setIsOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["forms", abbreviation] });
     } else {
       toast.error("Failed to add link. Please try again.");
     }
