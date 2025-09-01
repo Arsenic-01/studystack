@@ -12,6 +12,13 @@ import { AddContentModal } from "./_components/AddContentModal";
 import YoutubeLinksClient from "./_components/YoutubeLinksClient";
 import { EmptyState } from "./_components/EmptyState";
 import { FileText, Link, Video } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description:
+    "Manage all your uploaded notes, videos, and forms in one place.",
+};
 
 export default async function TeacherDashboard() {
   const session = await getServerSession(authOptions);
