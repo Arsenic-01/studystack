@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { DATABASE_ID, db, Query, YOUTUBE_COLLECTION_ID } from "../appwrite";
+import { ID } from "node-appwrite";
 
 export async function fetchYoutubeLinks({
   abbreviation,
@@ -76,6 +77,63 @@ export async function fetchPaginatedYoutubeLinks({
     return { documents: [], total: 0 };
   }
 }
+
+export async function createYoutubeLink({
+  youtubeLink,
+  createdBy,
+  title,
+  semester,
+  abbreviation,
+}: {
+  youtubeLink: string;
+  createdBy: string;
+  title: string;
+  semester: string;
+  abbreviation: string;
+}) {
+  try {
+    await db.createDocument(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, ID.unique(), {
+      url: youtubeLink,
+      createdBy,
+      title,
+      abbreviation,
+      semester,
+    });
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating YouTube link:", error);
+    return { success: false, error: "Failed to create link." };
+  }
+}
+
+export async function getUserYoutubeLinks(userName: string) {
+  try {
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      YOUTUBE_COLLECTION_ID!,
+      [Query.equal("createdBy", userName), Query.orderDesc("$createdAt")]
+    );
+
+    const documents = response.documents.map((doc) => ({
+      id: doc.$id,
+      title: doc.title,
+      youtubeLink: doc.url,
+      createdBy: doc.createdBy,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
+    }));
+
+    return {
+      documents,
+      total: response.total,
+    };
+  } catch (error) {
+    console.error("Error fetching user YouTube links:", error);
+    return { documents: [], total: 0 };
+  }
+}
+
 export async function editYoutubeLink({
   id,
   youtubeLink,

@@ -227,7 +227,7 @@ const NotesFilter = ({
   };
 
   return (
-    <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
+    <div className="container mx-auto py-28 sm:py-32 max-w-5xl px-5 xl:px-0">
       <div className="flex gap-4 sm:gap-10 mb-4">
         <Button
           variant="outline"

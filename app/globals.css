@@ -117,3 +117,7 @@ body {
     }
   }
 }
+
+.text-muted-foreground {
+  color: var(--muted-foreground) !important;
+}

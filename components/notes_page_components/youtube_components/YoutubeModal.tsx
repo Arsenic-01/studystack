@@ -25,6 +25,7 @@ import { youtubeSchema } from "@/components/validation_schema/validation";
 import { FaYoutube } from "react-icons/fa6";
 import { toast } from "sonner";
 import { useUser } from "@/hooks/useUser";
+import { createYoutubeLink } from "@/lib/actions/Youtube.actions";
 
 const YoutubeModal = ({
   abbreviation,
@@ -49,32 +50,21 @@ const YoutubeModal = ({
     title: string;
   }) => {
     try {
-      const payload = {
-        youtubeLink: values.youtubeLink,
-        user: user?.name,
-        abbreviation: abbreviation,
-        semester: semester,
+      const response = await createYoutubeLink({
         title: values.title,
-      };
-
-      const response = await fetch("/api/youtube", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        youtubeLink: values.youtubeLink,
+        semester: semester,
+        abbreviation: abbreviation,
+        createdBy: user!.name!,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        console.error("Upload error:", result.error);
-        toast.error(result.error || "Failed to embed video.");
-      } else {
-        toast.success("YouTube video embedded successfully");
-        form.reset();
-      }
+      if (!response.success) throw new Error(response.error);
+      toast.success("YouTube link added successfully!");
+      form.reset();
     } catch (error) {
       console.error("Error uploading YouTube link:", error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to add youtube link."
+      );
     }
   };
 

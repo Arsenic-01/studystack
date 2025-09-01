@@ -1,4 +1,5 @@
 // components/google_form_components/GoogleFormCard.tsx
+"use client";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

@@ -2,6 +2,7 @@
 
 import { ID } from "node-appwrite";
 import { DATABASE_ID, db, FORM_COLLECTION_ID, Query } from "../appwrite";
+import { revalidatePath } from "next/cache";
 
 // Create new Google Form link
 export async function createFormLink({
@@ -28,11 +29,39 @@ export async function createFormLink({
       semester,
       formType,
     });
-
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error creating Google Form link:", error);
     return { success: false, error: "Failed to create link." };
+  }
+}
+
+// Fetch google form links for a specific user
+export async function getUserForms(userName: string) {
+  try {
+    const response = await db.listDocuments(DATABASE_ID!, FORM_COLLECTION_ID!, [
+      Query.equal("createdBy", userName),
+      Query.orderDesc("$createdAt"),
+    ]);
+
+    const documents = response.documents.map((doc) => ({
+      id: doc.$id,
+      url: doc.url,
+      createdBy: doc.createdBy,
+      quizName: doc.title,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
+      formType: doc.formType,
+    }));
+
+    return {
+      documents,
+      total: response.total,
+    };
+  } catch (error) {
+    console.error("Error fetching user form links:", error);
+    return { documents: [], total: 0 };
   }
 }
 
@@ -137,6 +166,8 @@ export async function editFormLink({
       title: quizName,
       formType,
     });
+    revalidatePath("/dashboard");
+
     return { success: true };
   } catch (error) {
     console.error("Error updating Google Form link:", error);

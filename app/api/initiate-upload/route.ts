@@ -10,10 +10,7 @@ const DRIVE_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID || "";
 export async function POST(req: NextRequest) {
   try {
     const { fileName, fileType } = await req.json();
-    const origin = req.headers.get("origin"); // <-- GET THE ORIGIN HEADER
-    console.log("Origin:", origin);
-    console.log("File Name:", fileName);
-    console.log("File Type:", fileType);
+    const origin = req.headers.get("origin");
 
     if (!fileName || !fileType) {
       return NextResponse.json(

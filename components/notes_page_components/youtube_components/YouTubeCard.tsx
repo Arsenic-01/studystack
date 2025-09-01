@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -7,7 +9,6 @@ import {
 import { Pencil, PlayCircle, User } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
-// Assuming you have these components already
 import { Button } from "@/components/ui/button";
 import { SessionUser } from "@/lib/appwrite_types";
 import DeleteYoutubeLink from "./DeleteYoutubeLink";

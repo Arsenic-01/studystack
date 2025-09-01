@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { uploadNoteSchema } from "@/components/validation_schema/validation";
+import { saveNoteMetadata } from "@/lib/actions/Notes.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Upload } from "lucide-react";
 import React, { useState } from "react";
@@ -146,24 +147,20 @@ const UploadNotesModal: React.FC<UploadNotesModalProps> = ({
       setUploadProgress(100); // Ensure it hits 100% on success
       // 3) Save your metadata (This part remains the same)
 
-      const saveRes = await fetch("/api/save-note", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileId: driveFileId,
-          title: data.title,
-          description: data.description,
-          type_of_file: data.fileType,
-          unit: data.unit,
-          semester,
-          userId,
-          userName,
-          abbreviation,
-        }),
+      const result = await saveNoteMetadata({
+        fileId: driveFileId,
+        title: data.title,
+        description: data.description,
+        type_of_file: data.fileType,
+        unit: data.unit,
+        semester: semester,
+        userId: userId,
+        userName: userName,
+        abbreviation: abbreviation,
       });
-      const saveJson = await saveRes.json();
-      if (!saveRes.ok || !saveJson?.success) {
-        throw new Error(saveJson?.error || "Failed to save note metadata.");
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to save note metadata.");
       }
 
       toast.success("File Uploaded Successfully! 🎉");

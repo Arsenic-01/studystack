@@ -26,8 +26,8 @@ const Page = async ({ params }: { params: { sem: string } }) => {
   }
 
   return (
-    <div className="flex flex-col gap-8 sm:gap-16 items-center justify-center w-full py-16 md:py-24 px-1">
-      <div className="flex flex-col gap-4 items-start justify-center w-full max-w-5xl pt-10 lg:pt-5 px-5 md:px-8">
+    <div className="flex flex-col gap-8 sm:gap-16 items-center justify-center w-full py-16 md:py-24">
+      <div className="flex flex-col gap-4 items-start justify-center w-full max-w-5xl pt-10 lg:pt-5 px-5 xl:px-0">
         <SubjectSearch sem={sem} initialSubjects={subjects} />
       </div>
     </div>
