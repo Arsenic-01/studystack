@@ -20,7 +20,7 @@ const NotesFilterSkeleton = () => {
       </div>
 
       {/* Notes Section */}
-      <div className="flex flex-col gap-5">
+        <div className="flex gap-4 sm:gap-10 mb-4">
         {/* Filters */}
         <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 w-full">
           <div className="flex sm:flex-row items-center gap-2 md:gap-3 w-full">
