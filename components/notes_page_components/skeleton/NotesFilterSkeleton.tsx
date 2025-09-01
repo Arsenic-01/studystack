@@ -10,7 +10,7 @@ const NotesFilterSkeleton = () => {
   return (
     <div className="container mx-auto py-28 sm:py-32 2xl:py-36 max-w-5xl px-5">
       {/* Header */}
-      <div className="flex gap-4 sm:gap-10 mb-8">
+      <div className="flex gap-4 sm:gap-10 mb-4">
         <Button variant="outline" className="w-fit" asChild>
           <Link href="/">
             <ArrowLeft /> Back
@@ -20,7 +20,7 @@ const NotesFilterSkeleton = () => {
       </div>
 
       {/* Notes Section */}
-        <div className="flex gap-4 sm:gap-10 mb-4">
+      <div className="flex flex-col gap-5">
         {/* Filters */}
         <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 w-full">
           <div className="flex sm:flex-row items-center gap-2 md:gap-3 w-full">
