@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { ID } from "node-appwrite";
 import { DATABASE_ID, db, FORM_COLLECTION_ID, Query } from "../appwrite";
+import { unstable_cache as cache } from "next/cache";
 
 // Create new Google Form link
 export async function createFormLink({
@@ -104,7 +105,7 @@ export async function fetchFormLinks({
   }
 }
 
-export async function fetchPaginatedFormLinks({
+export const fetchPaginatedFormLinks = async ({
   abbreviation,
   limit,
   offset,
@@ -113,50 +114,56 @@ export async function fetchPaginatedFormLinks({
   abbreviation: string;
   limit: number;
   offset: number;
-  filters?: {
-    formType?: string;
-  };
-}) {
-  if (!abbreviation) return { documents: [], total: 0 };
+  filters?: { formType?: string };
+}) => {
+  const cacheKey = [
+    "paginated-forms",
+    abbreviation,
+    String(limit),
+    String(offset),
+    JSON.stringify(filters),
+  ];
 
-  try {
-    // Start with the base queries that are always applied
-    const queries: string[] = [
-      Query.equal("abbreviation", abbreviation),
-      Query.orderDesc("$createdAt"),
-      Query.limit(limit),
-      Query.offset(offset),
-    ];
+  const cachedFetch = cache(
+    async () => {
+      if (!abbreviation) return { documents: [], total: 0 };
 
-    if (filters?.formType && filters.formType !== "all") {
-      queries.push(Query.equal("formType", filters.formType));
-    }
+      try {
+        const queries: string[] = [
+          Query.equal("abbreviation", abbreviation),
+          Query.orderDesc("$createdAt"),
+          Query.limit(limit),
+          Query.offset(offset),
+        ];
+        if (filters?.formType && filters.formType !== "all") {
+          queries.push(Query.equal("formType", filters.formType));
+        }
+        const response = await db.listDocuments(
+          DATABASE_ID!,
+          FORM_COLLECTION_ID!,
+          queries
+        );
+        const documents = response.documents.map((doc) => ({
+          id: doc.$id,
+          url: doc.url,
+          createdBy: doc.createdBy,
+          quizName: doc.title,
+          abbreviation: doc.abbreviation,
+          semester: doc.semester,
+          formType: doc.formType,
+        }));
+        return { documents, total: response.total };
+      } catch (error) {
+        console.error("Error fetching paginated Form links:", error);
+        return { documents: [], total: 0 };
+      }
+    },
+    cacheKey,
+    { revalidate: 60 }
+  );
 
-    const response = await db.listDocuments(
-      DATABASE_ID!,
-      FORM_COLLECTION_ID!,
-      queries
-    );
-
-    const documents = response.documents.map((doc) => ({
-      id: doc.$id,
-      url: doc.url,
-      createdBy: doc.createdBy,
-      quizName: doc.title,
-      abbreviation: doc.abbreviation,
-      semester: doc.semester,
-      formType: doc.formType,
-    }));
-
-    return {
-      documents,
-      total: response.total,
-    };
-  } catch (error) {
-    console.error("Error fetching paginated Form links:", error);
-    return { documents: [], total: 0 };
-  }
-}
+  return cachedFetch();
+};
 
 // Edit Google Form link
 export async function editFormLink({
@@ -219,32 +226,40 @@ export async function fetchAllFormLinks() {
 
 export async function findFormPage(
   abbreviation: string,
-  noteId: string,
-  pageSize: number
+  formId: string,
+  pageSize: number,
+  filters?: {
+    formType?: string;
+  }
 ) {
   try {
-    // 1. Fetch the target document to get its creation date
-    const targetNote = await db.getDocument(
+    const targetForm = await db.getDocument(
       DATABASE_ID!,
       FORM_COLLECTION_ID!,
-      noteId
+      formId
     );
-    if (!targetNote) return 1;
+    if (!targetForm) return 1;
 
-    // 2. Count how many documents are NEWER than the target document
-    const response = await db.listDocuments(DATABASE_ID!, FORM_COLLECTION_ID!, [
+    const queries = [
       Query.equal("abbreviation", abbreviation),
-      Query.greaterThan("$createdAt", targetNote.$createdAt),
-    ]);
+      Query.greaterThan("$createdAt", targetForm.$createdAt),
+    ];
 
-    // The total count from the response is the 0-based index of our note
+    if (filters?.formType && filters.formType !== "all") {
+      queries.push(Query.equal("formType", filters.formType));
+    }
+
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      FORM_COLLECTION_ID!,
+      queries
+    );
+
     const position = response.total;
-
-    // 3. Calculate the page number
     const page = Math.floor(position / pageSize) + 1;
     return page;
   } catch (error) {
-    console.error("Error finding note page:", error);
-    return 1; // Fallback to page 1 on error
+    console.error("Error finding form page:", error);
+    return 1;
   }
 }

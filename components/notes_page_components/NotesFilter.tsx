@@ -1,24 +1,7 @@
+// NotesFilter.tsx
+
 "use client";
 
-import { useUser } from "@/hooks/useUser";
-import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
-import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
-import {
-  fetchPaginatedNotes,
-  getUploadersForSubject,
-} from "@/lib/actions/Notes.actions";
-import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  FileQuestion,
-  Home,
-  ListFilter,
-  ListFilterPlus,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -33,12 +16,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUser } from "@/hooks/useUser";
+import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
+import {
+  fetchPaginatedNotes,
+  getUploadersForSubject,
+} from "@/lib/actions/Notes.actions";
+import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
+import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  FileQuestion,
+  Home,
+  ListFilter,
+  ListFilterPlus,
+} from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "../ui/search-dialog";
 import { GoogleFormCard } from "./google_form_components/GoogleFormCard";
 import NoteCard from "./notes_helper_components/NoteCard";
+import PaginationControl from "./PaginationControl";
 import NoteCardSkeleton from "./skeleton/NoteCardSkeleton";
 import { YouTubeCard } from "./youtube_components/YouTubeCard";
-import PaginationControl from "./PaginationControl";
 
 const NOTES_PER_PAGE = 6;
 const LINKS_PER_PAGE = 3;
@@ -72,6 +74,12 @@ interface NotesFilterProps {
     youtube: number;
     forms: number;
   };
+  initialFilters: {
+    unit: string;
+    fileType: string[];
+    user: string[];
+    formType: string;
+  };
 }
 
 export default function NotesFilter({
@@ -80,66 +88,55 @@ export default function NotesFilter({
   initialYoutubeLinks,
   initialGoogleFormLinks,
   initialPageNumbers,
+  initialFilters,
 }: NotesFilterProps) {
   const { user } = useUser();
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [notesPage, setNotesPage] = useState(initialPageNumbers.notes);
   const [youtubePage, setYoutubePage] = useState(initialPageNumbers.youtube);
   const [formsPage, setFormsPage] = useState(initialPageNumbers.forms);
-  const [selectedUnit, setSelectedUnit] = useState(
-    () => searchParams.get("unit") || "All"
-  );
+  const [selectedUnit, setSelectedUnit] = useState(initialFilters.unit);
   const [selectedFileTypes, setSelectedFileTypes] = useState(
-    () => searchParams.get("fileType")?.split(",").filter(Boolean) || []
+    initialFilters.fileType
   );
-  const [selectedUsers, setSelectedUsers] = useState(
-    () => searchParams.get("user")?.split(",").filter(Boolean) || []
-  );
+  const [selectedUsers, setSelectedUsers] = useState(initialFilters.user);
   const [selectedFormType, setSelectedFormType] = useState(
-    () => searchParams.get("formType") || "all"
+    initialFilters.formType
   );
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
-  const isInitialMount = useRef(true);
 
-  // This effect syncs the server-calculated page numbers to the client state when a search link is clicked
+  // This effect is still useful to sync state if the user navigates
+  // back/forward in their browser history to a page with different initial props.
   useEffect(() => {
     setNotesPage(initialPageNumbers.notes);
     setYoutubePage(initialPageNumbers.youtube);
     setFormsPage(initialPageNumbers.forms);
-  }, [initialPageNumbers]);
+    setSelectedUnit(initialFilters.unit);
+    setSelectedFileTypes(initialFilters.fileType);
+    setSelectedUsers(initialFilters.user);
+    setSelectedFormType(initialFilters.formType);
+  }, [initialPageNumbers, initialFilters]);
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-    const params = new URLSearchParams();
-    if (notesPage > 1) params.set("notesPage", notesPage.toString());
-    if (youtubePage > 1) params.set("youtubePage", youtubePage.toString());
-    if (formsPage > 1) params.set("formsPage", formsPage.toString());
-    if (selectedUnit && selectedUnit !== "All")
-      params.set("unit", selectedUnit);
-    if (selectedFileTypes.length > 0)
-      params.set("fileType", selectedFileTypes.join(","));
-    if (selectedUsers.length > 0) params.set("user", selectedUsers.join(","));
-    if (selectedFormType && selectedFormType !== "all")
-      params.set("formType", selectedFormType);
+  // Helper function to compare arrays of strings (for fileTypes and users)
+  const areArraysEqual = (a: string[], b: string[]) => {
+    if (a.length !== b.length) return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((value, index) => value === sortedB[index]);
+  };
 
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  }, [
-    notesPage,
-    youtubePage,
-    formsPage,
-    selectedUnit,
-    selectedFileTypes,
-    selectedUsers,
-    selectedFormType,
-    pathname,
-    router,
-  ]);
+  // Check if the current state matches the initial server-rendered state for notes
+  const isInitialNotesState =
+    notesPage === initialPageNumbers.notes &&
+    selectedUnit === initialFilters.unit &&
+    areArraysEqual(selectedFileTypes, initialFilters.fileType) &&
+    areArraysEqual(selectedUsers, initialFilters.user);
+
+  // Check if the current state matches the initial server-rendered state for forms
+  const isInitialFormsState =
+    formsPage === initialPageNumbers.forms &&
+    selectedFormType === initialFilters.formType;
 
   const { data: allTeachers } = useQuery({
     queryKey: ["all-teachers", subject.abbreviation],
@@ -168,8 +165,7 @@ export default function NotesFilter({
         },
       }),
     placeholderData: keepPreviousData,
-    initialData:
-      notesPage === initialPageNumbers.notes ? initialNotes : undefined,
+    initialData: isInitialNotesState ? initialNotes : undefined,
     staleTime: 60 * 1000,
   });
 
@@ -182,10 +178,7 @@ export default function NotesFilter({
         offset: (youtubePage - 1) * LINKS_PER_PAGE,
       }),
     placeholderData: keepPreviousData,
-    initialData:
-      youtubePage === initialPageNumbers.youtube
-        ? initialYoutubeLinks
-        : undefined,
+    initialData: initialYoutubeLinks,
     staleTime: 60 * 1000,
   });
 
@@ -199,34 +192,26 @@ export default function NotesFilter({
         filters: { formType: selectedFormType },
       }),
     placeholderData: keepPreviousData,
-    initialData:
-      formsPage === initialPageNumbers.forms
-        ? initialGoogleFormLinks
-        : undefined,
+    initialData: isInitialFormsState ? initialGoogleFormLinks : undefined,
     staleTime: 60 * 1000,
   });
 
-  const handleUnitChange = (value: string) => {
-    setNotesPage(1);
-    setSelectedUnit(value);
+  const handleFilterChange = (
+    setter: React.Dispatch<React.SetStateAction<any>>,
+    value: any,
+    pageSetter: React.Dispatch<React.SetStateAction<number>>
+  ) => {
+    pageSetter(1);
+    setter(value);
   };
 
-  const handleFormTypeChange = (value: string) => {
-    setFormsPage(1);
-    setSelectedFormType(value);
-  };
-
-  const handleFileTypeToggle = (type: string) => {
+  const handleMultiFilterChange = (
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    value: string
+  ) => {
     setNotesPage(1);
-    setSelectedFileTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
-  };
-
-  const handleUserToggle = (name: string) => {
-    setNotesPage(1);
-    setSelectedUsers((prev) =>
-      prev.includes(name) ? prev.filter((u) => u !== name) : [...prev, name]
+    setter((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
     );
   };
 
@@ -291,11 +276,8 @@ export default function NotesFilter({
             {subject.semester ? " Back" : " Home"}
           </Link>
         </Button>
-        <h1 className="hidden md:block text-2xl font-bold tracking-tight truncate">
+        <h1 className="text-2xl font-bold tracking-tight truncate">
           {subject.name}
-        </h1>
-        <h1 className="md:hidden text-2xl font-bold tracking-tight truncate">
-          Notes for {subject.abbreviation.toUpperCase()}
         </h1>
       </div>
       <div className="flex flex-col gap-5">
@@ -314,7 +296,9 @@ export default function NotesFilter({
                     <div
                       key={type}
                       className="flex items-center gap-2 cursor-pointer"
-                      onClick={() => handleFileTypeToggle(type)}
+                      onClick={() =>
+                        handleMultiFilterChange(setSelectedFileTypes, type)
+                      }
                     >
                       <Checkbox checked={selectedFileTypes.includes(type)} />
                       <span className="text-sm capitalize">{type}</span>
@@ -336,7 +320,9 @@ export default function NotesFilter({
                     <div
                       key={name}
                       className="flex items-center gap-2 cursor-pointer"
-                      onClick={() => handleUserToggle(name)}
+                      onClick={() =>
+                        handleMultiFilterChange(setSelectedUsers, name)
+                      }
                     >
                       <Checkbox checked={selectedUsers.includes(name)} />
                       <span className="text-sm capitalize">{name}</span>
@@ -346,7 +332,13 @@ export default function NotesFilter({
               </PopoverContent>
             </Popover>
           </div>
-          <Select value={selectedUnit} onValueChange={handleUnitChange}>
+
+          <Select
+            value={selectedUnit}
+            onValueChange={(v) =>
+              handleFilterChange(setSelectedUnit, v, setNotesPage)
+            }
+          >
             <SelectTrigger className="w-full md:w-[280px]">
               <SelectValue placeholder="Select a unit" />
             </SelectTrigger>
@@ -411,9 +403,7 @@ export default function NotesFilter({
         <h2 className="text-2xl font-bold tracking-tight mb-6">
           Related Videos
         </h2>
-        {isYoutubeFetching && !youtubeData?.documents.length ? (
-          <p>Loading videos...</p>
-        ) : youtubeLinks.length > 0 ? (
+        {youtubeLinks.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {youtubeLinks.map((link) => {
@@ -471,7 +461,12 @@ export default function NotesFilter({
       <div className="mt-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <h2 className="text-2xl font-bold tracking-tight">Quizzes & Links</h2>
-          <Select value={selectedFormType} onValueChange={handleFormTypeChange}>
+          <Select
+            value={selectedFormType}
+            onValueChange={(v) =>
+              handleFilterChange(setSelectedFormType, v, setFormsPage)
+            }
+          >
             <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Filter by type" />
             </SelectTrigger>
@@ -483,9 +478,7 @@ export default function NotesFilter({
             </SelectContent>
           </Select>
         </div>
-        {isFormsFetching && !formData?.documents.length ? (
-          <p>Loading links...</p>
-        ) : forms.length > 0 ? (
+        {forms.length > 0 ? (
           <>
             <div className="flex flex-col gap-4">
               {forms.map((form) => (

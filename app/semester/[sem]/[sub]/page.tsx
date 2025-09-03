@@ -34,36 +34,48 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params, searchParams }: Props) {
-  const { sub, sem } = await params;
-  const sp = await searchParams;
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const { sub, sem } = resolvedParams;
 
   const subject = await fetchSubject({ abbreviation: sub, semester: sem });
   if (!subject) return <NotFound />;
 
-  const noteId = sp["noteId"];
-  const youtubeId = sp["youtubeId"];
-  const formId = sp["formId"];
+  const noteId = resolvedSearchParams["noteId"];
+  const youtubeId = resolvedSearchParams["youtubeId"];
+  const formId = resolvedSearchParams["formId"];
 
-  let notesPage = parseInt(sp["notesPage"] as string) || 1;
-  let youtubePage = parseInt(sp["youtubePage"] as string) || 1;
-  let formsPage = parseInt(sp["formsPage"] as string) || 1;
+  let notesPage = parseInt(resolvedSearchParams["notesPage"] as string) || 1;
+  let youtubePage =
+    parseInt(resolvedSearchParams["youtubePage"] as string) || 1;
+  let formsPage = parseInt(resolvedSearchParams["formsPage"] as string) || 1;
 
   const fileTypeFilter =
-    (sp["fileType"] as string)?.split(",").filter(Boolean) || [];
-  const unitFilter = (sp["unit"] as string) || "All";
-  const userFilter = (sp["user"] as string)?.split(",").filter(Boolean) || [];
-  const formTypeFilter = (sp["formType"] as string) || "all";
+    (resolvedSearchParams["fileType"] as string)?.split(",").filter(Boolean) ||
+    [];
+  const unitFilter = (resolvedSearchParams["unit"] as string) || "All";
+  const userFilter =
+    (resolvedSearchParams["user"] as string)?.split(",").filter(Boolean) || [];
+  const formTypeFilter = (resolvedSearchParams["formType"] as string) || "all";
 
+  // --- Handle direct links from search ---
   if (typeof noteId === "string") {
-    notesPage = await findNotePage(sub, noteId, NOTES_PER_PAGE);
+    notesPage = await findNotePage(sub, noteId, NOTES_PER_PAGE, {
+      unit: unitFilter,
+      userName: userFilter,
+      type_of_file: fileTypeFilter,
+    });
   }
   if (typeof youtubeId === "string") {
     youtubePage = await findYoutubePage(sub, youtubeId, LINKS_PER_PAGE);
   }
   if (typeof formId === "string") {
-    formsPage = await findFormPage(sub, formId, LINKS_PER_PAGE);
+    formsPage = await findFormPage(sub, formId, LINKS_PER_PAGE, {
+      formType: formTypeFilter,
+    });
   }
 
+  // --- Fetch data ---
   const [notesData, youtubeData, formsData] = await Promise.all([
     fetchPaginatedNotes({
       abbreviation: subject.abbreviation,
@@ -94,6 +106,12 @@ export default async function Page({ params, searchParams }: Props) {
       initialNotes={notesData}
       initialYoutubeLinks={youtubeData}
       initialGoogleFormLinks={formsData}
+      initialFilters={{
+        unit: unitFilter,
+        fileType: fileTypeFilter,
+        user: userFilter,
+        formType: formTypeFilter,
+      }}
       initialPageNumbers={{
         notes: notesPage,
         youtube: youtubePage,

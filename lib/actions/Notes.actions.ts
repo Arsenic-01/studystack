@@ -12,6 +12,7 @@ import {
 import { Note } from "../appwrite_types";
 import { getDriveClient } from "../googleDrive";
 import { revalidatePath } from "next/cache";
+import { unstable_cache as cache } from "next/cache";
 
 export async function saveNoteMetadata(body: {
   fileId: string;
@@ -109,7 +110,7 @@ export const editNotes = async (data: EditNotesModalFunctionProps) => {
   }
 };
 
-export async function fetchPaginatedNotes({
+export const fetchPaginatedNotes = async ({
   abbreviation,
   limit,
   offset,
@@ -123,62 +124,77 @@ export async function fetchPaginatedNotes({
     unit?: string;
     userName?: string[];
   };
-}) {
-  if (!abbreviation) return { documents: [], total: 0 };
+}) => {
+  const cacheKey = [
+    "paginated-forms",
+    abbreviation,
+    String(limit),
+    String(offset),
+    JSON.stringify(filters),
+  ];
+  const cachedFetch = cache(
+    async () => {
+      if (!abbreviation) return { documents: [], total: 0 };
 
-  try {
-    const queries = [
-      Query.equal("abbreviation", abbreviation),
-      Query.orderDesc("$createdAt"),
-      Query.limit(Number(limit)),
-      Query.offset(offset),
-    ];
+      try {
+        const queries = [
+          Query.equal("abbreviation", abbreviation),
+          Query.orderDesc("$createdAt"),
+          Query.limit(Number(limit)),
+          Query.offset(offset),
+        ];
 
-    if (filters?.type_of_file && filters.type_of_file.length > 0) {
-      queries.push(Query.equal("type_of_file", filters.type_of_file));
-    }
-    if (filters?.unit && filters.unit !== "All") {
-      queries.push(Query.equal("unit", filters.unit));
-    }
-    if (filters?.userName && filters.userName.length > 0) {
-      queries.push(Query.equal("userName", filters.userName));
-    }
+        if (filters?.type_of_file && filters.type_of_file.length > 0) {
+          queries.push(Query.equal("type_of_file", filters.type_of_file));
+        }
+        if (filters?.unit && filters.unit !== "All") {
+          queries.push(Query.equal("unit", filters.unit));
+        }
+        if (filters?.userName && filters.userName.length > 0) {
+          queries.push(Query.equal("userName", filters.userName));
+        }
 
-    const response = await db.listDocuments(
-      DATABASE_ID!,
-      NOTE_COLLECTION_ID!,
-      queries
-    );
+        const response = await db.listDocuments(
+          DATABASE_ID!,
+          NOTE_COLLECTION_ID!,
+          queries
+        );
 
-    const documents = response.documents.map((doc) => ({
-      noteId: doc.$id,
-      title: doc.title,
-      description: doc.description,
-      createdAt: doc.$createdAt,
-      fileId: doc.fileId,
-      semester: doc.semester || "",
-      type_of_file: doc.type_of_file || "",
-      unit: doc.unit || [],
-      users: {
-        name: doc.userName || "Unknown User",
-        userId: doc.userId || "",
-      },
-      abbreviation: doc.abbreviation || "",
-      fileUrl: doc.fileUrl || "",
-      mimeType: doc.mimeType || "",
-      fileSize: doc.fileSize || "",
-      thumbNail: doc.thumbNail || "",
-    }));
+        const documents = response.documents.map((doc) => ({
+          noteId: doc.$id,
+          title: doc.title,
+          description: doc.description,
+          createdAt: doc.$createdAt,
+          fileId: doc.fileId,
+          semester: doc.semester || "",
+          type_of_file: doc.type_of_file || "",
+          unit: doc.unit || [],
+          users: {
+            name: doc.userName || "Unknown User",
+            userId: doc.userId || "",
+          },
+          abbreviation: doc.abbreviation || "",
+          fileUrl: doc.fileUrl || "",
+          mimeType: doc.mimeType || "",
+          fileSize: doc.fileSize || "",
+          thumbNail: doc.thumbNail || "",
+        }));
 
-    return {
-      documents: documents as Note[],
-      total: response.total,
-    };
-  } catch (error) {
-    console.error("Error fetching paginated notes:", error);
-    return { documents: [], total: 0 };
-  }
-}
+        return {
+          documents: documents as Note[],
+          total: response.total,
+        };
+      } catch (error) {
+        console.error("Error fetching paginated notes:", error);
+        return { documents: [], total: 0 };
+      }
+    },
+    cacheKey,
+    { revalidate: 60 }
+  );
+
+  return cachedFetch(); // Execute the cached function
+};
 
 interface UploaderCache {
   all: string[];
@@ -295,10 +311,14 @@ export async function getNoteById(noteId: string) {
 export async function findNotePage(
   abbreviation: string,
   noteId: string,
-  pageSize: number
+  pageSize: number,
+  filters?: {
+    type_of_file?: string[];
+    unit?: string;
+    userName?: string[];
+  }
 ) {
   try {
-    // 1. Fetch the target document to get its creation date
     const targetNote = await db.getDocument(
       DATABASE_ID!,
       NOTE_COLLECTION_ID!,
@@ -306,20 +326,32 @@ export async function findNotePage(
     );
     if (!targetNote) return 1;
 
-    // 2. Count how many documents are NEWER than the target document
-    const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!, [
+    const queries = [
       Query.equal("abbreviation", abbreviation),
       Query.greaterThan("$createdAt", targetNote.$createdAt),
-    ]);
+    ];
 
-    // The total count from the response is the 0-based index of our note
+    if (filters?.type_of_file && filters.type_of_file.length > 0) {
+      queries.push(Query.equal("type_of_file", filters.type_of_file));
+    }
+    if (filters?.unit && filters.unit !== "All") {
+      queries.push(Query.equal("unit", filters.unit));
+    }
+    if (filters?.userName && filters.userName.length > 0) {
+      queries.push(Query.equal("userName", filters.userName));
+    }
+
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      NOTE_COLLECTION_ID!,
+      queries
+    );
+
     const position = response.total;
-
-    // 3. Calculate the page number
     const page = Math.floor(position / pageSize) + 1;
     return page;
   } catch (error) {
     console.error("Error finding note page:", error);
-    return 1; // Fallback to page 1 on error
+    return 1;
   }
 }
