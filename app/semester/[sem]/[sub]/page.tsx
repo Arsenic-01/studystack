@@ -1,26 +1,31 @@
 import NotFound from "@/app/not-found";
 import NotesFilter from "@/components/notes_page_components/NotesFilter";
-import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
-import { fetchPaginatedNotes } from "@/lib/actions/Notes.actions";
+import {
+  fetchPaginatedFormLinks,
+  findFormPage,
+} from "@/lib/actions/Form.actions";
+import { fetchPaginatedNotes, findNotePage } from "@/lib/actions/Notes.actions";
 import { fetchSubject } from "@/lib/actions/Subjects.actions";
-import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
+import {
+  fetchPaginatedYoutubeLinks,
+  findYoutubePage,
+} from "@/lib/actions/Youtube.actions";
 import { Metadata } from "next";
+
+const NOTES_PER_PAGE = 6;
+const LINKS_PER_PAGE = 3;
 
 type Props = {
   params: { sem: string; sub: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { sub, sem } = await params;
+  const resolvedParams = await params;
+  const { sub, sem } = resolvedParams;
 
   const subject = await fetchSubject({ abbreviation: sub, semester: sem });
-
-  // If no subject is found, return a fallback title
-  if (!subject) {
-    return {
-      title: "Subject Not Found",
-    };
-  }
+  if (!subject) return { title: "Subject Not Found" };
 
   return {
     title: `${subject.abbreviation.toUpperCase()} Notes`,
@@ -28,48 +33,72 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const NOTES_PER_PAGE = 6;
-const LINKS_PER_PAGE = 3;
-
-const Page = async ({ params }: { params: { sem: string; sub: string } }) => {
+export default async function Page({ params, searchParams }: Props) {
   const { sub, sem } = await params;
-  // 1. Fetch the main subject data first
-  const subject = await fetchSubject({ abbreviation: sub, semester: sem });
+  const sp = await searchParams;
 
-  // If the subject doesn't exist, show an error and stop.
-  if (!subject) {
-    return <NotFound />;
+  const subject = await fetchSubject({ abbreviation: sub, semester: sem });
+  if (!subject) return <NotFound />;
+
+  const noteId = sp["noteId"];
+  const youtubeId = sp["youtubeId"];
+  const formId = sp["formId"];
+
+  let notesPage = parseInt(sp["notesPage"] as string) || 1;
+  let youtubePage = parseInt(sp["youtubePage"] as string) || 1;
+  let formsPage = parseInt(sp["formsPage"] as string) || 1;
+
+  const fileTypeFilter =
+    (sp["fileType"] as string)?.split(",").filter(Boolean) || [];
+  const unitFilter = (sp["unit"] as string) || "All";
+  const userFilter = (sp["user"] as string)?.split(",").filter(Boolean) || [];
+  const formTypeFilter = (sp["formType"] as string) || "all";
+
+  if (typeof noteId === "string") {
+    notesPage = await findNotePage(sub, noteId, NOTES_PER_PAGE);
+  }
+  if (typeof youtubeId === "string") {
+    youtubePage = await findYoutubePage(sub, youtubeId, LINKS_PER_PAGE);
+  }
+  if (typeof formId === "string") {
+    formsPage = await findFormPage(sub, formId, LINKS_PER_PAGE);
   }
 
-  // 2. FETCH ALL OTHER DATA ON THE SERVER IN PARALLEL
-  // We use Promise.all to fetch notes, youtube links, and quizzes at the same time for max speed.
-  const [notes, youtubeLinks, googleFormLinks] = await Promise.all([
+  const [notesData, youtubeData, formsData] = await Promise.all([
     fetchPaginatedNotes({
       abbreviation: subject.abbreviation,
       limit: NOTES_PER_PAGE,
-      offset: 0,
+      offset: (notesPage - 1) * NOTES_PER_PAGE,
+      filters: {
+        type_of_file: fileTypeFilter,
+        unit: unitFilter,
+        userName: userFilter,
+      },
     }),
     fetchPaginatedYoutubeLinks({
       abbreviation: subject.abbreviation,
       limit: LINKS_PER_PAGE,
-      offset: 0,
+      offset: (youtubePage - 1) * LINKS_PER_PAGE,
     }),
     fetchPaginatedFormLinks({
       abbreviation: subject.abbreviation,
       limit: LINKS_PER_PAGE,
-      offset: 0,
+      offset: (formsPage - 1) * LINKS_PER_PAGE,
+      filters: { formType: formTypeFilter },
     }),
   ]);
 
-  // 3. Pass all the server-fetched data down to the client component
   return (
     <NotesFilter
       subject={subject}
-      initialNotes={notes || []}
-      initialYoutubeLinks={youtubeLinks || []}
-      initialGoogleFormLinks={googleFormLinks || []}
+      initialNotes={notesData}
+      initialYoutubeLinks={youtubeData}
+      initialGoogleFormLinks={formsData}
+      initialPageNumbers={{
+        notes: notesPage,
+        youtube: youtubePage,
+        forms: formsPage,
+      }}
     />
   );
-};
-
-export default Page;
+}

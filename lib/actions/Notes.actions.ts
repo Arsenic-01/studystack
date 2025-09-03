@@ -130,7 +130,7 @@ export async function fetchPaginatedNotes({
     const queries = [
       Query.equal("abbreviation", abbreviation),
       Query.orderDesc("$createdAt"),
-      Query.limit(limit),
+      Query.limit(Number(limit)),
       Query.offset(offset),
     ];
 
@@ -213,11 +213,21 @@ export async function getUploadersForSubject(abbreviation: string) {
   return options[abbreviation] || [];
 }
 
-export async function getUserNotes(userName: string) {
+export async function getUserNotes({
+  userName,
+  limit,
+  offset,
+}: {
+  userName: string;
+  limit: number;
+  offset: number;
+}) {
   try {
     const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!, [
       Query.equal("userName", userName),
       Query.orderDesc("$createdAt"),
+      Query.limit(limit),
+      Query.offset(offset),
     ]);
 
     const documents = response.documents.map((doc) => ({
@@ -247,5 +257,69 @@ export async function getUserNotes(userName: string) {
   } catch (error) {
     console.error("Error fetching user notes:", error);
     return { documents: [], total: 0 };
+  }
+}
+
+export async function getNoteById(noteId: string) {
+  try {
+    const note = await db.getDocument(
+      DATABASE_ID!,
+      NOTE_COLLECTION_ID!,
+      noteId
+    );
+    return {
+      noteId: note.$id,
+      title: note.title,
+      description: note.description,
+      createdAt: note.$createdAt,
+      fileId: note.fileId,
+      semester: note.semester || "",
+      type_of_file: note.type_of_file || "",
+      unit: note.unit || [],
+      users: {
+        name: note.userName || "Unknown User",
+        userId: note.userId || "",
+      },
+      abbreviation: note.abbreviation || "",
+      fileUrl: note.fileUrl || "",
+      mimeType: note.mimeType || "",
+      fileSize: note.fileSize || "",
+      thumbNail: note.thumbNail || "",
+    };
+  } catch (error) {
+    console.error(`Error fetching note ${noteId}:`, error);
+    return null;
+  }
+}
+
+export async function findNotePage(
+  abbreviation: string,
+  noteId: string,
+  pageSize: number
+) {
+  try {
+    // 1. Fetch the target document to get its creation date
+    const targetNote = await db.getDocument(
+      DATABASE_ID!,
+      NOTE_COLLECTION_ID!,
+      noteId
+    );
+    if (!targetNote) return 1;
+
+    // 2. Count how many documents are NEWER than the target document
+    const response = await db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!, [
+      Query.equal("abbreviation", abbreviation),
+      Query.greaterThan("$createdAt", targetNote.$createdAt),
+    ]);
+
+    // The total count from the response is the 0-based index of our note
+    const position = response.total;
+
+    // 3. Calculate the page number
+    const page = Math.floor(position / pageSize) + 1;
+    return page;
+  } catch (error) {
+    console.error("Error finding note page:", error);
+    return 1; // Fallback to page 1 on error
   }
 }

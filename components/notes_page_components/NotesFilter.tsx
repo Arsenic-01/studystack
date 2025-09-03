@@ -1,4 +1,24 @@
 "use client";
+
+import { useUser } from "@/hooks/useUser";
+import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
+import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
+import {
+  fetchPaginatedNotes,
+  getUploadersForSubject,
+} from "@/lib/actions/Notes.actions";
+import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  FileQuestion,
+  Home,
+  ListFilter,
+  ListFilterPlus,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -13,42 +33,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchPaginatedFormLinks } from "@/lib/actions/Form.actions";
-import {
-  fetchPaginatedNotes,
-  getUploadersForSubject,
-} from "@/lib/actions/Notes.actions";
-import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
-import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  FileQuestion,
-  Home,
-  ListFilter,
-  ListFilterPlus,
-} from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "../ui/search-dialog";
 import { GoogleFormCard } from "./google_form_components/GoogleFormCard";
 import NoteCard from "./notes_helper_components/NoteCard";
-import PaginationControl from "./PaginationControl";
 import NoteCardSkeleton from "./skeleton/NoteCardSkeleton";
 import { YouTubeCard } from "./youtube_components/YouTubeCard";
-import { useUser } from "@/hooks/useUser";
-
-interface PaginatedData<T> {
-  documents: T[];
-  total: number;
-}
-
-interface NotesFilterProps {
-  subject: Subject;
-  initialNotes: PaginatedData<Note>;
-  initialYoutubeLinks: PaginatedData<Youtube>;
-  initialGoogleFormLinks: PaginatedData<Form>;
-}
+import PaginationControl from "./PaginationControl";
 
 const NOTES_PER_PAGE = 6;
 const LINKS_PER_PAGE = 3;
@@ -68,63 +58,103 @@ const fileTypes = [
   "Other",
 ];
 
-const defaultQueryOptions = {
-  placeholderData: keepPreviousData,
-  refetchOnWindowFocus: false,
-  staleTime: 1000 * 60 * 5, // 5 minutes
-};
+interface PaginatedData<T> {
+  documents: T[];
+  total: number;
+}
+interface NotesFilterProps {
+  subject: Subject;
+  initialNotes: PaginatedData<Note>;
+  initialYoutubeLinks: PaginatedData<Youtube>;
+  initialGoogleFormLinks: PaginatedData<Form>;
+  initialPageNumbers: {
+    notes: number;
+    youtube: number;
+    forms: number;
+  };
+}
 
-const NotesFilter = ({
+export default function NotesFilter({
   subject,
   initialNotes,
   initialYoutubeLinks,
   initialGoogleFormLinks,
-}: NotesFilterProps) => {
+  initialPageNumbers,
+}: NotesFilterProps) {
   const { user } = useUser();
-  // Pagination
-  const [notesPage, setNotesPage] = useState(1);
-  const [youtubePage, setYoutubePage] = useState(1);
-  const [formPage, setFormPage] = useState(1);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  // Filter State
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [selectedUnit, setSelectedUnit] = useState<string>("All");
-  const [selectedUser, setSelectedUser] = useState<string[]>([]);
-  const [selectedFormType, setSelectedFormType] = useState("all");
-
-  // UI State
+  const [notesPage, setNotesPage] = useState(initialPageNumbers.notes);
+  const [youtubePage, setYoutubePage] = useState(initialPageNumbers.youtube);
+  const [formsPage, setFormsPage] = useState(initialPageNumbers.forms);
+  const [selectedUnit, setSelectedUnit] = useState(
+    () => searchParams.get("unit") || "All"
+  );
+  const [selectedFileTypes, setSelectedFileTypes] = useState(
+    () => searchParams.get("fileType")?.split(",").filter(Boolean) || []
+  );
+  const [selectedUsers, setSelectedUsers] = useState(
+    () => searchParams.get("user")?.split(",").filter(Boolean) || []
+  );
+  const [selectedFormType, setSelectedFormType] = useState(
+    () => searchParams.get("formType") || "all"
+  );
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+  const isInitialMount = useRef(true);
 
-  const useTeacherOptions = () => {
-    return useQuery({
-      queryKey: ["all-teachers"],
-      queryFn: () => getUploadersForSubject(subject.abbreviation),
-      staleTime: Infinity,
-    });
-  };
-  const { data: allTeachers } = useTeacherOptions();
+  // This effect syncs the server-calculated page numbers to the client state when a search link is clicked
+  useEffect(() => {
+    setNotesPage(initialPageNumbers.notes);
+    setYoutubePage(initialPageNumbers.youtube);
+    setFormsPage(initialPageNumbers.forms);
+  }, [initialPageNumbers]);
 
-  const isNotesFilterPristine =
-    selectedFilters.length === 0 &&
-    selectedUnit === "All" &&
-    selectedUser.length === 0;
-  const isFormsFilterPristine = selectedFormType === "all";
-  const hasNotesForSubject = (initialNotes?.total ?? 0) > 0;
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    const params = new URLSearchParams();
+    if (notesPage > 1) params.set("notesPage", notesPage.toString());
+    if (youtubePage > 1) params.set("youtubePage", youtubePage.toString());
+    if (formsPage > 1) params.set("formsPage", formsPage.toString());
+    if (selectedUnit && selectedUnit !== "All")
+      params.set("unit", selectedUnit);
+    if (selectedFileTypes.length > 0)
+      params.set("fileType", selectedFileTypes.join(","));
+    if (selectedUsers.length > 0) params.set("user", selectedUsers.join(","));
+    if (selectedFormType && selectedFormType !== "all")
+      params.set("formType", selectedFormType);
 
-  const {
-    data: notesData,
-    isLoading: isNotesLoading,
-    isFetching: isNotesFetching,
-  } = useQuery({
-    ...defaultQueryOptions,
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [
+    notesPage,
+    youtubePage,
+    formsPage,
+    selectedUnit,
+    selectedFileTypes,
+    selectedUsers,
+    selectedFormType,
+    pathname,
+    router,
+  ]);
 
+  const { data: allTeachers } = useQuery({
+    queryKey: ["all-teachers", subject.abbreviation],
+    queryFn: () => getUploadersForSubject(subject.abbreviation),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: notesData, isFetching: isNotesFetching } = useQuery({
     queryKey: [
       "notes",
       subject.abbreviation,
       notesPage,
-      selectedFilters,
+      selectedFileTypes,
       selectedUnit,
-      selectedUser,
+      selectedUsers,
     ],
     queryFn: () =>
       fetchPaginatedNotes({
@@ -132,22 +162,18 @@ const NotesFilter = ({
         limit: NOTES_PER_PAGE,
         offset: (notesPage - 1) * NOTES_PER_PAGE,
         filters: {
-          type_of_file: selectedFilters,
+          type_of_file: selectedFileTypes,
           unit: selectedUnit,
-          userName: selectedUser,
+          userName: selectedUsers,
         },
       }),
+    placeholderData: keepPreviousData,
     initialData:
-      notesPage === 1 && isNotesFilterPristine ? initialNotes : undefined,
+      notesPage === initialPageNumbers.notes ? initialNotes : undefined,
+    staleTime: 60 * 1000,
   });
 
-  const {
-    data: youtubeData,
-    isLoading: isYoutubeLoading,
-    isFetching: isYoutubeFetching,
-  } = useQuery({
-    ...defaultQueryOptions,
-
+  const { data: youtubeData, isFetching: isYoutubeFetching } = useQuery({
     queryKey: ["youtube", subject.abbreviation, youtubePage],
     queryFn: () =>
       fetchPaginatedYoutubeLinks({
@@ -155,282 +181,244 @@ const NotesFilter = ({
         limit: LINKS_PER_PAGE,
         offset: (youtubePage - 1) * LINKS_PER_PAGE,
       }),
-    initialData: youtubePage === 1 ? initialYoutubeLinks : undefined,
+    placeholderData: keepPreviousData,
+    initialData:
+      youtubePage === initialPageNumbers.youtube
+        ? initialYoutubeLinks
+        : undefined,
+    staleTime: 60 * 1000,
   });
 
-  const {
-    data: formData,
-    isLoading: isFormLoading,
-    isFetching: isFormsFetching,
-  } = useQuery({
-    ...defaultQueryOptions,
-
-    queryKey: ["forms", subject.abbreviation, formPage, selectedFormType],
+  const { data: formData, isFetching: isFormsFetching } = useQuery({
+    queryKey: ["forms", subject.abbreviation, formsPage, selectedFormType],
     queryFn: () =>
       fetchPaginatedFormLinks({
         abbreviation: subject.abbreviation,
         limit: LINKS_PER_PAGE,
-        offset: (formPage - 1) * LINKS_PER_PAGE,
-        filters: {
-          formType: selectedFormType,
-        },
+        offset: (formsPage - 1) * LINKS_PER_PAGE,
+        filters: { formType: selectedFormType },
       }),
+    placeholderData: keepPreviousData,
     initialData:
-      formPage === 1 && isFormsFilterPristine
+      formsPage === initialPageNumbers.forms
         ? initialGoogleFormLinks
         : undefined,
+    staleTime: 60 * 1000,
   });
 
-  useEffect(() => {
+  const handleUnitChange = (value: string) => {
     setNotesPage(1);
-  }, [selectedFilters, selectedUnit, selectedUser]);
+    setSelectedUnit(value);
+  };
 
-  useEffect(() => {
-    setFormPage(1);
-  }, [selectedFormType]);
+  const handleFormTypeChange = (value: string) => {
+    setFormsPage(1);
+    setSelectedFormType(value);
+  };
 
-  // Scroll to hash on initial mount (no changes needed here)
+  const handleFileTypeToggle = (type: string) => {
+    setNotesPage(1);
+    setSelectedFileTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    );
+  };
+
+  const handleUserToggle = (name: string) => {
+    setNotesPage(1);
+    setSelectedUsers((prev) =>
+      prev.includes(name) ? prev.filter((u) => u !== name) : [...prev, name]
+    );
+  };
+
+  const resetNoteFilters = () => {
+    setNotesPage(1);
+    setSelectedUnit("All");
+    setSelectedFileTypes([]);
+    setSelectedUsers([]);
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       const hash = window.location.hash;
       if (hash) {
         const element = document.getElementById(hash.substring(1));
-        element?.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.classList.add(
+            "ring-2",
+            "ring-offset-2",
+            "ring-primary",
+            "rounded-lg",
+            "transition-all",
+            "duration-500",
+            "ring-offset-background"
+          );
+          setTimeout(
+            () =>
+              element.classList.remove(
+                "ring-2",
+                "ring-offset-2",
+                "ring-primary",
+                "rounded-lg",
+                "ring-offset-background"
+              ),
+            2500
+          );
+        }
       }
-    }, 100);
+    }, 500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [searchParams]);
 
   const notes = notesData?.documents ?? [];
   const totalNotes = notesData?.total ?? 0;
   const totalNotePages = Math.ceil(totalNotes / NOTES_PER_PAGE);
-
   const youtubeLinks = youtubeData?.documents ?? [];
   const totalYoutubeLinks = youtubeData?.total ?? 0;
   const totalYoutubePages = Math.ceil(totalYoutubeLinks / LINKS_PER_PAGE);
-
   const forms = formData?.documents ?? [];
   const totalForms = formData?.total ?? 0;
   const totalFormPages = Math.ceil(totalForms / LINKS_PER_PAGE);
 
-  const toggleFilter = (type: string) => {
-    setSelectedFilters((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
-  };
-  const toggleUserFilter = (userName: string) => {
-    setSelectedUser((prev) =>
-      prev.includes(userName)
-        ? prev.filter((u) => u !== userName)
-        : [...prev, userName]
-    );
-  };
-
   return (
     <div className="container mx-auto py-28 sm:py-32 max-w-5xl px-5 xl:px-0">
-      <div className="flex gap-4 sm:gap-10 mb-4">
-        <Button
-          variant="outline"
-          className={`${!subject.semester && "hidden"} w-fit`}
-          asChild
-        >
-          <Link href={`/semester/${subject.semester}`}>
-            <ArrowLeft /> Back
+      <div className="flex gap-4 sm:gap-10 mb-4 items-center">
+        <Button variant="outline" className="w-fit" asChild>
+          <Link
+            href={subject.semester ? `/semester/${subject.semester}` : "/home"}
+          >
+            {subject.semester ? <ArrowLeft /> : <Home />}
+            {subject.semester ? " Back" : " Home"}
           </Link>
         </Button>
-        <Button
-          variant="outline"
-          className={`${subject.semester && "hidden"} w-fit`}
-          asChild
-        >
-          <Link href="/home">
-            <Home /> Home
-          </Link>
-        </Button>
-        <h1 className="hidden md:block text-2xl font-bold tracking-tight">
-          {subject.name ? `Notes for ${subject.name}` : "Invalid Subject URL"}
+        <h1 className="hidden md:block text-2xl font-bold tracking-tight truncate">
+          {subject.name}
         </h1>
-        <h1 className="md:hidden text-2xl font-bold tracking-tight">
-          {subject.abbreviation
-            ? `Notes for ${subject.abbreviation.toUpperCase()}`
-            : "Invalid Subject URL"}
+        <h1 className="md:hidden text-2xl font-bold tracking-tight truncate">
+          Notes for {subject.abbreviation.toUpperCase()}
         </h1>
       </div>
-      {!hasNotesForSubject ? (
-        <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg px-10 py-20 text-center my-8">
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div className="bg-neutral-100 dark:bg-neutral-800 rounded-full p-3">
-              <FileQuestion className="h-8 w-8 text-neutral-500" />
-            </div>
-            <h3 className="text-lg font-medium">No notes found</h3>
-            <p className="text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
-              No notes are available for this subject at the moment. They might
-              be uploaded soon—stay tuned!
-            </p>
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-3 w-full md:w-auto">
+          <div className="flex items-center w-full gap-2 md:gap-3">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full md:w-fit">
+                  <ListFilter className="mr-2 h-4 w-4" />
+                  File Type ({selectedFileTypes.length || "All"})
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56">
+                <div className="flex flex-col gap-2">
+                  {fileTypes.map((type) => (
+                    <div
+                      key={type}
+                      className="flex items-center gap-2 cursor-pointer"
+                      onClick={() => handleFileTypeToggle(type)}
+                    >
+                      <Checkbox checked={selectedFileTypes.includes(type)} />
+                      <span className="text-sm capitalize">{type}</span>
+                    </div>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full md:w-fit">
+                  <ListFilterPlus className="mr-2 h-4 w-4" />
+                  Faculty ({selectedUsers.length || "All"})
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56">
+                <div className="flex flex-col gap-2">
+                  {allTeachers?.map((name) => (
+                    <div
+                      key={name}
+                      className="flex items-center gap-2 cursor-pointer"
+                      onClick={() => handleUserToggle(name)}
+                    >
+                      <Checkbox checked={selectedUsers.includes(name)} />
+                      <span className="text-sm capitalize">{name}</span>
+                    </div>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
+          <Select value={selectedUnit} onValueChange={handleUnitChange}>
+            <SelectTrigger className="w-full md:w-[280px]">
+              <SelectValue placeholder="Select a unit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All Units</SelectItem>
+              {subject.unit.map((unit, i) => (
+                <SelectItem key={i} value={unit}>
+                  <span className="flex justify-start items-start w-[300px] sm:w-auto truncate">
+                    {unit}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-      ) : (
-        <div className="flex flex-col gap-5">
-          {/* Filters */}
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 w-full md:w-auto">
-            <div className="flex sm:flex-row items-center gap-2 md:gap-3 w-full">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full md:w-fit">
-                    <ListFilter />
-                    <span className="hidden sm:block">
-                      Filter by File type ({selectedFilters.length || "All"})
-                    </span>
-                    <span className="block sm:hidden">
-                      File Type ({selectedFilters.length || "All"})
-                    </span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56">
-                  <div className="flex flex-col gap-2">
-                    <div
-                      className="flex items-center gap-2 cursor-pointer"
-                      onClick={() => setSelectedFilters([])}
-                    >
-                      <Checkbox checked={selectedFilters.length === 0} />
-                      <span className="text-sm">All</span>
-                    </div>
-                    {fileTypes.map((type) => (
-                      <div
-                        key={type}
-                        className="flex items-center gap-2 cursor-pointer"
-                        onClick={() => toggleFilter(type)}
-                      >
-                        <Checkbox checked={selectedFilters.includes(type)} />
-                        <span className="text-sm capitalize">{type}</span>
-                      </div>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-              {/* User Filter */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full md:w-fit">
-                    <ListFilterPlus />
-                    <span className="hidden sm:block">
-                      Filter by Faculty ({selectedUser.length || "All"})
-                    </span>
-                    <span className="block sm:hidden">
-                      Faculty ({selectedUser.length || "All"})
-                    </span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56">
-                  <div className="flex flex-col gap-2">
-                    <div
-                      className="flex items-center gap-2 cursor-pointer"
-                      onClick={() => setSelectedUser([])}
-                    >
-                      <Checkbox checked={selectedUser.length === 0} />
-                      <span className="text-sm">All</span>
-                    </div>
-                    {allTeachers?.map((userName) => (
-                      <div
-                        key={userName}
-                        className="flex items-center gap-2 cursor-pointer"
-                        onClick={() => toggleUserFilter(userName)}
-                      >
-                        <Checkbox checked={selectedUser.includes(userName)} />
-                        <span className="text-sm capitalize">{userName}</span>
-                      </div>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-            {/* Unit Filter */}
-            <Select value={selectedUnit} onValueChange={setSelectedUnit}>
-              <SelectTrigger className="w-full md:w-[280px]">
-                <SelectValue placeholder="Select a unit" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All Units</SelectItem>
-                {subject.unit.map((unit, index) => (
-                  <SelectItem key={index} value={unit}>
-                    <span className="flex justify-start items-start w-[290px] sm:w-auto truncate">
-                      {unit}
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          {/* Notes Grid with Fallback UI */}
-          {isNotesLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array(6)
-                .fill(0)
-                .map((_, index) => (
-                  <NoteCardSkeleton key={index} />
-                ))}
-            </div>
-          ) : notes.length > 0 ? (
+        {isNotesFetching && !notesData?.documents.length ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {notes.map((note) => (
-                  <div key={note.noteId} id={`note-${note.noteId}`}>
-                    <NoteCard note={note} />
-                  </div>
+              {Array(NOTES_PER_PAGE)
+                .fill(0)
+                .map((_, i) => (
+                  <NoteCardSkeleton key={i} />
                 ))}
-              </div>
+            </>
+          </div>
+        ) : notes.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {notes.map((note) => (
+                <div key={note.noteId} id={`note-${note.noteId}`}>
+                  <NoteCard note={note} />
+                </div>
+              ))}
+            </div>
+            {totalNotePages > 1 && (
               <PaginationControl
                 currentPage={notesPage}
                 totalPages={totalNotePages}
                 onPageChange={setNotesPage}
                 isDisabled={isNotesFetching}
               />
-              <p className="text-sm text-center text-neutral-500 dark:text-neutral-400 mt-2">
-                Showing page {notesPage} of {totalNotePages} ({totalNotes} total
-                notes)
-              </p>
-            </>
-          ) : (
-            <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
-              <div className="flex flex-col items-center justify-center gap-4">
-                <div className="bg-neutral-100 dark:bg-neutral-800 rounded-full p-3">
-                  <FileQuestion className="h-8 w-8 text-neutral-500" />
-                </div>
-                <h3 className="text-lg font-medium">No notes found</h3>
-                <p className="text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
-                  No notes match your current filter settings. Try adjusting
-                  your filters or select All to see all available notes.
-                </p>
-                <div className="flex gap-3 mt-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedFilters([]);
-                      setSelectedUnit("All");
-                      setSelectedUser([]);
-                    }}
-                  >
-                    Reset all filters
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="mt-10">
+            )}
+          </>
+        ) : (
+          <div className="text-center py-16 px-6 bg-muted rounded-lg">
+            <FileQuestion className="mx-auto h-12 w-12 text-muted-foreground" />
+            <h3 className="mt-4 text-lg font-medium">No Notes Found</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              No notes match your current filter settings.
+            </p>
+            <Button
+              variant="outline"
+              className="mt-6"
+              onClick={resetNoteFilters}
+            >
+              Reset All Filters
+            </Button>
+          </div>
+        )}
+      </div>
+      <div className="mt-12">
         <h2 className="text-2xl font-bold tracking-tight mb-6">
           Related Videos
         </h2>
-        {isYoutubeLoading ? (
-          <div className="text-center p-10">Loading videos...</div>
+        {isYoutubeFetching && !youtubeData?.documents.length ? (
+          <p>Loading videos...</p>
         ) : youtubeLinks.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {youtubeLinks.map((link) => {
                 const videoIdMatch = link.youtubeLink.match(
-                  /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+                  /(?:v=|\/)([a-zA-Z0-9_-]{11}).*/
                 );
                 const videoId = videoIdMatch ? videoIdMatch[1] : null;
                 if (!videoId) return null;
@@ -448,26 +436,27 @@ const NotesFilter = ({
                 );
               })}
             </div>
-            <PaginationControl
-              currentPage={youtubePage}
-              totalPages={totalYoutubePages}
-              onPageChange={setYoutubePage}
-              isDisabled={isYoutubeFetching}
-            />
+            {totalYoutubePages > 1 && (
+              <PaginationControl
+                currentPage={youtubePage}
+                totalPages={totalYoutubePages}
+                onPageChange={setYoutubePage}
+                isDisabled={isYoutubeFetching}
+              />
+            )}
           </>
         ) : (
-          <p className="text-neutral-500">
+          <p className="text-muted-foreground">
             No related videos found for this subject.
           </p>
         )}
       </div>
-
       <Dialog
         open={!!playingVideoId}
         onOpenChange={() => setPlayingVideoId(null)}
       >
         <DialogContent className="max-w-3xl p-0 border-0">
-          <DialogTitle></DialogTitle>
+          <DialogTitle className="sr-only">Video Player</DialogTitle>
           <div className="aspect-video">
             <iframe
               className="w-full h-full"
@@ -479,82 +468,52 @@ const NotesFilter = ({
           </div>
         </DialogContent>
       </Dialog>
-
-      {initialGoogleFormLinks &&
-        initialGoogleFormLinks.documents.length > 0 && (
-          <div className="mt-10">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-              <h2 className="text-2xl font-bold tracking-tight">
-                Quizzes & Links
-              </h2>
-
-              <div className="flex flex-col sm:flex-row w-full md:w-auto gap-2">
-                <Select
-                  value={selectedFormType}
-                  onValueChange={setSelectedFormType}
-                >
-                  <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="Filter by type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="googleForm">Google Forms</SelectItem>
-                    <SelectItem value="assignment">Assignments</SelectItem>
-                    <SelectItem value="other">Other Links</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+      <div className="mt-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          <h2 className="text-2xl font-bold tracking-tight">Quizzes & Links</h2>
+          <Select value={selectedFormType} onValueChange={handleFormTypeChange}>
+            <SelectTrigger className="w-full sm:w-48">
+              <SelectValue placeholder="Filter by type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="googleForm">Google Forms</SelectItem>
+              <SelectItem value="assignment">Assignments</SelectItem>
+              <SelectItem value="other">Other Links</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {isFormsFetching && !formData?.documents.length ? (
+          <p>Loading links...</p>
+        ) : forms.length > 0 ? (
+          <>
+            <div className="flex flex-col gap-4">
+              {forms.map((form) => (
+                <div key={form.id} id={`form-${form.id}`}>
+                  <GoogleFormCard
+                    form={form}
+                    user={user!}
+                    semester={subject.semester}
+                    abbreviation={subject.abbreviation}
+                  />
+                </div>
+              ))}
             </div>
-
-            {isFormLoading ? (
-              <div className="text-center p-10">Loading links...</div>
-            ) : forms.length > 0 ? (
-              <>
-                <div className="flex flex-col gap-4">
-                  {forms.map((form) => (
-                    <GoogleFormCard
-                      key={form.id}
-                      form={form}
-                      user={user!}
-                      semester={subject.semester}
-                      abbreviation={subject.abbreviation}
-                    />
-                  ))}
-                </div>
-                <PaginationControl
-                  currentPage={formPage}
-                  totalPages={totalFormPages}
-                  onPageChange={setFormPage}
-                  isDisabled={isFormsFetching}
-                />
-              </>
-            ) : (
-              <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
-                <div className="flex flex-col items-center justify-center gap-4">
-                  <div className="bg-neutral-100 dark:bg-neutral-800 rounded-full p-3">
-                    <FileQuestion className="h-8 w-8 text-neutral-500" />
-                  </div>
-                  <h3 className="text-lg font-medium">No Links found</h3>
-                  <p className="text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
-                    No links match your current filter settings. Try adjusting
-                    your filters or select All to see all available links.
-                  </p>
-                  <div className="flex gap-3 mt-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setSelectedFormType("all");
-                      }}
-                    >
-                      Reset all filters
-                    </Button>
-                  </div>
-                </div>
-              </div>
+            {totalFormPages > 1 && (
+              <PaginationControl
+                currentPage={formsPage}
+                totalPages={totalFormPages}
+                onPageChange={setFormsPage}
+                isDisabled={isFormsFetching}
+              />
             )}
-          </div>
+          </>
+        ) : (
+          <p className="text-muted-foreground">
+            No links found for this category.
+          </p>
         )}
+      </div>
     </div>
   );
-};
-export default NotesFilter;
+}

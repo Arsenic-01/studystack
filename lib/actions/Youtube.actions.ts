@@ -78,6 +78,42 @@ export async function fetchPaginatedYoutubeLinks({
   }
 }
 
+export async function findYoutubePage(
+  abbreviation: string,
+  noteId: string,
+  pageSize: number
+) {
+  try {
+    // 1. Fetch the target document to get its creation date
+    const targetNote = await db.getDocument(
+      DATABASE_ID!,
+      YOUTUBE_COLLECTION_ID!,
+      noteId
+    );
+    if (!targetNote) return 1;
+
+    // 2. Count how many documents are NEWER than the target document
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      YOUTUBE_COLLECTION_ID!,
+      [
+        Query.equal("abbreviation", abbreviation),
+        Query.greaterThan("$createdAt", targetNote.$createdAt),
+      ]
+    );
+
+    // The total count from the response is the 0-based index of our note
+    const position = response.total;
+
+    // 3. Calculate the page number
+    const page = Math.floor(position / pageSize) + 1;
+    return page;
+  } catch (error) {
+    console.error("Error finding note page:", error);
+    return 1; // Fallback to page 1 on error
+  }
+}
+
 export async function createYoutubeLink({
   youtubeLink,
   createdBy,
@@ -107,12 +143,25 @@ export async function createYoutubeLink({
   }
 }
 
-export async function getUserYoutubeLinks(userName: string) {
+export async function getUserYoutubeLinks({
+  userName,
+  limit,
+  offset,
+}: {
+  userName: string;
+  limit: number;
+  offset: number;
+}) {
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
       YOUTUBE_COLLECTION_ID!,
-      [Query.equal("createdBy", userName), Query.orderDesc("$createdAt")]
+      [
+        Query.equal("createdBy", userName),
+        Query.orderDesc("$createdAt"),
+        Query.limit(Number(limit)),
+        Query.offset(offset),
+      ]
     );
 
     const documents = response.documents.map((doc) => ({
