@@ -440,6 +440,10 @@ export default function NotesFilter({
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {youtubeLinks.map((link) => {
+                  if (!link || !link.youtubeLink) {
+                    return null;
+                  }
+
                   const videoIdMatch = link.youtubeLink.match(
                     /(?:v=|\/)([a-zA-Z0-9_-]{11}).*/
                   );
@@ -450,7 +454,7 @@ export default function NotesFilter({
                       <YouTubeCard
                         link={link}
                         videoId={videoId}
-                        user={user!}
+                        user={user}
                         onPlay={setPlayingVideoId}
                         semester={subject.semester}
                         abbreviation={subject.abbreviation}
@@ -532,7 +536,7 @@ export default function NotesFilter({
                   <div key={form.id} id={`form-${form.id}`}>
                     <GoogleFormCard
                       form={form}
-                      user={user!}
+                      user={user}
                       semester={subject.semester}
                       abbreviation={subject.abbreviation}
                     />

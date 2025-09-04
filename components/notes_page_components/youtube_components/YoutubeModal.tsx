@@ -22,20 +22,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { youtubeSchema } from "@/components/validation_schema/validation";
-import { FaYoutube } from "react-icons/fa6";
-import { toast } from "sonner";
-import { useUser } from "@/hooks/useUser";
 import { createYoutubeLink } from "@/lib/actions/Youtube.actions";
 import { useQueryClient } from "@tanstack/react-query";
+import { FaYoutube } from "react-icons/fa6";
+import { toast } from "sonner";
+import { SessionUser } from "@/lib/appwrite_types";
 
 const YoutubeModal = ({
   abbreviation,
   semester,
+  user,
 }: {
   abbreviation: string;
   semester: string;
+  user: SessionUser | null;
 }) => {
-  const { user } = useUser();
   const queryClient = useQueryClient();
   // Initialize form with react-hook-form and Zod validation
   const form = useForm({

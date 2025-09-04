@@ -25,7 +25,7 @@ interface YouTubeLink {
 interface YouTubeCardProps {
   link: YouTubeLink;
   videoId: string;
-  user: SessionUser;
+  user: SessionUser | null;
   onPlay: (videoId: string) => void;
   semester: string;
   abbreviation: string;

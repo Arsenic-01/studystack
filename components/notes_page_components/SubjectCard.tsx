@@ -1,6 +1,6 @@
 "use client";
 
-import { Subject } from "@/lib/appwrite_types";
+import { SessionUser, Subject } from "@/lib/appwrite_types";
 import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import UploadNotesButton from "./crud_notes/UploadNotesButton";
@@ -8,7 +8,13 @@ import { Button } from "../ui/button";
 import YoutubeModal from "./youtube_components/YoutubeModal";
 import GoogleFormModal from "./google_form_components/FormModal";
 
-const SubjectCard = ({ subject }: { subject: Subject }) => {
+const SubjectCard = ({
+  subject,
+  user,
+}: {
+  subject: Subject;
+  user: SessionUser | null;
+}) => {
   const router = useRouter();
   return (
     <div className="flex flex-col items-start rounded-xl border border-neutral-300 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 my-5  gap-3 justify-center w-full  py-5 md:py-10 px-4 md:px-10">
@@ -29,16 +35,19 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
             <GoogleFormModal
               abbreviation={subject.abbreviation}
               semester={subject.semester}
+              user={user}
             />
             <YoutubeModal
               semester={subject.semester}
               abbreviation={subject.abbreviation}
+              user={user}
             />
           </div>
           <UploadNotesButton
             semester={subject.semester}
             subjectUnit={subject.unit!}
             abbreviation={subject.abbreviation}
+            user={user}
           />
 
           <Button

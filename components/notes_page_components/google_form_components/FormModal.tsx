@@ -34,21 +34,22 @@ import {
   linkSchema,
   LinkSchemaType,
 } from "@/components/validation_schema/validation";
-import { useUser } from "@/hooks/useUser";
 import { createFormLink } from "@/lib/actions/Form.actions";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FaLink } from "react-icons/fa6";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { SessionUser } from "@/lib/appwrite_types";
 
 const GoogleFormModal = ({
   abbreviation,
   semester,
+  user,
 }: {
   abbreviation: string;
   semester: string;
+  user: SessionUser | null;
 }) => {
-  const { user } = useUser();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 

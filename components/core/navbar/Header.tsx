@@ -3,7 +3,6 @@
 import SearchBar from "@/components/SearchBar";
 import { useUser } from "@/hooks/useUser";
 import { AnimatePresence, motion } from "framer-motion";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,12 +20,9 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { SessionUser } from "@/lib/appwrite_types";
 import { cn } from "@/lib/utils";
-
-const ProfileCard = dynamic(
-  () => import("./navbar_helper_components/ProfileCard"),
-  { ssr: false }
-);
+import UserProfilePopover from "./navbar_helper_components/ProfileCard";
 
 const aboutLinks: { title: string; href: string; description: string }[] = [
   {
@@ -46,10 +42,11 @@ const mainNavLinks = [
   { name: "FAQs", href: "/home#faq", requiresAuth: true },
 ];
 
-const Header = () => {
+const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const { user } = useUser();
+  const { user: clientUser } = useUser();
+  const user = serverUser ?? clientUser;
 
   const router = useRouter();
 
@@ -157,7 +154,7 @@ const Header = () => {
             <ThemeToggle />
             <div>
               {user ? (
-                <ProfileCard />
+                <UserProfilePopover serverUser={user} />
               ) : (
                 <RainbowButton
                   className="hidden md:block"

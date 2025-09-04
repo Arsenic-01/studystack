@@ -1,7 +1,6 @@
+// app/dashboard/page.tsx
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getUserForms } from "@/lib/actions/Form.actions";
-import { getUserNotes } from "@/lib/actions/Notes.actions";
-import { getUserYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { SessionUser } from "@/lib/appwrite_types";
 import { FileText, Link, Video } from "lucide-react";
 import { Metadata } from "next";
@@ -13,6 +12,11 @@ import { EmptyState } from "./_components/EmptyState";
 import FormsTabClient from "./_components/FormsTabClient";
 import NotesTabClient from "./_components/NotesTabClient";
 import YoutubeTabClient from "./_components/YoutubeTabClient";
+import {
+  getUserForms,
+  getUserNotes,
+  getUserYoutubeLinks,
+} from "./getAdminData";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -78,7 +82,7 @@ export default async function TeacherDashboard() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="notes" className="mt-6">
+        <TabsContent value="notes" className="mt-6" forceMount>
           {userNotesData.total > 0 ? (
             <NotesTabClient
               initialNotes={userNotesData.documents}
@@ -94,7 +98,7 @@ export default async function TeacherDashboard() {
           )}
         </TabsContent>
 
-        <TabsContent value="youtube" className="mt-6">
+        <TabsContent value="youtube" className="mt-6" forceMount>
           {userYoutubeLinksData.total > 0 ? (
             <YoutubeTabClient
               initialLinks={userYoutubeLinksData.documents}
@@ -111,7 +115,7 @@ export default async function TeacherDashboard() {
           )}
         </TabsContent>
 
-        <TabsContent value="forms" className="mt-6">
+        <TabsContent value="forms" className="mt-6" forceMount>
           {userFormsData.total > 0 ? (
             <FormsTabClient
               initialForms={userFormsData.documents}

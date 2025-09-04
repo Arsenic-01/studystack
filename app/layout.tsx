@@ -8,6 +8,7 @@ import "./globals.css";
 import Footer from "@/components/core/Footer";
 import Header from "@/components/core/navbar/Header";
 import { hostedAt } from "@/data";
+import { getCurrentUser } from "@/lib/auth";
 
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
@@ -73,11 +74,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getCurrentUser();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -104,7 +107,7 @@ export default function RootLayout({
       <body className={`${dmSans.className} antialiased`}>
         <Providers>
           <ReactQueryProvider>
-            <Header />
+            <Header serverUser={user} />
             {children}
             <SpeedInsights />
             <Toaster richColors />

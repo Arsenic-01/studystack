@@ -105,6 +105,10 @@ body {
   display: none !important;
 }
 
+[role="tabpanel"][data-state="inactive"] {
+  display: none;
+}
+
 @theme inline {
   --animate-rainbow: rainbow var(--speed, 2s) infinite linear;
 

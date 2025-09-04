@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@/hooks/useUser";
+import { SessionUser } from "@/lib/appwrite_types";
 import { Upload } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
@@ -10,13 +10,13 @@ const UploadNotesButton = ({
   semester,
   subjectUnit,
   abbreviation,
+  user,
 }: {
   semester: string;
   subjectUnit: string[];
   abbreviation: string;
+  user: SessionUser | null;
 }) => {
-  const { user } = useUser();
-
   const [open, setOpen] = useState(false);
 
   return (
