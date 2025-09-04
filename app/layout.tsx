@@ -1,14 +1,13 @@
+import { Providers } from "./providers";
+import { hostedAt } from "@/data";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import ReactQueryProvider from "./QueryProvider";
-import { Providers } from "./providers";
-import "./globals.css";
+import HeaderProvider from "@/components/core/navbar/HeaderProvider";
 import Footer from "@/components/core/Footer";
-import Header from "@/components/core/navbar/Header";
-import { hostedAt } from "@/data";
-import { getCurrentUser } from "@/lib/auth";
+import "./globals.css";
 
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
@@ -44,7 +43,7 @@ export const metadata: Metadata = {
     siteName: "StudyStack",
     images: [
       {
-        url: "/og",
+        url: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/og.png",
         width: 1200,
         height: 630,
         alt: "StudyStack Social Media Banner",
@@ -58,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "StudyStack | Your Academic Resource Hub at K.K. Wagh Polytechnic",
     description: "Access all your notes and study materials in one place.",
-    images: ["/og"],
+    images: ["https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/og.png"],
   },
 
   robots: {
@@ -74,13 +73,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getCurrentUser();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -107,7 +104,7 @@ export default async function RootLayout({
       <body className={`${dmSans.className} antialiased`}>
         <Providers>
           <ReactQueryProvider>
-            <Header serverUser={user} />
+            <HeaderProvider />
             {children}
             <SpeedInsights />
             <Toaster richColors />

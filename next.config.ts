@@ -36,20 +36,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "2000mb",
-    },
-  },
   async rewrites() {
     return [
       {
-        // Changed from /ingest/static/...
         source: "/api/event/static/:path*",
         destination: "https://eu-assets.i.posthog.com/static/:path*",
       },
       {
-        // Changed from /ingest/...
         source: "/api/event/:path*",
         destination: "https://eu.i.posthog.com/:path*",
       },
@@ -72,7 +65,7 @@ export default withSentryConfig(nextConfig, {
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
-  widenClientFileUpload: true,
+  widenClientFileUpload: false,
 
   // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
@@ -87,5 +80,7 @@ export default withSentryConfig(nextConfig, {
   // See the following for more information:
   // https://docs.sentry.io/product/crons/
   // https://vercel.com/docs/cron-jobs
-  automaticVercelMonitors: true,
+  automaticVercelMonitors: false,
+
+  telemetry: false,
 });
