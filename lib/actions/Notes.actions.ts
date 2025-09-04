@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { ID } from "node-appwrite";
 import {
   CACHE_COLLECTION_ID,
@@ -11,8 +12,6 @@ import {
 } from "../appwrite";
 import { Note } from "../appwrite_types";
 import { getDriveClient } from "../googleDrive";
-import { revalidatePath } from "next/cache";
-import { unstable_cache as cache } from "next/cache";
 
 export async function saveNoteMetadata(body: {
   fileId: string;
@@ -125,77 +124,61 @@ export const fetchPaginatedNotes = async ({
     userName?: string[];
   };
 }) => {
-  const cacheKey = [
-    "paginated-forms",
-    abbreviation,
-    String(limit),
-    String(offset),
-    JSON.stringify(filters),
-  ];
-  const cachedFetch = cache(
-    async () => {
-      if (!abbreviation) return { documents: [], total: 0 };
+  if (!abbreviation) return { documents: [], total: 0 };
 
-      try {
-        const queries = [
-          Query.equal("abbreviation", abbreviation),
-          Query.orderDesc("$createdAt"),
-          Query.limit(Number(limit)),
-          Query.offset(offset),
-        ];
+  try {
+    const queries = [
+      Query.equal("abbreviation", abbreviation),
+      Query.orderDesc("$createdAt"),
+      Query.limit(Number(limit)),
+      Query.offset(offset),
+    ];
 
-        if (filters?.type_of_file && filters.type_of_file.length > 0) {
-          queries.push(Query.equal("type_of_file", filters.type_of_file));
-        }
-        if (filters?.unit && filters.unit !== "All") {
-          queries.push(Query.equal("unit", filters.unit));
-        }
-        if (filters?.userName && filters.userName.length > 0) {
-          queries.push(Query.equal("userName", filters.userName));
-        }
+    if (filters?.type_of_file && filters.type_of_file.length > 0) {
+      queries.push(Query.equal("type_of_file", filters.type_of_file));
+    }
+    if (filters?.unit && filters.unit !== "All") {
+      queries.push(Query.equal("unit", filters.unit));
+    }
+    if (filters?.userName && filters.userName.length > 0) {
+      queries.push(Query.equal("userName", filters.userName));
+    }
 
-        const response = await db.listDocuments(
-          DATABASE_ID!,
-          NOTE_COLLECTION_ID!,
-          queries
-        );
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      NOTE_COLLECTION_ID!,
+      queries
+    );
 
-        const documents = response.documents.map((doc) => ({
-          noteId: doc.$id,
-          title: doc.title,
-          description: doc.description,
-          createdAt: doc.$createdAt,
-          fileId: doc.fileId,
-          semester: doc.semester || "",
-          type_of_file: doc.type_of_file || "",
-          unit: doc.unit || [],
-          users: {
-            name: doc.userName || "Unknown User",
-            userId: doc.userId || "",
-          },
-          abbreviation: doc.abbreviation || "",
-          fileUrl: doc.fileUrl || "",
-          mimeType: doc.mimeType || "",
-          fileSize: doc.fileSize || "",
-          thumbNail: doc.thumbNail || "",
-        }));
+    const documents = response.documents.map((doc) => ({
+      noteId: doc.$id,
+      title: doc.title,
+      description: doc.description,
+      createdAt: doc.$createdAt,
+      fileId: doc.fileId,
+      semester: doc.semester || "",
+      type_of_file: doc.type_of_file || "",
+      unit: doc.unit || [],
+      users: {
+        name: doc.userName || "Unknown User",
+        userId: doc.userId || "",
+      },
+      abbreviation: doc.abbreviation || "",
+      fileUrl: doc.fileUrl || "",
+      mimeType: doc.mimeType || "",
+      fileSize: doc.fileSize || "",
+      thumbNail: doc.thumbNail || "",
+    }));
 
-        return {
-          documents: documents as Note[],
-          total: response.total,
-        };
-      } catch (error) {
-        console.error("Error fetching paginated notes:", error);
-        return { documents: [], total: 0 };
-      }
-    },
-    cacheKey,
-    { revalidate: 60 }
-  );
-
-  return cachedFetch(); // Execute the cached function
+    return {
+      documents: documents as Note[],
+      total: response.total,
+    };
+  } catch (error) {
+    console.error("Error fetching paginated notes:", error);
+    return { documents: [], total: 0 };
+  }
 };
-
 interface UploaderCache {
   all: string[];
   [subjectAbbreviation: string]: string[];

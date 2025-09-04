@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { ID } from "node-appwrite";
 import { DATABASE_ID, db, FORM_COLLECTION_ID, Query } from "../appwrite";
-import { unstable_cache as cache } from "next/cache";
 
 // Create new Google Form link
 export async function createFormLink({
@@ -116,53 +115,37 @@ export const fetchPaginatedFormLinks = async ({
   offset: number;
   filters?: { formType?: string };
 }) => {
-  const cacheKey = [
-    "paginated-forms",
-    abbreviation,
-    String(limit),
-    String(offset),
-    JSON.stringify(filters),
-  ];
+  if (!abbreviation) return { documents: [], total: 0 };
 
-  const cachedFetch = cache(
-    async () => {
-      if (!abbreviation) return { documents: [], total: 0 };
-
-      try {
-        const queries: string[] = [
-          Query.equal("abbreviation", abbreviation),
-          Query.orderDesc("$createdAt"),
-          Query.limit(limit),
-          Query.offset(offset),
-        ];
-        if (filters?.formType && filters.formType !== "all") {
-          queries.push(Query.equal("formType", filters.formType));
-        }
-        const response = await db.listDocuments(
-          DATABASE_ID!,
-          FORM_COLLECTION_ID!,
-          queries
-        );
-        const documents = response.documents.map((doc) => ({
-          id: doc.$id,
-          url: doc.url,
-          createdBy: doc.createdBy,
-          quizName: doc.title,
-          abbreviation: doc.abbreviation,
-          semester: doc.semester,
-          formType: doc.formType,
-        }));
-        return { documents, total: response.total };
-      } catch (error) {
-        console.error("Error fetching paginated Form links:", error);
-        return { documents: [], total: 0 };
-      }
-    },
-    cacheKey,
-    { revalidate: 60 }
-  );
-
-  return cachedFetch();
+  try {
+    const queries: string[] = [
+      Query.equal("abbreviation", abbreviation),
+      Query.orderDesc("$createdAt"),
+      Query.limit(limit),
+      Query.offset(offset),
+    ];
+    if (filters?.formType && filters.formType !== "all") {
+      queries.push(Query.equal("formType", filters.formType));
+    }
+    const response = await db.listDocuments(
+      DATABASE_ID!,
+      FORM_COLLECTION_ID!,
+      queries
+    );
+    const documents = response.documents.map((doc) => ({
+      id: doc.$id,
+      url: doc.url,
+      createdBy: doc.createdBy,
+      quizName: doc.title,
+      abbreviation: doc.abbreviation,
+      semester: doc.semester,
+      formType: doc.formType,
+    }));
+    return { documents, total: response.total };
+  } catch (error) {
+    console.error("Error fetching paginated Form links:", error);
+    return { documents: [], total: 0 };
+  }
 };
 
 // Edit Google Form link

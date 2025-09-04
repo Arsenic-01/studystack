@@ -57,7 +57,7 @@ const CardOwner = ({
     onSuccess: () => {
       toast.success("Note deleted successfully");
       queryClient.invalidateQueries({
-        queryKey: ["notes", note.abbreviation], // Invalidate notes for this subject
+        queryKey: ["notes", note.abbreviation],
       });
       setPopoverOpen(false); // Close the popover on success
     },

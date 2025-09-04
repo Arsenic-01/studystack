@@ -29,8 +29,10 @@ import {
   ArrowLeft,
   FileQuestion,
   Home,
+  Link2Off,
   ListFilter,
   ListFilterPlus,
+  VideoOff,
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -133,7 +135,8 @@ export default function NotesFilter({
     areArraysEqual(selectedFileTypes, initialFilters.fileType) &&
     areArraysEqual(selectedUsers, initialFilters.user);
 
-  // Check if the current state matches the initial server-rendered state for forms
+  const isInitialYoutubeState = youtubePage === initialPageNumbers.youtube;
+
   const isInitialFormsState =
     formsPage === initialPageNumbers.forms &&
     selectedFormType === initialFilters.formType;
@@ -144,7 +147,11 @@ export default function NotesFilter({
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: notesData, isFetching: isNotesFetching } = useQuery({
+  const {
+    data: notesData,
+    isFetching: isNotesFetching,
+    isPlaceholderData: isNotesPlaceholderData,
+  } = useQuery({
     queryKey: [
       "notes",
       subject.abbreviation,
@@ -169,7 +176,11 @@ export default function NotesFilter({
     staleTime: 60 * 1000,
   });
 
-  const { data: youtubeData, isFetching: isYoutubeFetching } = useQuery({
+  const {
+    data: youtubeData,
+    isFetching: isYoutubeFetching,
+    isPlaceholderData: isYoutubePlaceholderData,
+  } = useQuery({
     queryKey: ["youtube", subject.abbreviation, youtubePage],
     queryFn: () =>
       fetchPaginatedYoutubeLinks({
@@ -178,11 +189,15 @@ export default function NotesFilter({
         offset: (youtubePage - 1) * LINKS_PER_PAGE,
       }),
     placeholderData: keepPreviousData,
-    initialData: initialYoutubeLinks,
+    initialData: isInitialYoutubeState ? initialYoutubeLinks : undefined,
     staleTime: 60 * 1000,
   });
 
-  const { data: formData, isFetching: isFormsFetching } = useQuery({
+  const {
+    data: formData,
+    isFetching: isFormsFetching,
+    isPlaceholderData: isFormsPlaceholderData,
+  } = useQuery({
     queryKey: ["forms", subject.abbreviation, formsPage, selectedFormType],
     queryFn: () =>
       fetchPaginatedFormLinks({
@@ -197,8 +212,8 @@ export default function NotesFilter({
   });
 
   const handleFilterChange = (
-    setter: React.Dispatch<React.SetStateAction<any>>,
-    value: any,
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    value: string,
     pageSetter: React.Dispatch<React.SetStateAction<number>>
   ) => {
     pageSetter(1);
@@ -220,6 +235,11 @@ export default function NotesFilter({
     setSelectedUnit("All");
     setSelectedFileTypes([]);
     setSelectedUsers([]);
+  };
+
+  const resetFormFilters = () => {
+    setFormsPage(1);
+    setSelectedFormType("all");
   };
 
   useEffect(() => {
@@ -276,8 +296,11 @@ export default function NotesFilter({
             {subject.semester ? " Back" : " Home"}
           </Link>
         </Button>
-        <h1 className="text-2xl font-bold tracking-tight truncate">
+        <h1 className="hidden md:block text-2xl font-bold tracking-tight truncate">
           {subject.name}
+        </h1>
+        <h1 className="block md:hidden text-2xl font-bold tracking-tight truncate">
+          Notes for {subject.abbreviation}
         </h1>
       </div>
       <div className="flex flex-col gap-5">
@@ -354,93 +377,111 @@ export default function NotesFilter({
             </SelectContent>
           </Select>
         </div>
-        {isNotesFetching && !notesData?.documents.length ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <>
+        <div
+          style={{
+            opacity: isNotesPlaceholderData ? 0.5 : 1,
+            transition: "opacity 300ms",
+          }}
+        >
+          {isNotesFetching && !notesData?.documents.length ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array(NOTES_PER_PAGE)
                 .fill(0)
                 .map((_, i) => (
                   <NoteCardSkeleton key={i} />
                 ))}
-            </>
-          </div>
-        ) : notes.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {notes.map((note) => (
-                <div key={note.noteId} id={`note-${note.noteId}`}>
-                  <NoteCard note={note} />
-                </div>
-              ))}
             </div>
-            {totalNotePages > 1 && (
-              <PaginationControl
-                currentPage={notesPage}
-                totalPages={totalNotePages}
-                onPageChange={setNotesPage}
-                isDisabled={isNotesFetching}
-              />
-            )}
-          </>
-        ) : (
-          <div className="text-center py-16 px-6 bg-muted rounded-lg">
-            <FileQuestion className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-medium">No Notes Found</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              No notes match your current filter settings.
-            </p>
-            <Button
-              variant="outline"
-              className="mt-6"
-              onClick={resetNoteFilters}
-            >
-              Reset All Filters
-            </Button>
-          </div>
-        )}
+          ) : notes.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {notes.map((note) => (
+                  <div key={note.noteId} id={`note-${note.noteId}`}>
+                    <NoteCard note={note} />
+                  </div>
+                ))}
+              </div>
+              {totalNotePages > 1 && (
+                <PaginationControl
+                  currentPage={notesPage}
+                  totalPages={totalNotePages}
+                  onPageChange={setNotesPage}
+                  isDisabled={isNotesFetching}
+                />
+              )}
+            </>
+          ) : (
+            <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center my-8">
+              <div className="flex flex-col items-center justify-center gap-4">
+                <FileQuestion className="h-8 w-8 text-neutral-500 dark:text-neutral-400" />
+                <h3 className="text-lg font-medium">No Notes Found</h3>
+                <p className="text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+                  No notes match your current filter settings. Try adjusting or
+                  resetting them.
+                </p>
+                <Button variant="outline" onClick={resetNoteFilters}>
+                  Reset All Filters
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       <div className="mt-12">
         <h2 className="text-2xl font-bold tracking-tight mb-6">
           Related Videos
         </h2>
-        {youtubeLinks.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {youtubeLinks.map((link) => {
-                const videoIdMatch = link.youtubeLink.match(
-                  /(?:v=|\/)([a-zA-Z0-9_-]{11}).*/
-                );
-                const videoId = videoIdMatch ? videoIdMatch[1] : null;
-                if (!videoId) return null;
-                return (
-                  <div key={link.id} id={`youtube-${link.id}`}>
-                    <YouTubeCard
-                      link={link}
-                      videoId={videoId}
-                      user={user!}
-                      onPlay={setPlayingVideoId}
-                      semester={subject.semester}
-                      abbreviation={subject.abbreviation}
-                    />
-                  </div>
-                );
-              })}
+        <div
+          style={{
+            opacity: isYoutubePlaceholderData ? 0.5 : 1,
+            transition: "opacity 300ms",
+          }}
+        >
+          {youtubeLinks.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {youtubeLinks.map((link) => {
+                  const videoIdMatch = link.youtubeLink.match(
+                    /(?:v=|\/)([a-zA-Z0-9_-]{11}).*/
+                  );
+                  const videoId = videoIdMatch ? videoIdMatch[1] : null;
+                  if (!videoId) return null;
+                  return (
+                    <div key={link.id} id={`youtube-${link.id}`}>
+                      <YouTubeCard
+                        link={link}
+                        videoId={videoId}
+                        user={user!}
+                        onPlay={setPlayingVideoId}
+                        semester={subject.semester}
+                        abbreviation={subject.abbreviation}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              {totalYoutubePages > 1 && (
+                <PaginationControl
+                  currentPage={youtubePage}
+                  totalPages={totalYoutubePages}
+                  onPageChange={setYoutubePage}
+                  isDisabled={isYoutubeFetching}
+                />
+              )}
+            </>
+          ) : (
+            <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center my-8">
+              <div className="flex flex-col items-center justify-center gap-4">
+                <VideoOff className="h-8 w-8 text-neutral-500 dark:text-neutral-400" />
+                <h3 className="text-lg font-medium">No Videos Found</h3>
+                <p className="text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+                  There are no related videos available for this subject at the
+                  moment.
+                </p>
+              </div>
             </div>
-            {totalYoutubePages > 1 && (
-              <PaginationControl
-                currentPage={youtubePage}
-                totalPages={totalYoutubePages}
-                onPageChange={setYoutubePage}
-                isDisabled={isYoutubeFetching}
-              />
-            )}
-          </>
-        ) : (
-          <p className="text-muted-foreground">
-            No related videos found for this subject.
-          </p>
-        )}
-      </div>
+          )}
+        </div>
+      </div>{" "}
       <Dialog
         open={!!playingVideoId}
         onOpenChange={() => setPlayingVideoId(null)}
@@ -478,34 +519,51 @@ export default function NotesFilter({
             </SelectContent>
           </Select>
         </div>
-        {forms.length > 0 ? (
-          <>
-            <div className="flex flex-col gap-4">
-              {forms.map((form) => (
-                <div key={form.id} id={`form-${form.id}`}>
-                  <GoogleFormCard
-                    form={form}
-                    user={user!}
-                    semester={subject.semester}
-                    abbreviation={subject.abbreviation}
-                  />
-                </div>
-              ))}
+        <div
+          style={{
+            opacity: isFormsPlaceholderData ? 0.5 : 1,
+            transition: "opacity 300ms",
+          }}
+        >
+          {forms.length > 0 ? (
+            <>
+              <div className="flex flex-col gap-4">
+                {forms.map((form) => (
+                  <div key={form.id} id={`form-${form.id}`}>
+                    <GoogleFormCard
+                      form={form}
+                      user={user!}
+                      semester={subject.semester}
+                      abbreviation={subject.abbreviation}
+                    />
+                  </div>
+                ))}
+              </div>
+              {totalFormPages > 1 && (
+                <PaginationControl
+                  currentPage={formsPage}
+                  totalPages={totalFormPages}
+                  onPageChange={setFormsPage}
+                  isDisabled={isFormsFetching}
+                />
+              )}
+            </>
+          ) : (
+            <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center my-8">
+              <div className="flex flex-col items-center justify-center gap-4">
+                <Link2Off className="h-8 w-8 text-neutral-500 dark:text-neutral-400" />
+                <h3 className="text-lg font-medium">No Links Found</h3>
+                <p className="text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+                  No quizzes or links were found for the currently selected
+                  filter.
+                </p>
+                <Button variant="outline" onClick={resetFormFilters}>
+                  Reset Filter
+                </Button>
+              </div>
             </div>
-            {totalFormPages > 1 && (
-              <PaginationControl
-                currentPage={formsPage}
-                totalPages={totalFormPages}
-                onPageChange={setFormsPage}
-                isDisabled={isFormsFetching}
-              />
-            )}
-          </>
-        ) : (
-          <p className="text-muted-foreground">
-            No links found for this category.
-          </p>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
