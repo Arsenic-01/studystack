@@ -112,7 +112,7 @@ export const teamMembers: TeamMember[] = [
   {
     id: 2,
     name: "Tanay K. Hingane",
-    pfp: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/tanay.jpeg",
+    pfp: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/tanayh.jpg",
     classInfo: "TYCM-Lin 2025",
     quote: "Battery low, sarcasm high. 🪫",
     socials: [
@@ -158,8 +158,8 @@ export const teamMembers: TeamMember[] = [
       "Implemented NextAuth for user authentication pathways and future-proofing the application's security model.",
       "Designed and built the dedicated project portfolio section to showcase our collective work and skills.",
       "Refactored frontend components for the landing page, improving code readability and performance.",
-      "Handled the logic for editing and managing abbreviation links within the notes page.",
       "Implemented a dynamic note sorting mechanism, enhancing accessibility and user experience across multiple subjects and semesters.",
+      "Implemented search functionality using subject abbreviations, allowing users to quickly find resources across multiple semesters and subjects.",
     ],
     contributionSplit: {
       coding: 15,
