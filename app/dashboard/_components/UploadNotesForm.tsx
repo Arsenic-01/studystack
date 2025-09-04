@@ -169,10 +169,10 @@ export default function UploadNotesForm() {
       }
 
       toast.success("File Uploaded Successfully! 🎉");
-      queryClient.invalidateQueries({ queryKey: ["notes", values.subject] });
-      router.refresh(); // Re-fetches data for the dashboard
       form.reset();
       setSelectedFile(null);
+      queryClient.invalidateQueries({ queryKey: ["notes", values.subject] });
+      router.refresh();
     } catch (err: unknown) {
       console.error("Upload process failed", err);
       toast.error(
