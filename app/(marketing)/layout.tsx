@@ -1,7 +1,7 @@
 // app/(marketing)/layout.tsx
 
 import Footer from "@/components/core/layout/Footer";
-import Header from "@/components/core/navbar/Header";
+import Header from "@/components/core/layout/Header";
 
 export default function MarketingLayout({
   children,
