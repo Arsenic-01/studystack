@@ -128,7 +128,7 @@ export const creators = [
     name: "Tanay Hingane",
     role: "Database Management & Authentication",
     avatar:
-      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/tanay.jpeg",
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/tanayh.jpg",
   },
   {
     name: "Adarsh Tile",

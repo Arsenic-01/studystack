@@ -67,7 +67,7 @@ export const teamMembers: TeamMember[] = [
       },
       {
         name: "LinkedIn",
-        url: "https://www.linkedin.com/in/vedant-bhor-39287828b/",
+        url: "https://www.linkedin.com/in/vedant-bhor/",
         username: "Vedant Bhor",
         Icon: FaLinkedin,
       },
