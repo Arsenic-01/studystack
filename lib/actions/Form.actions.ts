@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { ID } from "node-appwrite";
 import { DATABASE_ID, db, FORM_COLLECTION_ID, Query } from "../appwrite";
 
@@ -29,7 +28,6 @@ export async function createFormLink({
       semester,
       formType,
     });
-    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error creating Google Form link:", error);
@@ -166,7 +164,6 @@ export async function editFormLink({
       title: quizName,
       formType,
     });
-    revalidatePath("/dashboard");
 
     return { success: true };
   } catch (error) {

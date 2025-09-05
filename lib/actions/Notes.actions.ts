@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { ID } from "node-appwrite";
 import {
   CACHE_COLLECTION_ID,
@@ -56,8 +55,6 @@ export async function saveNoteMetadata(body: {
       thumbNail: `https://drive.google.com/thumbnail?id=${fileId}`,
     });
 
-    revalidatePath("/dashboard");
-
     return { success: true };
   } catch (error) {
     console.error("Failed to save note:", error);
@@ -79,7 +76,6 @@ export async function deleteNote({ noteId, fileId }: DeleteNoteParams) {
     await drive.files.delete({
       fileId: fileId,
     });
-    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error deleting note:", error);
@@ -101,7 +97,6 @@ export const editNotes = async (data: EditNotesModalFunctionProps) => {
       description: data.description,
       type_of_file: data.type_of_file,
     });
-    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error updating note:", error);

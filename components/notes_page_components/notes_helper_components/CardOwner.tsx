@@ -59,6 +59,9 @@ const CardOwner = ({
       queryClient.invalidateQueries({
         queryKey: ["notes", note.abbreviation],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["userYoutubeLinks", user!.name],
+      });
       setPopoverOpen(false); // Close the popover on success
     },
     onError: () => toast.error("Error deleting note"),
@@ -152,6 +155,7 @@ const CardOwner = ({
       {/* The EditModal is separate and controlled by its own state */}
       {editModalOpen && (
         <EditNotesModal
+          user={user}
           semester={note.semester}
           abbreviation={note.abbreviation}
           open={editModalOpen}

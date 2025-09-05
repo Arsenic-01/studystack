@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { DATABASE_ID, db, Query, YOUTUBE_COLLECTION_ID } from "../appwrite";
 import { ID } from "node-appwrite";
+import { DATABASE_ID, db, Query, YOUTUBE_COLLECTION_ID } from "../appwrite";
 
 export async function fetchYoutubeLinks({
   abbreviation,
@@ -135,7 +135,6 @@ export async function createYoutubeLink({
       abbreviation,
       semester,
     });
-    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error creating YouTube link:", error);

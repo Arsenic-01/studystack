@@ -13,6 +13,7 @@ import {
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@/hooks/useUser";
 
 const DeleteFormLink = ({
   id,
@@ -23,13 +24,16 @@ const DeleteFormLink = ({
   abbreviation: string;
 }) => {
   const queryClient = useQueryClient();
-
+  const { user } = useUser();
   const { mutate, isPending } = useMutation({
     mutationFn: () => deleteFormLink({ id }),
     onSuccess: () => {
       toast.success("Link deleted successfully");
       queryClient.invalidateQueries({
-        queryKey: ["forms", abbreviation], // Invalidate the correct query
+        queryKey: ["forms", abbreviation],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["userYoutubeLinks", user!.name],
       });
     },
     onError: (error) => {

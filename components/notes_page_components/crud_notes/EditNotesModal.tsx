@@ -30,6 +30,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../ui/dialog";
+import { SessionUser } from "@/lib/appwrite_types";
 
 interface EditNotesModalProps {
   open: boolean;
@@ -52,6 +53,7 @@ interface EditNotesModalProps {
     | "Other";
   semester: string;
   abbreviation: string;
+  user: SessionUser | null;
 }
 
 interface EditNoteSchema {
@@ -80,6 +82,7 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
   description,
   abbreviation,
   type_of_file,
+  user,
 }) => {
   const queryClient = useQueryClient();
 
@@ -104,6 +107,9 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
       toast.success("Note updated successfully!");
       queryClient.invalidateQueries({
         queryKey: ["notes", abbreviation], // Invalidate the 'notes' query
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["userYoutubeLinks", user!.name],
       });
       closeModal();
     },

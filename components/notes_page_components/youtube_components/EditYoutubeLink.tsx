@@ -80,7 +80,9 @@ const EditYoutubeLink = ({
       queryClient.invalidateQueries({
         queryKey: ["youtube", abbreviation],
       });
-
+      queryClient.invalidateQueries({
+        queryKey: ["userYoutubeLinks", user!.name],
+      });
       onOpenChange(false); // Close the modal
     },
 

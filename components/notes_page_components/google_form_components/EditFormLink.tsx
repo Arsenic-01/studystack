@@ -110,7 +110,10 @@ const EditFormLink = ({
     onSuccess: () => {
       toast.success("Link updated successfully");
       queryClient.invalidateQueries({
-        queryKey: ["forms", abbreviation], // Invalidate the 'forms' query
+        queryKey: ["forms", abbreviation],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["userYoutubeLinks", user!.name],
       });
       onOpenChange(false);
     },
