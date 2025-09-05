@@ -15,7 +15,7 @@ import DeleteYoutubeLink from "../_mutations/_youtube/DeleteYoutubeLink";
 import EditYoutubeLink from "../_mutations/_youtube/EditYoutubeLink";
 
 // Define the shape of the 'link' and 'user' props
-interface YouTubeLink {
+export interface YouTubeLink {
   id: string;
   youtubeLink: string;
   title: string;
@@ -81,7 +81,7 @@ export const YouTubeCard: React.FC<YouTubeCardProps> = ({
             <Pencil />
             Edit Video
           </Button>
-          <DeleteYoutubeLink id={link.id} abbreviation={abbreviation} />
+          <DeleteYoutubeLink link={link} abbreviation={abbreviation} />
         </CardFooter>
       )}
       {isEditing && (

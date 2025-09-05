@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/popover";
 import { useUser } from "@/hooks/useUser";
 import { Note } from "@/lib/appwrite_types";
-import { EllipsisVertical, Info } from "lucide-react";
+import { Edit, EllipsisVertical, Info } from "lucide-react";
 import { useState } from "react";
 import { DeleteNoteButton } from "./_mutations/_notes/DeleteNotes";
 import EditNotesModal from "./_mutations/_notes/EditNotesModal";
@@ -65,6 +65,7 @@ export default function CardOwner({ note, formattedDate }: CardOwnerProps) {
                     setPopoverOpen(false);
                   }}
                 >
+                  <Edit />
                   Edit Note
                 </Button>
                 <DeleteNoteButton

@@ -92,7 +92,7 @@ const GoogleFormModal = ({
     }
 
     const payload = {
-      quizName: values.name,
+      title: values.name,
       googleFormLink: values.url,
       formType: values.formType,
       createdBy: user.name,

@@ -7,14 +7,14 @@ import { DATABASE_ID, db, FORM_COLLECTION_ID, Query } from "../appwrite";
 export async function createFormLink({
   googleFormLink,
   createdBy,
-  quizName,
+  title,
   semester,
   abbreviation,
   formType,
 }: {
   googleFormLink: string;
   createdBy: string;
-  quizName: string;
+  title: string;
   semester: string;
   formType: "googleForm" | "assignment" | "other";
   abbreviation: string;
@@ -23,7 +23,7 @@ export async function createFormLink({
     await db.createDocument(DATABASE_ID!, FORM_COLLECTION_ID!, ID.unique(), {
       url: googleFormLink,
       createdBy,
-      title: quizName,
+      title: title,
       abbreviation,
       semester,
       formType,
@@ -57,7 +57,7 @@ export async function getUserForms({
       id: doc.$id,
       url: doc.url,
       createdBy: doc.createdBy,
-      quizName: doc.title,
+      title: doc.title,
       abbreviation: doc.abbreviation,
       semester: doc.semester,
       formType: doc.formType,
@@ -91,7 +91,7 @@ export async function fetchFormLinks({
       id: doc.$id,
       url: doc.url,
       createdBy: doc.createdBy,
-      quizName: doc.title,
+      title: doc.title,
       abbreviation: doc.abbreviation,
       semester: doc.semester,
       formType: doc.formType,
@@ -134,7 +134,7 @@ export const fetchPaginatedFormLinks = async ({
       id: doc.$id,
       url: doc.url,
       createdBy: doc.createdBy,
-      quizName: doc.title,
+      title: doc.title,
       abbreviation: doc.abbreviation,
       semester: doc.semester,
       formType: doc.formType,
@@ -150,18 +150,18 @@ export const fetchPaginatedFormLinks = async ({
 export async function editFormLink({
   id,
   googleFormLink,
-  quizName,
+  title,
   formType,
 }: {
   id: string;
   googleFormLink: string;
-  quizName: string;
+  title: string;
   formType: "googleForm" | "assignment" | "other";
 }) {
   try {
     await db.updateDocument(DATABASE_ID!, FORM_COLLECTION_ID!, id, {
       url: googleFormLink,
-      title: quizName,
+      title: title,
       formType,
     });
 
@@ -192,7 +192,7 @@ export async function fetchAllFormLinks() {
       id: doc.$id,
       url: doc.url,
       createdBy: doc.createdBy,
-      quizName: doc.title,
+      title: doc.title,
       abbreviation: doc.abbreviation,
       semester: doc.semester,
       formType: doc.formType,

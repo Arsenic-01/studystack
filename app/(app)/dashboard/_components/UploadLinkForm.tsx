@@ -65,7 +65,7 @@ export default function UploadLinkForm({ onSuccess }: UploadLinkFormProps) {
     setUploading(true);
     try {
       const result = await createFormLink({
-        quizName: values.name,
+        title: values.name,
         googleFormLink: values.url,
         formType: values.formType,
         semester: values.semester,

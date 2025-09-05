@@ -15,13 +15,13 @@ import { Button } from "@/components/ui/button";
 import { deleteNote } from "@/lib/actions/Notes.actions";
 import { Note } from "@/lib/appwrite_types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash } from "lucide-react";
 import { toast } from "sonner";
 
 interface DeleteNoteButtonProps {
   note: Note;
   userName: string | undefined;
-  onSuccess?: () => void; // Optional: Callback for when deletion succeeds
+  onSuccess: () => void;
 }
 
 export function DeleteNoteButton({
@@ -35,12 +35,11 @@ export function DeleteNoteButton({
     mutationFn: () => deleteNote({ noteId: note.noteId, fileId: note.fileId }),
     onSuccess: () => {
       toast.success("Note deleted successfully");
-      // Invalidate queries to refetch the notes list
       queryClient.invalidateQueries({ queryKey: ["notes", note.abbreviation] });
       if (userName) {
         queryClient.invalidateQueries({ queryKey: ["userNotes", userName] });
       }
-      onSuccess?.();
+      onSuccess();
     },
     onError: (error) => {
       toast.error(error.message || "Failed to delete note. Please try again.");
@@ -50,10 +49,8 @@ export function DeleteNoteButton({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="w-full justify-start rounded-none text-red-500 hover:text-red-600"
-        >
+        <Button variant="ghost" className="w-full justify-start rounded-none">
+          <Trash />
           Delete Note
         </Button>
       </AlertDialogTrigger>
@@ -70,11 +67,10 @@ export function DeleteNoteButton({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
-              e.preventDefault(); // Prevent dialog from closing immediately on click
+              e.preventDefault();
               deleteNoteMutate();
             }}
             disabled={isPending}
-            className="bg-red-600 hover:bg-red-700 text-white"
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isPending ? "Deleting..." : "Delete Permanently"}

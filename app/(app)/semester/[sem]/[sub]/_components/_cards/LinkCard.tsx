@@ -15,10 +15,10 @@ import React, { useState } from "react";
 import DeleteFormLink from "../_mutations/_links/DeleteFormLink";
 import EditFormLink from "../_mutations/_links/EditFormLink";
 
-interface FormLink {
+export interface FormLink {
   id: string;
   url: string;
-  quizName: string;
+  title: string;
   createdBy: string;
   formType: "googleForm" | "assignment" | "other";
   semester: string;
@@ -78,7 +78,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
         </div>
         <div className="flex-grow">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold leading-tight">{form.quizName}</h3>
+            <h3 className="font-semibold leading-tight">{form.title}</h3>
           </div>
           <div className="text-sm text-muted-foreground flex items-center flex-wrap gap-x-2 gap-y-1">
             <User className="h-4 w-4" />
@@ -100,7 +100,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
               Edit Link
             </Button>
             <DeleteFormLink
-              id={form.id}
+              link={form}
               semester={semester}
               abbreviation={abbreviation}
             />
@@ -124,7 +124,7 @@ export const GoogleFormCard: React.FC<GoogleFormCardProps> = ({
           onOpenChange={setIsEditing}
           id={form.id}
           url={form.url}
-          quizName={form.quizName}
+          title={form.title}
           formType={form.formType}
           abbreviation={form.abbreviation}
         />

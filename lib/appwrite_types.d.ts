@@ -79,7 +79,7 @@ export interface Form {
   id: string;
   createdBy: string;
   url: string;
-  quizName: string;
+  title: string;
   abbreviation: string;
   semester: string;
   formType: "googleForm" | "assignment" | "other";
@@ -98,7 +98,7 @@ export interface FormLink {
   id: string;
   createdBy: string;
   url: string;
-  quizName: string;
+  title: string;
   abbreviation: string;
   semester: string;
   formType: "googleForm" | "assignment" | "other";

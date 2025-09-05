@@ -1,6 +1,6 @@
 "use client";
 
-import { GoogleFormCard } from "@/app/(app)/semester/[sem]/[sub]/_components/_cards/GoogleFormCard";
+import { GoogleFormCard } from "@/app/(app)/semester/[sem]/[sub]/_components/_cards/LinkCard";
 import { Button } from "@/components/ui/button";
 import { getUserForms } from "@/lib/actions/Form.actions";
 import { Form, SessionUser } from "@/lib/appwrite_types";

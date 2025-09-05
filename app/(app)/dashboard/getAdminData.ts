@@ -116,7 +116,7 @@ export async function getUserForms({
       id: doc.$id,
       url: doc.url,
       createdBy: doc.createdBy,
-      quizName: doc.title,
+      title: doc.title,
       abbreviation: doc.abbreviation,
       semester: doc.semester,
       formType: doc.formType,

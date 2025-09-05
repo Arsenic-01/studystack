@@ -14,19 +14,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/hooks/useUser";
+import { FormLink } from "../../_cards/LinkCard";
 
 const DeleteFormLink = ({
-  id,
+  link,
   abbreviation,
 }: {
-  id: string;
+  link: FormLink;
   semester: string;
   abbreviation: string;
 }) => {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const { mutate, isPending } = useMutation({
-    mutationFn: () => deleteFormLink({ id }),
+    mutationFn: () => deleteFormLink({ id: link.id }),
     onSuccess: () => {
       toast.success("Link deleted successfully");
       queryClient.invalidateQueries({
@@ -51,10 +52,10 @@ const DeleteFormLink = ({
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
-        <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
         <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete the Google
-          Form link.
+          This action cannot be undone. This will permanently delete the link
+          titled &quot;{link.title}&quot; from the server.
         </AlertDialogDescription>
 
         <AlertDialogFooter>
@@ -66,7 +67,7 @@ const DeleteFormLink = ({
                 Deleting...
               </>
             ) : (
-              "Continue"
+              "Delete Permanently"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

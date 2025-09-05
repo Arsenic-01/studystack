@@ -1,11 +1,11 @@
 // components/project_components/ProjectStats.tsx
 
 "use client";
-import { fetchAdminDashboardStats } from "@/lib/actions/Admin.actions";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, Link2, Users, Youtube } from "lucide-react";
 import { ReactNode } from "react";
-import { Skeleton } from "@/components/ui/skeleton"; // Assuming you have a Skeleton component
+import { Skeleton } from "@/components/ui/skeleton";
+import { fetchAdminDashboardStats } from "@/lib/actions/Admin.actions";
 
 const StatCard = ({
   icon,

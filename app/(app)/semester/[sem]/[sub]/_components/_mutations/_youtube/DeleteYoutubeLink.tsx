@@ -1,6 +1,3 @@
-import { deleteYoutubeLink } from "@/lib/actions/Youtube.actions";
-import { Loader2, Trash } from "lucide-react";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,21 +9,25 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/hooks/useUser";
+import { deleteYoutubeLink } from "@/lib/actions/Youtube.actions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2, Trash } from "lucide-react";
+import { toast } from "sonner";
+import { YouTubeLink } from "../../_cards/YouTubeCard";
 
 const DeleteYoutubeLink = ({
-  id,
+  link,
   abbreviation,
 }: {
-  id: string;
+  link: YouTubeLink;
   abbreviation: string;
 }) => {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => deleteYoutubeLink({ id }),
+    mutationFn: () => deleteYoutubeLink({ id: link.id }),
     onSuccess: () => {
       toast.success("YouTube link deleted successfully");
       queryClient.invalidateQueries({
@@ -51,10 +52,10 @@ const DeleteYoutubeLink = ({
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
-        <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
         <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete the YouTube
-          embed.
+          This action cannot be undone. This will permanently delete the video
+          titled &quot;{link.title}&quot; from the server.
         </AlertDialogDescription>
 
         <AlertDialogFooter>
@@ -66,7 +67,7 @@ const DeleteYoutubeLink = ({
                 Deleting...
               </>
             ) : (
-              "Continue"
+              "Delete Permanently"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -40,7 +40,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/search-dialog";
-import { GoogleFormCard } from "./_cards/GoogleFormCard";
+import { GoogleFormCard } from "./_cards/LinkCard";
 import NoteCard from "./_cards/NoteCard";
 import PaginationControl from "./PaginationControl";
 import { YouTubeCard } from "./_cards/YouTubeCard";

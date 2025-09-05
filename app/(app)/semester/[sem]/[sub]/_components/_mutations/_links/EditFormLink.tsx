@@ -39,7 +39,7 @@ const EditFormLink = ({
   onOpenChange,
   id,
   url,
-  quizName,
+  title,
   formType: initialFormType,
   abbreviation,
 }: {
@@ -48,7 +48,7 @@ const EditFormLink = ({
 
   id: string;
   url: string;
-  quizName: string;
+  title: string;
   formType: "googleForm" | "assignment" | "other";
   abbreviation: string;
 }) => {
@@ -58,7 +58,7 @@ const EditFormLink = ({
     resolver: zodResolver(linkSchema),
     defaultValues: {
       formType: initialFormType,
-      name: quizName ?? "",
+      name: title ?? "",
       url: url ?? "",
     },
   });
@@ -68,10 +68,10 @@ const EditFormLink = ({
   useEffect(() => {
     form.reset({
       formType: initialFormType,
-      name: quizName,
+      name: title,
       url: url,
     });
-  }, [quizName, url, initialFormType, form]);
+  }, [title, url, initialFormType, form]);
 
   const modalContent = {
     googleForm: {
@@ -100,7 +100,7 @@ const EditFormLink = ({
     mutationFn: (values: LinkSchemaType) =>
       editFormLink({
         id,
-        quizName: values.name,
+        title: values.name,
         googleFormLink: values.url,
         formType: values.formType,
       }),
