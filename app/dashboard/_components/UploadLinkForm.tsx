@@ -28,10 +28,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
 import { createFormLink } from "@/lib/actions/Form.actions";
 import { dashboardLinkSchema } from "@/components/validation_schema/dashboard_schema";
+import { useRouter } from "next/navigation";
 
 type UploadLinkValues = z.infer<typeof dashboardLinkSchema>;
+interface UploadLinkFormProps {
+  onSuccess: () => void;
+}
 
-export default function UploadLinkForm() {
+export default function UploadLinkForm({ onSuccess }: UploadLinkFormProps) {
   const { user } = useUser();
   const [uploading, setUploading] = useState(false);
   const queryClient = useQueryClient();
@@ -45,6 +49,7 @@ export default function UploadLinkForm() {
       subject: "",
     },
   });
+  const router = useRouter();
 
   const selectedSemester = form.watch("semester");
 
@@ -73,6 +78,8 @@ export default function UploadLinkForm() {
       toast.success("Link added successfully!");
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["forms", values.subject] });
+      router.refresh();
+      onSuccess();
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to add link."

@@ -41,8 +41,11 @@ const dashboardUploadNoteSchema = z.object({
 });
 
 type UploadNoteFormValues = z.infer<typeof dashboardUploadNoteSchema>;
+interface UploadNotesFormProps {
+  onSuccess: () => void;
+}
 
-export default function UploadNotesForm() {
+export default function UploadNotesForm({ onSuccess }: UploadNotesFormProps) {
   const router = useRouter();
   const { user } = useUser();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -173,6 +176,7 @@ export default function UploadNotesForm() {
       setSelectedFile(null);
       queryClient.invalidateQueries({ queryKey: ["notes", values.subject] });
       router.refresh();
+      onSuccess();
     } catch (err: unknown) {
       console.error("Upload process failed", err);
       toast.error(

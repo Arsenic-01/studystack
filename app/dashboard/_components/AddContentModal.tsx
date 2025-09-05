@@ -1,3 +1,4 @@
+// app/dashboard/_components/AddContentModal.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,8 @@ import UploadLinkForm from "./UploadLinkForm";
 export function AddContentModal() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const closeModal = () => setIsOpen(false);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -36,13 +39,13 @@ export function AddContentModal() {
             <TabsTrigger value="link">Link</TabsTrigger>
           </TabsList>
           <TabsContent value="note">
-            <UploadNotesForm />
+            <UploadNotesForm onSuccess={closeModal} />
           </TabsContent>
           <TabsContent value="youtube">
-            <UploadYoutubeForm />
+            <UploadYoutubeForm onSuccess={closeModal} />
           </TabsContent>
           <TabsContent value="link">
-            <UploadLinkForm />
+            <UploadLinkForm onSuccess={closeModal} />
           </TabsContent>
         </Tabs>
       </DialogContent>
