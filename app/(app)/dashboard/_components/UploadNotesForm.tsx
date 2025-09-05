@@ -29,6 +29,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { DriveUploadResponse } from "../../semester/[sem]/[sub]/_components/_upload/UploadNotes";
 
 const dashboardUploadNoteSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
@@ -83,7 +84,10 @@ export default function UploadNotesForm({ onSuccess }: UploadNotesFormProps) {
     if (files.length > 0) setSelectedFile(files[0]);
   };
 
-  const directUploadToDrive = (uploadUrl: string, file: File): Promise<any> => {
+  const directUploadToDrive = (
+    uploadUrl: string,
+    file: File
+  ): Promise<DriveUploadResponse> => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open("PUT", uploadUrl);
@@ -102,13 +106,28 @@ export default function UploadNotesForm({ onSuccess }: UploadNotesFormProps) {
       };
 
       xhr.onload = () => {
-        if (xhr.status === 200 || xhr.status === 201) {
-          resolve(JSON.parse(xhr.responseText));
+        // A successful upload to a resumable session URL returns the file resource JSON
+        if (xhr.status >= 200 && xhr.status < 300) {
+          if (xhr.responseText) {
+            // Safely parse and cast the JSON response
+            const responseJson = JSON.parse(
+              xhr.responseText
+            ) as DriveUploadResponse;
+            resolve(responseJson);
+          } else {
+            // It's an unexpected success state if the response is empty
+            reject(
+              new Error("Upload succeeded but received an empty response.")
+            );
+          }
         } else {
-          reject(new Error(`Upload failed with status: ${xhr.status}`));
+          reject(
+            new Error(
+              `Upload failed with status: ${xhr.status} - ${xhr.responseText}`
+            )
+          );
         }
       };
-
       xhr.onerror = () => {
         reject(new Error("Network error during upload."));
       };
@@ -344,13 +363,15 @@ export default function UploadNotesForm({ onSuccess }: UploadNotesFormProps) {
           />
         </div>
 
-        <FileUpload onChange={handleFileChange} />
+        <div className="w-full min-h-32 border border-dashed border-neutral-200 dark:border-neutral-800 rounded-lg">
+          <FileUpload onChange={handleFileChange} />
+        </div>
 
         {uploading && uploadProgress !== null && (
           <div className="mt-2">
             <Progress value={uploadProgress} className="w-full" />
             <p className="text-sm text-center mt-1 text-muted-foreground">
-              {uploadProgress}%
+              {uploadProgress}% Complete
             </p>
           </div>
         )}

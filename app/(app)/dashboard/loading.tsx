@@ -8,17 +8,17 @@ export default function DashboardLoading() {
   return (
     <div className="container mx-auto min-h-screen py-24 sm:py-32 max-w-5xl px-5 xl:px-0">
       {/* Header Skeleton */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 md:mb-8 gap-0 md:gap-4">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 md:mb-7 gap-0 md:gap-4">
         <div>
           <Skeleton className="h-8 w-64 mb-2" />
           <Skeleton className="h-5 w-80" />
         </div>
-        <Skeleton className="h-10 w-36 mt-4 md:mt-0" />
+        <Skeleton className="h-10 w-full md:w-36 mt-4 md:mt-0" />
       </div>
 
       {/* Tabs Skeleton */}
       <div className="w-full">
-        <div className="h-auto w-full md:w-fit md:h-10 flex flex-col md:flex-row p-1 bg-muted rounded-lg">
+        <div className="h-auto w-full md:w-fit md:h-10 flex gap-2 p-1 bg-muted rounded-lg">
           <Skeleton className="h-8 w-full md:w-28 mb-1 md:mb-0 md:mr-1" />
           <Skeleton className="h-8 w-full md:w-28 mb-1 md:mb-0 md:mr-1" />
           <Skeleton className="h-8 w-full md:w-28" />

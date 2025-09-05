@@ -46,7 +46,7 @@ interface UploadNotesProps {
   user: SessionUser | null;
 }
 
-interface DriveUploadResponse {
+export interface DriveUploadResponse {
   kind: "drive#file";
   id: string;
   name: string;
