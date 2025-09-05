@@ -12,18 +12,17 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
+import UploadLinkForm from "./UploadLinkForm";
 import UploadNotesForm from "./UploadNotesForm";
 import UploadYoutubeForm from "./UploadYoutubeForm";
-import UploadLinkForm from "./UploadLinkForm";
-import { useRouter } from "next/navigation";
+import { revalidate } from "@/lib/actions/Admin.actions";
 
 export function AddContentModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   const closeModal = () => {
     setIsOpen(false);
-    router.refresh();
+    revalidate();
   };
 
   return (
