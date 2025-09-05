@@ -17,18 +17,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dashboardLinkSchema } from "@/components/validation_schema/dashboard_schema";
 import { useUser } from "@/hooks/useUser";
+import { createFormLink } from "@/lib/actions/Form.actions";
+import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Upload } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
-import { createFormLink } from "@/lib/actions/Form.actions";
-import { dashboardLinkSchema } from "@/components/validation_schema/dashboard_schema";
-import { useRouter } from "next/navigation";
 
 type UploadLinkValues = z.infer<typeof dashboardLinkSchema>;
 interface UploadLinkFormProps {
@@ -49,7 +48,6 @@ export default function UploadLinkForm({ onSuccess }: UploadLinkFormProps) {
       subject: "",
     },
   });
-  const router = useRouter();
 
   const selectedSemester = form.watch("semester");
 
@@ -78,7 +76,6 @@ export default function UploadLinkForm({ onSuccess }: UploadLinkFormProps) {
       toast.success("Link added successfully!");
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["forms", values.subject] });
-      router.refresh();
       onSuccess();
     } catch (error) {
       toast.error(

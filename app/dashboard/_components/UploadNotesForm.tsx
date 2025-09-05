@@ -25,7 +25,6 @@ import { fetchSubjectsBySemester } from "@/lib/actions/Student.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Upload } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -46,7 +45,6 @@ interface UploadNotesFormProps {
 }
 
 export default function UploadNotesForm({ onSuccess }: UploadNotesFormProps) {
-  const router = useRouter();
   const { user } = useUser();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -175,7 +173,6 @@ export default function UploadNotesForm({ onSuccess }: UploadNotesFormProps) {
       form.reset();
       setSelectedFile(null);
       queryClient.invalidateQueries({ queryKey: ["notes", values.subject] });
-      router.refresh();
       onSuccess();
     } catch (err: unknown) {
       console.error("Upload process failed", err);

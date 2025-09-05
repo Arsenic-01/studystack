@@ -15,11 +15,16 @@ import { useState } from "react";
 import UploadNotesForm from "./UploadNotesForm";
 import UploadYoutubeForm from "./UploadYoutubeForm";
 import UploadLinkForm from "./UploadLinkForm";
+import { useRouter } from "next/navigation";
 
 export function AddContentModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
-  const closeModal = () => setIsOpen(false);
+  const closeModal = () => {
+    setIsOpen(false);
+    router.refresh();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

@@ -24,7 +24,6 @@ import { createYoutubeLink } from "@/lib/actions/Youtube.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Upload } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -40,7 +39,6 @@ export default function UploadYoutubeForm({
   const { user } = useUser();
   const [uploading, setUploading] = useState(false);
   const queryClient = useQueryClient();
-  const router = useRouter();
   const form = useForm<UploadYoutubeValues>({
     resolver: zodResolver(dashboardYoutubeSchema),
     defaultValues: { title: "", youtubeLink: "", semester: "", subject: "" },
@@ -72,7 +70,6 @@ export default function UploadYoutubeForm({
       toast.success("YouTube link added successfully!");
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["youtube", values.subject] });
-      router.refresh();
       onSuccess();
     } catch (error) {
       toast.error(
