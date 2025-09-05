@@ -17,7 +17,6 @@ import {
 import { ChevronDown } from "lucide-react";
 import clsx from "clsx";
 
-// Reusable Popover Component for the footer
 const FooterPopover = ({
   triggerText,
   links,
@@ -60,6 +59,7 @@ const FooterPopover = ({
 
 const Footer = () => {
   const { user } = useUser();
+
   const linkClass =
     "text-base text-neutral-900/80 transition-colors ease-in-out duration-300 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-300";
   const iconClass =

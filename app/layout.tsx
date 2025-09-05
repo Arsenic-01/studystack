@@ -1,13 +1,11 @@
-import { Providers } from "./providers";
-import { hostedAt } from "@/data";
+import ReactQueryProvider from "../providers/QueryProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
-import ReactQueryProvider from "./QueryProvider";
-import HeaderProvider from "@/components/core/navbar/HeaderProvider";
-import Footer from "@/components/core/Footer";
+import type { Metadata } from "next";
+import { hostedAt } from "@/data";
 import "./globals.css";
+import { Providers } from "@/providers";
 
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
@@ -104,11 +102,9 @@ export default function RootLayout({
       <body className={`${dmSans.className} antialiased`}>
         <Providers>
           <ReactQueryProvider>
-            <HeaderProvider />
             {children}
             <SpeedInsights />
             <Toaster richColors />
-            <Footer />
           </ReactQueryProvider>
         </Providers>
       </body>

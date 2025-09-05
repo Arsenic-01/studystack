@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { AlreadyLoggedInCard } from "./auth_helper_components/Helpers";
-import { LoginForm } from "./auth_helper_components/LoginForm";
+import { LoginForm } from "./LoginForm";
+import { AlreadyLoggedInCard } from "./AlreadyLoggedInCard";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,9 +24,5 @@ export default function LoginPage() {
     return <AlreadyLoggedInCard />;
   }
 
-  // For both "loading" and "unauthenticated" states, render the LoginForm.
-  // We pass the loading status down to the form. This way, an unauthenticated
-  // user sees the form immediately (in a disabled state) instead of a skeleton,
-  // drastically improving the perceived performance.
   return <LoginForm isSessionLoading={status === "loading"} />;
 }

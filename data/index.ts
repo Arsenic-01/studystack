@@ -120,25 +120,25 @@ export const legalPopoverLinks = [
 export const creators = [
   {
     name: "Vedant Bhor",
-    role: "Lead Developer",
+    role: "Lead Developer & Project Management",
     avatar:
       "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/vedant.jpg",
   },
   {
     name: "Tanay Hingane",
-    role: "Fullstack Developer & Database Management",
+    role: "Database Management & Authentication",
     avatar:
       "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/tanay.jpeg",
   },
   {
     name: "Adarsh Tile",
-    role: "Frontend Developer & Project Documentation",
+    role: "Project Documentation & Video Editing",
     avatar:
       "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/adarsh.jpg",
   },
   {
     name: "Yadnesh Udar",
-    role: "Project Report",
+    role: "Testing & Project Report",
     avatar:
       "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/team/user_pfp/yadnesh.jpg",
   },
@@ -149,7 +149,7 @@ export const guide = [
     name: "AD. Talole",
     role: "Lecturer, Computer Department",
     avatar:
-      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/mentor/adt.webp",
+      "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/mentor/adt.jpg",
   },
   {
     name: "GB. Katkade",
@@ -174,20 +174,5 @@ export const footerIcons = [
     href: "https://poly.kkwagh.edu.in/",
     icon: FaGlobe,
     label: "Website",
-  },
-];
-
-export const gb = [
-  {
-    id: 1,
-    name: "Mr G.B.Katkade",
-    designation: "HOD(CM Dept)",
-    image: "/katkadesir.png",
-  },
-  {
-    id: 2,
-    name: "Mr A.D.Talole",
-    designation: "Lecturer(CM Dept)",
-    image: "/talolesir.webp",
   },
 ];

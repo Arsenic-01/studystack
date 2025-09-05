@@ -4,12 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
-
+interface InitiateUploadRequestBody {
+  fileName: string;
+  fileType: string;
+}
 const DRIVE_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID || "";
 
 export async function POST(req: NextRequest) {
   try {
-    const { fileName, fileType } = await req.json();
+    const { fileName, fileType } =
+      (await req.json()) as InitiateUploadRequestBody;
     const origin = req.headers.get("origin");
 
     if (!fileName || !fileType) {
@@ -19,7 +23,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // It's good practice to ensure an origin exists for CORS requests
     if (!origin) {
       return NextResponse.json(
         { error: "Missing origin header" },
@@ -65,6 +68,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, uploadUrl });
   } catch (e) {
     console.error("Initiate error:", e);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    // Check if the error is from JSON parsing (e.g., malformed request)
+    if (e instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: "Invalid JSON in request body" },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

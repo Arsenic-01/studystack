@@ -1,7 +1,7 @@
 import {
   NotFoundErrorMessage,
   FuzzyOverlay,
-} from "@/components/not_found_components/Fuzzy";
+} from "@/components/not_found/Fuzzy";
 
 export default function NotFound() {
   return (
