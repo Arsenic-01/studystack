@@ -13,7 +13,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/useUser";
 import { SessionUser } from "@/lib/appwrite_types";
-import { ChangePasswordDialog } from "../auth/ChangePasswordDialog";
+import { ChangePasswordDialog } from "./auth/ChangePasswordDialog";
 
 const getInitials = (name: string) => {
   return name

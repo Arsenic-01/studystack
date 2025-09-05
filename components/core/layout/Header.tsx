@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { ThemeToggle } from "./ThemeSwitcher";
+import { ThemeToggle } from "../ThemeSwitcher";
 
 import {
   NavigationMenu,
@@ -21,8 +21,8 @@ import {
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { SessionUser } from "@/lib/appwrite_types";
 import { cn } from "@/lib/utils";
-import UserProfilePopover from "./ProfileCard";
-import SearchBar from "./SearchBar";
+import UserProfilePopover from "../ProfileCard";
+import SearchBar from "../SearchBar";
 
 const aboutLinks: { title: string; href: string; description: string }[] = [
   {
