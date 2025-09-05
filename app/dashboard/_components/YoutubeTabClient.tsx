@@ -2,47 +2,61 @@
 
 import { YouTubeCard } from "@/components/notes_page_components/youtube_components/YouTubeCard";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/search-dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { getUserYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { SessionUser, Youtube } from "@/lib/appwrite_types";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 const LINKS_PER_PAGE = 3;
 
 interface YoutubeTabClientProps {
-  initialLinks: Youtube[];
-  totalLinks: number;
+  initialLinks: { documents: Youtube[]; total: number };
   userName: string;
   user: SessionUser;
 }
 
 export default function YoutubeTabClient({
   initialLinks,
-  totalLinks,
   userName,
   user,
 }: YoutubeTabClientProps) {
-  const [links, setLinks] = useState<Youtube[]>(initialLinks);
-  const [offset, setOffset] = useState(initialLinks.length);
-  const [isLoading, setIsLoading] = useState(false);
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
 
-  const loadMoreLinks = async () => {
-    setIsLoading(true);
-    const { documents: newLinks } = await getUserYoutubeLinks({
-      userName,
-      limit: LINKS_PER_PAGE,
-      offset,
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["userYoutubeLinks", userName],
+      queryFn: async ({ pageParam = 0 }) => {
+        const res = await getUserYoutubeLinks({
+          userName,
+          limit: LINKS_PER_PAGE,
+          offset: pageParam,
+        });
+        return { ...res, offset: pageParam };
+      },
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) => {
+        const currentCount = lastPage.offset + lastPage.documents.length;
+        if (currentCount < lastPage.total) {
+          return currentCount;
+        }
+        return undefined;
+      },
+      initialData: {
+        pages: [
+          {
+            documents: initialLinks.documents,
+            total: initialLinks.total,
+            offset: 0,
+          },
+        ],
+        pageParams: [0],
+      },
+      staleTime: 5 * 60 * 1000,
     });
-    setLinks((prev) => [...prev, ...newLinks]);
-    setOffset((prev) => prev + newLinks.length);
-    setIsLoading(false);
-  };
+
+  const links = data?.pages.flatMap((page) => page.documents) ?? [];
 
   return (
     <>
@@ -68,21 +82,25 @@ export default function YoutubeTabClient({
         })}
       </div>
 
-      {links.length < totalLinks && (
+      {hasNextPage && (
         <div className="flex justify-center mt-8">
-          <Button onClick={loadMoreLinks} disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading ? "Loading..." : "Load More"}
+          <Button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+            {isFetchingNextPage && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {isFetchingNextPage ? "Loading..." : "Load More"}
           </Button>
         </div>
       )}
 
+      {/* Video Player Dialog */}
       <Dialog
         open={!!playingVideoId}
         onOpenChange={() => setPlayingVideoId(null)}
       >
         <DialogContent className="max-w-3xl p-0 border-0">
-          <DialogTitle></DialogTitle>
+          {/* Note: An explicit DialogTitle is good for accessibility, even if hidden */}
+          <DialogTitle className="sr-only">YouTube Video Player</DialogTitle>
           <div className="aspect-video">
             <iframe
               className="w-full h-full"

@@ -173,6 +173,8 @@ export default function UploadNotesForm({ onSuccess }: UploadNotesFormProps) {
       form.reset();
       setSelectedFile(null);
       queryClient.invalidateQueries({ queryKey: ["notes", values.subject] });
+      queryClient.invalidateQueries({ queryKey: ["userNotes", user!.name] });
+
       onSuccess();
     } catch (err: unknown) {
       console.error("Upload process failed", err);

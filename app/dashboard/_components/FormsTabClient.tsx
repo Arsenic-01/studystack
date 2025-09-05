@@ -4,39 +4,55 @@ import { GoogleFormCard } from "@/components/notes_page_components/google_form_c
 import { Button } from "@/components/ui/button";
 import { getUserForms } from "@/lib/actions/Form.actions";
 import { Form, SessionUser } from "@/lib/appwrite_types";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
 
 const FORMS_PER_PAGE = 3;
 
 interface FormsTabClientProps {
-  initialForms: Form[];
-  totalForms: number;
+  initialForms: { documents: Form[]; total: number };
   userName: string;
   user: SessionUser;
 }
 
 export default function FormsTabClient({
   initialForms,
-  totalForms,
   userName,
   user,
 }: FormsTabClientProps) {
-  const [forms, setForms] = useState<Form[]>(initialForms);
-  const [offset, setOffset] = useState(initialForms.length);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const loadMoreForms = async () => {
-    setIsLoading(true);
-    const { documents: newForms } = await getUserForms({
-      userName,
-      limit: FORMS_PER_PAGE,
-      offset,
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["userForms", userName],
+      queryFn: async ({ pageParam = 0 }) => {
+        const res = await getUserForms({
+          userName,
+          limit: FORMS_PER_PAGE,
+          offset: pageParam,
+        });
+        return { ...res, offset: pageParam };
+      },
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) => {
+        const currentCount = lastPage.offset + lastPage.documents.length;
+        if (currentCount < lastPage.total) {
+          return currentCount;
+        }
+        return undefined;
+      },
+      initialData: {
+        pages: [
+          {
+            documents: initialForms.documents,
+            total: initialForms.total,
+            offset: 0,
+          },
+        ],
+        pageParams: [0],
+      },
+      staleTime: 5 * 60 * 1000,
     });
-    setForms((prev) => [...prev, ...newForms]);
-    setOffset((prev) => prev + newForms.length);
-    setIsLoading(false);
-  };
+
+  const forms = data?.pages.flatMap((page) => page.documents) ?? [];
 
   return (
     <div>
@@ -51,11 +67,13 @@ export default function FormsTabClient({
           />
         ))}
       </div>
-      {forms.length < totalForms && (
+      {hasNextPage && (
         <div className="flex justify-center mt-8">
-          <Button onClick={loadMoreForms} disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading ? "Loading..." : "Load More"}
+          <Button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+            {isFetchingNextPage && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {isFetchingNextPage ? "Loading..." : "Load More"}
           </Button>
         </div>
       )}

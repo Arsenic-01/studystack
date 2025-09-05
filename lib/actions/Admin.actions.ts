@@ -9,7 +9,6 @@ import {
   USER_COLLECTION_ID,
   YOUTUBE_COLLECTION_ID,
 } from "@/lib/appwrite";
-import { revalidatePath } from "next/cache";
 
 export async function fetchAdminDashboardStats() {
   try {
@@ -37,7 +36,3 @@ export async function fetchAdminDashboardStats() {
     };
   }
 }
-
-export const revalidate = () => {
-  revalidatePath("/dashboard");
-};

@@ -70,6 +70,9 @@ export default function UploadYoutubeForm({
       toast.success("YouTube link added successfully!");
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["youtube", values.subject] });
+      queryClient.invalidateQueries({
+        queryKey: ["userYoutubeLinks", user!.name],
+      });
       onSuccess();
     } catch (error) {
       toast.error(

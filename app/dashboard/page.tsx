@@ -85,8 +85,7 @@ export default async function TeacherDashboard() {
         <TabsContent value="notes" className="mt-6" forceMount>
           {userNotesData.total > 0 ? (
             <NotesTabClient
-              initialNotes={userNotesData.documents}
-              totalNotes={userNotesData.total}
+              initialNotes={userNotesData}
               userName={user.name!}
             />
           ) : (
@@ -101,10 +100,9 @@ export default async function TeacherDashboard() {
         <TabsContent value="youtube" className="mt-6" forceMount>
           {userYoutubeLinksData.total > 0 ? (
             <YoutubeTabClient
-              initialLinks={userYoutubeLinksData.documents}
-              totalLinks={userYoutubeLinksData.total}
-              userName={user.name!}
               user={user}
+              userName={user.name!}
+              initialLinks={userYoutubeLinksData}
             />
           ) : (
             <EmptyState
@@ -118,8 +116,7 @@ export default async function TeacherDashboard() {
         <TabsContent value="forms" className="mt-6" forceMount>
           {userFormsData.total > 0 ? (
             <FormsTabClient
-              initialForms={userFormsData.documents}
-              totalForms={userFormsData.total}
+              initialForms={userFormsData}
               userName={user.name!}
               user={user}
             />

@@ -15,14 +15,12 @@ import { useState } from "react";
 import UploadLinkForm from "./UploadLinkForm";
 import UploadNotesForm from "./UploadNotesForm";
 import UploadYoutubeForm from "./UploadYoutubeForm";
-import { revalidate } from "@/lib/actions/Admin.actions";
 
 export function AddContentModal() {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeModal = () => {
     setIsOpen(false);
-    revalidate();
   };
 
   return (

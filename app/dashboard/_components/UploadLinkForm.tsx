@@ -76,6 +76,7 @@ export default function UploadLinkForm({ onSuccess }: UploadLinkFormProps) {
       toast.success("Link added successfully!");
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["forms", values.subject] });
+      queryClient.invalidateQueries({ queryKey: ["userForms", user!.name] });
       onSuccess();
     } catch (error) {
       toast.error(
