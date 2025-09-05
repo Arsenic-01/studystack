@@ -102,7 +102,7 @@ export const teamMembers: TeamMember[] = [
       "Deployed the application on Vercel, ensuring seamless CI/CD and optimal performance.",
     ],
     contributionSplit: {
-      coding: 75,
+      coding: 80,
       docs: 5,
       testing: 15,
       research: 30,
@@ -217,7 +217,7 @@ export const teamMembers: TeamMember[] = [
       "Assisted in debugging and resolving frontend issues identified during the development cycle.",
     ],
     contributionSplit: {
-      coding: 10,
+      coding: 5,
       docs: 40,
       testing: 35,
       research: 25,
