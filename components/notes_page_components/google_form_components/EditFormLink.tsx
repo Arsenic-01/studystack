@@ -113,7 +113,7 @@ const EditFormLink = ({
         queryKey: ["forms", abbreviation],
       });
       queryClient.invalidateQueries({
-        queryKey: ["userYoutubeLinks", user!.name],
+        queryKey: ["userForms", user!.name],
       });
       onOpenChange(false);
     },

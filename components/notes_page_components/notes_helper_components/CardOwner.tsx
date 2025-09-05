@@ -60,7 +60,7 @@ const CardOwner = ({
         queryKey: ["notes", note.abbreviation],
       });
       queryClient.invalidateQueries({
-        queryKey: ["userYoutubeLinks", user!.name],
+        queryKey: ["userNotes", user!.name],
       });
       setPopoverOpen(false); // Close the popover on success
     },

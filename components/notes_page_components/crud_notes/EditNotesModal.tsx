@@ -106,10 +106,10 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({
     onSuccess: () => {
       toast.success("Note updated successfully!");
       queryClient.invalidateQueries({
-        queryKey: ["notes", abbreviation], // Invalidate the 'notes' query
+        queryKey: ["notes", abbreviation],
       });
       queryClient.invalidateQueries({
-        queryKey: ["userYoutubeLinks", user!.name],
+        queryKey: ["userNotes", user!.name],
       });
       closeModal();
     },
