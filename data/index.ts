@@ -79,7 +79,7 @@ export const accordianItems = [
 export const mainFooterLinks = [
   {
     title: "MSBTE",
-    href: "https://msbte.org.in/",
+    href: "https://msbte.ac.in/",
   },
   {
     title: "Contact",
