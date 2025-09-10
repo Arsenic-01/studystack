@@ -167,11 +167,6 @@ const techCategories: { [key: string]: TechItem[] } = {
       logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Resend.svg",
       inversion: "dark",
     },
-    {
-      name: "Figma",
-      logo: "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/skill/Figma.svg",
-      inversion: "none",
-    },
   ],
 };
 

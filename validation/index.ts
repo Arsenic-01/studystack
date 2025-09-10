@@ -135,14 +135,13 @@ export const youtubeSchema = z.object({
     .string()
     .min(1, "YouTube link is required")
     .regex(
-      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([\w-]{11})(?:\S+)?$/,
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})(?:[&?]\S*)?$/i,
       "Invalid YouTube URL"
     ),
   title: z.string().min(3, "Title must be at least 3 characters"),
 });
 
-const urlRegex =
-  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+const urlRegex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/i;
 
 export const linkSchema = z.discriminatedUnion("formType", [
   z.object({
@@ -152,8 +151,8 @@ export const linkSchema = z.discriminatedUnion("formType", [
       .string()
       .min(1, "Google Form link is required")
       .regex(
-        /^(https?:\/\/)?(www\.)?docs\.google\.com\/forms\/d\/e\/[a-zA-Z0-9_-]+\/viewform/,
-        "Invalid Google Form URL format"
+        /^(https?:\/\/)?(www\.)?docs\.google\.com\/forms\/d\/e\/[a-zA-Z0-9_-]+\/viewform(\?.*)?$/i,
+        "Invalid Google Form URL"
       ),
   }),
   z.object({
@@ -162,7 +161,7 @@ export const linkSchema = z.discriminatedUnion("formType", [
     url: z
       .string()
       .min(1, "Assignment link is required")
-      .regex(urlRegex, "Invalid URL"),
+      .regex(urlRegex, "Invalid Assignment URL"),
   }),
   z.object({
     formType: z.literal("other"),
