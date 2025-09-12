@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const AboutPage = () => {
   return (
-    <div className="flex flex-col gap-20 md:gap-32 max-w-5xl mx-auto py-28 lg:py-32 px-5">
+    <div className="flex flex-col gap-20 md:gap-32 max-w-5xl mx-auto py-28 lg:py-32 px-5 xl:px-0">
       <div className="flex flex-col gap-10">
         <h1 className="text-3xl tracking-tighter font-bold">About Us</h1>
         <AboutGrid />
