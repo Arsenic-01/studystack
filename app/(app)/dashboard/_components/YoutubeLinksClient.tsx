@@ -1,7 +1,11 @@
 "use client";
 
 import { YouTubeCard } from "@/app/(app)/semester/[sem]/[sub]/_components/_cards/YouTubeCard";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/search-dialog";
 import { SessionUser, Youtube } from "@/lib/appwrite_types";
 import { useState } from "react";
 

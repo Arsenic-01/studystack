@@ -6,7 +6,6 @@ import { FileText, Link, Video } from "lucide-react";
 import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { AddContentModal } from "./_components/AddContentModal";
 import { EmptyState } from "./_components/EmptyState";
 import FormsTabClient from "./_components/FormsTabClient";
 import NotesTabClient from "./_components/NotesTabClient";
@@ -17,6 +16,11 @@ import {
   getUserYoutubeLinks,
 } from "./getAdminData";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import dynamic from "next/dynamic";
+
+const AddContentModal = dynamic(() =>
+  import("./_components/AddContentModal").then((mod) => mod.AddContentModal)
+);
 
 export const metadata: Metadata = {
   title: "Dashboard",

@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useUser } from "@/hooks/useUser";
-import { Note } from "@/lib/appwrite_types";
+import { Note, SessionUser } from "@/lib/appwrite_types";
 import { Edit, EllipsisVertical, Info } from "lucide-react";
 import { useState } from "react";
 import { DeleteNoteButton } from "./_mutations/_notes/DeleteNotes";
@@ -23,10 +23,16 @@ function formatFileSize(bytes: string | number) {
 interface CardOwnerProps {
   note: Note;
   formattedDate: string;
+  serverUser?: SessionUser | null;
 }
 
-export default function CardOwner({ note, formattedDate }: CardOwnerProps) {
-  const { user } = useUser();
+export default function CardOwner({
+  note,
+  formattedDate,
+  serverUser,
+}: CardOwnerProps) {
+  const { user: clientUser } = useUser();
+  const user = serverUser ?? clientUser;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
 

@@ -1,6 +1,7 @@
 // components/project_components/ProjectOverviewHero.tsx
 
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import SectionTitle from "@/components/ui/section-title";
 import { ArrowDown } from "lucide-react";
 import Link from "next/link";
 
@@ -8,9 +9,7 @@ export default function ProjectOverviewHero() {
   return (
     <section className="w-full mt-12 text-center">
       <div className="container mx-auto px-4 relative z-10">
-        <p className="mb-4 text-sm text-blue-600 dark:text-white p-2 px-4 bg-blue-200 dark:bg-blue-950 inline-block rounded-full font-medium">
-          Introducing StudyStack
-        </p>
+        <SectionTitle title="Introducing StudyStack" divElement />
         <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground text-balance mx-auto max-w-4xl">
           Your Intelligent Platform for Academic Excellence
         </h1>

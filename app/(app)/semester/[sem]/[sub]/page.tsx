@@ -14,6 +14,7 @@ import {
 } from "@/lib/appwrite";
 import { Form, Note, Youtube } from "@/lib/appwrite_types";
 import { Metadata } from "next";
+import { getCurrentUser } from "@/lib/auth";
 
 const NOTES_PER_PAGE = 6;
 const LINKS_PER_PAGE = 3;
@@ -38,6 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params, searchParams }: Props) {
   const { sub, sem } = await params;
   const sp = await searchParams;
+  const user = await getCurrentUser();
 
   const subject = await fetchSubject({ abbreviation: sub, semester: sem });
   if (!subject) return <NotFound />;
@@ -183,6 +185,7 @@ export default async function Page({ params, searchParams }: Props) {
         youtube: youtubePage,
         forms: formsPage,
       }}
+      serverUser={user}
     />
   );
 }

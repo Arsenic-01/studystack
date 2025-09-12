@@ -1,11 +1,12 @@
 // components/project_components/ProjectStats.tsx
 
 "use client";
-import { useQuery } from "@tanstack/react-query";
-import { FileText, Link2, Users, Youtube } from "lucide-react";
-import { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchAdminDashboardStats } from "@/lib/actions/Admin.actions";
+import { useQuery } from "@tanstack/react-query";
+import { FileText, Link2, Users } from "lucide-react";
+import { ReactNode } from "react";
+import { FaYoutube } from "react-icons/fa6";
 
 const StatCard = ({
   icon,
@@ -50,7 +51,7 @@ export default function ProjectImpactStats() {
       value: data?.totalNotes ?? 0,
     },
     {
-      icon: <Youtube className="size-6" />,
+      icon: <FaYoutube className="size-6" />,
       label: "YouTube Links",
       value: data?.totalYoutubeLinks ?? 0,
     },

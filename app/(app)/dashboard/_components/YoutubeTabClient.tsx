@@ -2,7 +2,11 @@
 
 import { YouTubeCard } from "@/app/(app)/semester/[sem]/[sub]/_components/_cards/YouTubeCard";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/search-dialog";
 import { getUserYoutubeLinks } from "@/lib/actions/Youtube.actions";
 import { SessionUser, Youtube } from "@/lib/appwrite_types";
 import { useInfiniteQuery } from "@tanstack/react-query";

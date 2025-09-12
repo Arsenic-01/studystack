@@ -21,7 +21,13 @@ import {
   getUploadersForSubject,
 } from "@/lib/actions/Notes.actions";
 import { fetchPaginatedYoutubeLinks } from "@/lib/actions/Youtube.actions";
-import { Form, Note, Subject, Youtube } from "@/lib/appwrite_types";
+import {
+  Form,
+  Note,
+  SessionUser,
+  Subject,
+  Youtube,
+} from "@/lib/appwrite_types";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -84,6 +90,7 @@ interface NotesFilterProps {
     user: string[];
     formType: string;
   };
+  serverUser?: SessionUser | null;
 }
 
 export default function NotesFilter({
@@ -93,8 +100,11 @@ export default function NotesFilter({
   initialGoogleFormLinks,
   initialPageNumbers,
   initialFilters,
+  serverUser,
 }: NotesFilterProps) {
-  const { user } = useUser();
+  const { user: clientUser } = useUser();
+  const user = serverUser ?? clientUser;
+
   const searchParams = useSearchParams();
 
   const [notesPage, setNotesPage] = useState(initialPageNumbers.notes);
@@ -398,7 +408,7 @@ export default function NotesFilter({
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {notes.map((note) => (
                   <div key={note.noteId} id={`note-${note.noteId}`}>
-                    <NoteCard note={note} />
+                    <NoteCard note={note} serverUser={user} />
                   </div>
                 ))}
               </div>
