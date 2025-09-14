@@ -221,6 +221,7 @@ export default function TechStackDisplay() {
                       width={40}
                       height={40}
                       className={inversionClass}
+                      loading="lazy"
                     />
                     <span className="text-xs font-medium text-center text-foreground mt-1">
                       {tech.name}

@@ -133,3 +133,6 @@ dist
 .appwrite
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Open Next build output
+.open-next

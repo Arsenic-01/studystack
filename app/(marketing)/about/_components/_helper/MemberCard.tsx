@@ -45,6 +45,7 @@ export function MemberCard({ member }: MemberCardProps) {
             alt={`Profile picture of ${member.name}`}
             fill
             className="object-cover pointer-events-none select-none"
+            loading="eager"
           />
         </div>
 
