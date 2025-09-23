@@ -98,6 +98,10 @@ export default function RootLayout({
             }),
           }}
         />
+        <meta
+          name="google-site-verification"
+          content="BbWKkb9nYRja3XHwtN7JOnQmxh4AQo1Rea5eWW1Zueo"
+        />
       </head>
       <body className={`${dmSans.className} antialiased`}>
         <Providers>
