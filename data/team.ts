@@ -73,7 +73,7 @@ export const teamMembers: TeamMember[] = [
       },
       {
         name: "Portfolio",
-        url: "https://vedantbhor.vercel.app/",
+        url: "https://vedantbhor.dev/",
         username: "Arsenic",
         Icon: FaGlobe,
       },
