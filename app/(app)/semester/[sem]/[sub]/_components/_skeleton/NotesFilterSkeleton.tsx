@@ -3,12 +3,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import NoteCardSkeleton from "./NoteCardSkeleton";
-import YouTubeCardSkeleton from "./YouTubeCardSkeleton"; // Import new component
-import GoogleFormCardSkeleton from "./GoogleFormCardSkeleton"; // Import new component
+import YouTubeCardSkeleton from "./YouTubeCardSkeleton";
+import GoogleFormCardSkeleton from "./GoogleFormCardSkeleton";
 
 const NotesFilterSkeleton = () => {
   return (
-    <div className="container mx-auto py-28 sm:py-32 max-w-5xl px-5 xl:px-0">
+    <div className="container mx-auto py-24 sm:py-32 max-w-5xl px-5 xl:px-0">
       {/* Header */}
       <div className="flex gap-4 sm:gap-10 mb-4">
         <Button variant="outline" className="w-fit" asChild>
@@ -43,9 +43,8 @@ const NotesFilterSkeleton = () => {
         </div>
       </div>
 
-      {/* --- REVISED: YouTube Videos Section Skeleton --- */}
       <div className="mt-10">
-        <Skeleton className="h-8 w-48 mb-6" /> {/* Match new heading margin */}
+        <Skeleton className="h-8 w-48 mb-6" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array(3)
             .fill(0)
@@ -55,7 +54,6 @@ const NotesFilterSkeleton = () => {
         </div>
       </div>
 
-      {/* --- NEW: Quizzes & Links Section Skeleton --- */}
       <div className="mt-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <Skeleton className="h-8 w-64" />
