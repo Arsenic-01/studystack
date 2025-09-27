@@ -40,13 +40,30 @@ export function MemberCard({ member }: MemberCardProps) {
       <Card className="flex flex-col overflow-hidden hover:shadow-xl dark:hover:shadow-primary/10">
         {/* Profile Image Section */}
         <div className="relative h-56 w-full">
-          <Image
-            src={member.pfp}
-            alt={`Profile picture of ${member.name}`}
-            fill
-            className="object-cover pointer-events-none select-none"
-            loading="eager"
-          />
+          {member.socials[3].name === "Portfolio" ? (
+            <Link
+              href={member.socials[3].url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute inset-0"
+            >
+              <Image
+                src={member.pfp}
+                alt={`Profile picture of ${member.name}`}
+                fill
+                className="object-cover select-none pointer-events-none"
+                loading="eager"
+              />
+            </Link>
+          ) : (
+            <Image
+              src={member.pfp}
+              alt={`Profile picture of ${member.name}`}
+              fill
+              className="object-cover pointer-events-none select-none"
+              loading="eager"
+            />
+          )}
         </div>
 
         <div className="flex flex-col flex-grow px-5 py-6">

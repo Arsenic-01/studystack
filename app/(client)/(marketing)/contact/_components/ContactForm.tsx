@@ -156,7 +156,7 @@ export default function ContactForm() {
       className="border rounded-lg sm:border-neutral-300 shadow-sm max-w-5xl  mx-auto w-full bg-white dark:bg-neutral-950"
       suppressHydrationWarning
     >
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-4 px-4 pt-5 md:p-6">
         <div className="flex flex-col md:flex-row items-start gap-4 md:items-center justify-between">
           <div className="flex flex-col space-y-2 sm:space-y-1">
             <h1 className="text-2xl tracking-tighter font-bold">Contact Us</h1>
@@ -188,7 +188,7 @@ export default function ContactForm() {
         </div>
       </CardHeader>
       <Separator />
-      <CardContent className="pt-6">
+      <CardContent className="pt-6 p-4 md:p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

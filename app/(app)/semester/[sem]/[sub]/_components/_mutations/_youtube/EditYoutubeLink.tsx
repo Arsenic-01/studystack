@@ -101,7 +101,7 @@ const EditYoutubeLink = ({
     <>
       {(user?.role === "teacher" || user?.role === "admin") && (
         <Dialog open={open} onOpenChange={onOpenChange}>
-          <DialogContent className="lg:max-w-md">
+          <DialogContent className="lg:max-w-xl">
             <DialogHeader>
               <DialogTitle>Edit Embed Link</DialogTitle>
               <DialogDescription className="pb-5 lg:pb-0">

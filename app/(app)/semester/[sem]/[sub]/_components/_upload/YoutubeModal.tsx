@@ -84,7 +84,7 @@ const YoutubeModal = ({
               <span className="md:hidden inline">Youtube Video</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="lg:max-w-md">
+          <DialogContent className="lg:max-w-xl">
             <DialogHeader>
               <DialogTitle>Embed YouTube Videos</DialogTitle>
               <DialogDescription className="pb-5 lg:pb-0">

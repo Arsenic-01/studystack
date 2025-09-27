@@ -8,6 +8,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/search-dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -31,7 +36,9 @@ import {
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
+  ClipboardX,
   FileQuestion,
+  FileSearch,
   Home,
   Link2Off,
   ListFilter,
@@ -41,16 +48,11 @@ import {
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/search-dialog";
 import { GoogleFormCard } from "./_cards/LinkCard";
 import NoteCard from "./_cards/NoteCard";
-import PaginationControl from "./PaginationControl";
 import { YouTubeCard } from "./_cards/YouTubeCard";
 import NoteCardSkeleton from "./_skeleton/NoteCardSkeleton";
+import PaginationControl from "./PaginationControl";
 
 const NOTES_PER_PAGE = 6;
 const LINKS_PER_PAGE = 3;
@@ -120,8 +122,6 @@ export default function NotesFilter({
   );
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
 
-  // This effect is still useful to sync state if the user navigates
-  // back/forward in their browser history to a page with different initial props.
   useEffect(() => {
     setNotesPage(initialPageNumbers.notes);
     setYoutubePage(initialPageNumbers.youtube);
@@ -132,7 +132,6 @@ export default function NotesFilter({
     setSelectedFormType(initialFilters.formType);
   }, [initialPageNumbers, initialFilters]);
 
-  // Helper function to compare arrays of strings (for fileTypes and users)
   const areArraysEqual = (a: string[], b: string[]) => {
     if (a.length !== b.length) return false;
     const sortedA = [...a].sort();
@@ -140,7 +139,6 @@ export default function NotesFilter({
     return sortedA.every((value, index) => value === sortedB[index]);
   };
 
-  // Check if the current state matches the initial server-rendered state for notes
   const isInitialNotesState =
     notesPage === initialPageNumbers.notes &&
     selectedUnit === initialFilters.unit &&
@@ -297,8 +295,16 @@ export default function NotesFilter({
   const totalForms = formData?.total ?? 0;
   const totalFormPages = Math.ceil(totalForms / LINKS_PER_PAGE);
 
+  // Check if any filters are active
+  const areNoteFiltersActive =
+    selectedFileTypes.length > 0 ||
+    selectedUsers.length > 0 ||
+    selectedUnit !== "All";
+
+  const isFormFilterActive = selectedFormType !== "all";
+
   return (
-    <div className="container mx-auto py-28 sm:py-32 max-w-5xl px-5 xl:px-0">
+    <div className="container mx-auto py-24 sm:py-32 max-w-5xl px-5 xl:px-0">
       <div className="flex gap-4 sm:gap-10 mb-4 items-center">
         <Button variant="outline" className="w-fit" asChild>
           <Link
@@ -312,7 +318,7 @@ export default function NotesFilter({
           {subject.name}
         </h1>
         <h1 className="block md:hidden text-2xl font-bold tracking-tight truncate">
-          Notes for {subject.abbreviation}
+          Notes for {subject.abbreviation.toUpperCase()}
         </h1>
       </div>
       <div className="flex flex-col gap-5">
@@ -421,7 +427,7 @@ export default function NotesFilter({
                 />
               )}
             </>
-          ) : (
+          ) : areNoteFiltersActive ? (
             <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center my-8">
               <div className="flex flex-col items-center justify-center gap-4">
                 <FileQuestion className="h-8 w-8 text-neutral-500 dark:text-neutral-400" />
@@ -433,6 +439,17 @@ export default function NotesFilter({
                 <Button variant="outline" onClick={resetNoteFilters}>
                   Reset All Filters
                 </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center my-8">
+              <div className="flex flex-col items-center justify-center gap-4">
+                <FileSearch className="h-8 w-8 text-neutral-500 dark:text-neutral-400" />
+                <h3 className="text-lg font-medium">No Notes Available Yet</h3>
+                <p className="text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+                  It looks like resources for this subject haven&apos;t been
+                  uploaded. Please check back again soon.
+                </p>
               </div>
             </div>
           )}
@@ -564,7 +581,7 @@ export default function NotesFilter({
                 />
               )}
             </>
-          ) : (
+          ) : isFormFilterActive ? (
             <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center my-8">
               <div className="flex flex-col items-center justify-center gap-4">
                 <Link2Off className="h-8 w-8 text-neutral-500 dark:text-neutral-400" />
@@ -576,6 +593,17 @@ export default function NotesFilter({
                 <Button variant="outline" onClick={resetFormFilters}>
                   Reset Filter
                 </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center my-8">
+              <div className="flex flex-col items-center justify-center gap-4">
+                <ClipboardX className="h-8 w-8 text-neutral-500 dark:text-neutral-400" />
+                <h3 className="text-lg font-medium">No Quizzes or Links Yet</h3>
+                <p className="text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+                  Quizzes, assignments, and other links for this subject will
+                  appear here once they are added.
+                </p>
               </div>
             </div>
           )}
