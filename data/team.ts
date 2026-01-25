@@ -7,7 +7,6 @@ import {
   FaWhatsapp,
 } from "react-icons/fa6";
 
-// Define a type for our team members for better code safety
 export type SocialLink = {
   name: "GitHub" | "LinkedIn" | "Email" | "Portfolio" | "Discord" | "Whatsapp";
   url: string;
@@ -43,7 +42,6 @@ export type TeamMember = {
   };
 };
 
-// Consolidated team data
 export const teamMembers: TeamMember[] = [
   {
     id: 1,

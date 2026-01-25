@@ -24,10 +24,10 @@ export const semester = [
     key: "5",
     label: "Semester 5",
   },
-  // {
-  //   key: '6',
-  //   label: 'Semester 6',
-  // },
+  {
+    key: '6',
+    label: 'Semester 6',
+  },
 ];
 export const accordianItems = [
   {
