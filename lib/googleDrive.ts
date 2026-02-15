@@ -1,32 +1,49 @@
+// lib/googleDrive.ts
 "use server";
 
 import { db } from "@/lib/appwrite";
 import { google } from "googleapis";
 
-const TOKEN_EXPIRY_BUFFER = 5 * 60 * 1000; // 5 minute buffer
-const REFRESH_LOCK_GRACE_PERIOD = 60 * 1000; // 60 second lock
+const TOKEN_EXPIRY_BUFFER = 5 * 60 * 1000; // 5 minutes
+const LOCK_DURATION = 60 * 1000; // 60 seconds
+const POLL_INTERVAL = 2000; // 2 seconds
+const MAX_RETRIES = 10; 
 
-// This function is now responsible for the locking mechanism
+async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function refreshAndStoreToken(currentDBToken: {
   accessToken: string;
   expiresAt: number;
 }) {
-  console.log("Database token is stale. Attempting to acquire lock...");
+  // Double-check: Ensure state hasn't changed since the initial read
+  const freshDoc = await db.getDocument(
+    process.env.DATABASE_ID!,
+    process.env.GOOGLE_REFRESH_TOKEN_COLLECTION_ID!,
+    process.env.GOOGLE_DRIVE_TOKEN_DOC_ID!
+  );
+  
+  const freshExpiresAt = Number(freshDoc.expires_at);
 
-  // ACQUIRE LOCK: Instantly update DB with a short grace period
-  const lockExpiresAt = Date.now() + REFRESH_LOCK_GRACE_PERIOD;
+  if (freshExpiresAt > Date.now() + TOKEN_EXPIRY_BUFFER) {
+    return { accessToken: freshDoc.access_token, expiresAt: freshExpiresAt };
+  }
+
+  if (freshExpiresAt > Date.now()) {
+     throw new Error("LOCKED"); 
+  }
+
+  // Acquire Lock
+  const lockExpiresAt = Date.now() + LOCK_DURATION;
   await db.updateDocument(
     process.env.DATABASE_ID!,
     process.env.GOOGLE_REFRESH_TOKEN_COLLECTION_ID!,
     process.env.GOOGLE_DRIVE_TOKEN_DOC_ID!,
     { expires_at: lockExpiresAt.toString() }
   );
-  console.log(
-    `Lock acquired. Token is safe for ${REFRESH_LOCK_GRACE_PERIOD / 1000}s.`
-  );
 
   try {
-    // PERFORM REFRESH: Now safely get the new token from Google
     const tokenUrl = "https://oauth2.googleapis.com/token";
     const params = new URLSearchParams();
     params.append("client_id", process.env.GOOGLE_CLIENT_ID!);
@@ -41,8 +58,8 @@ async function refreshAndStoreToken(currentDBToken: {
       throw new Error(`Google API Error: ${JSON.stringify(tokenData)}`);
     }
 
-    // RELEASE LOCK: Update DB with the real token and its long expiry
     const newExpiresAt = Date.now() + tokenData.expires_in * 1000;
+    
     await db.updateDocument(
       process.env.DATABASE_ID!,
       process.env.GOOGLE_REFRESH_TOKEN_COLLECTION_ID!,
@@ -53,22 +70,26 @@ async function refreshAndStoreToken(currentDBToken: {
         last_updated: new Date().toISOString(),
       }
     );
-    console.log("Token refreshed and lock released.");
+    
     return { accessToken: tokenData.access_token, expiresAt: newExpiresAt };
+
   } catch (error) {
-    // If refresh fails, revert the lock to allow another instance to try
+    // Revert lock on failure
     await db.updateDocument(
       process.env.DATABASE_ID!,
       process.env.GOOGLE_REFRESH_TOKEN_COLLECTION_ID!,
       process.env.GOOGLE_DRIVE_TOKEN_DOC_ID!,
-      { expires_at: currentDBToken.expiresAt.toString() }
+      { expires_at: (Date.now() - 1000).toString() } 
     );
-    console.error("Failed to refresh token, lock reverted.", error);
     throw error;
   }
 }
 
-export async function getDriveAccessToken(): Promise<{ accessToken: string }> {
+export async function getDriveAccessToken(retryCount = 0): Promise<{ accessToken: string }> {
+  if (retryCount > MAX_RETRIES) {
+    throw new Error("Max retries exceeded waiting for Google Drive token refresh.");
+  }
+
   const now = Date.now();
 
   const tokenDoc = await db.getDocument(
@@ -80,14 +101,26 @@ export async function getDriveAccessToken(): Promise<{ accessToken: string }> {
   let accessToken = tokenDoc.access_token as string;
   const expiresAt = Number(tokenDoc.expires_at);
 
-  if (now > expiresAt - TOKEN_EXPIRY_BUFFER) {
-    // The token is stale. Instead of every instance refreshing,
-    // the refresh function now handles the locking.
-    const refreshed = await refreshAndStoreToken({ accessToken, expiresAt });
-    accessToken = refreshed.accessToken;
+  if (expiresAt > now + TOKEN_EXPIRY_BUFFER) {
+    return { accessToken };
   }
 
-  return { accessToken };
+  // If locked, wait and retry
+  if (expiresAt > now) {
+    await sleep(POLL_INTERVAL);
+    return getDriveAccessToken(retryCount + 1); 
+  }
+
+  try {
+    const refreshed = await refreshAndStoreToken({ accessToken, expiresAt });
+    return { accessToken: refreshed.accessToken };
+  } catch (error: any) {
+    if (error.message === "LOCKED") {
+      await sleep(POLL_INTERVAL);
+      return getDriveAccessToken(retryCount + 1);
+    }
+    throw error;
+  }
 }
 
 export async function getDriveClient() {
