@@ -5,6 +5,7 @@
 
 #sentry-feedback {
   --inset: auto auto 0 0; 
+  --page-margin: 24px;
 }
 
 /* Custom Scrollbar Styling */

@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
-import { db, DATABASE_ID, USER_COLLECTION_ID, Query } from "@/lib/appwrite";
+import { 
+  db, 
+  DATABASE_ID, 
+  USER_COLLECTION_ID,
+  NOTE_COLLECTION_ID,     
+  YOUTUBE_COLLECTION_ID,   
+  FORM_COLLECTION_ID,      
+  Query, 
+} from "@/lib/appwrite";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -8,35 +16,25 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [allUsers, students, teachers, admins] = await Promise.all([
-      db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
-        Query.limit(1)
-      ]),
-      db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
-        Query.equal("role", "student"),
-        Query.limit(1)
-      ]),
-      db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
-        Query.equal("role", "teacher"), 
-        Query.limit(1)
-      ]),
-      db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
-        Query.equal("role", "admin"), 
-        Query.limit(1)
-      ]),
+    const [allUsers, notes, youtube, quizzes] = await Promise.all([
+      db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [Query.limit(1)]),
+      db.listDocuments(DATABASE_ID!, NOTE_COLLECTION_ID!, [Query.limit(1)]),
+      db.listDocuments(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, [Query.limit(1)]),
+      db.listDocuments(DATABASE_ID!, FORM_COLLECTION_ID!, [Query.limit(1)])
     ]);
 
     return NextResponse.json({
       total_users: allUsers.total,
-      students: students.total,
-      teachers: teachers.total,
-      admins: admins.total,
+      notes: notes.total,
+      youtube_links: youtube.total,
+      form_links: quizzes.total,
+      total_resources: notes.total + youtube.total + quizzes.total
     });
 
   } catch (error) {
-    console.error("Error fetching user counts for bot:", error);
+    console.error("Error fetching stats for bot:", error);
     return NextResponse.json(
-      { error: "Failed to fetch user counts" },
+      { error: "Failed to fetch platform stats" },
       { status: 500 }
     );
   }
