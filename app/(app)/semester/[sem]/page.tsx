@@ -27,7 +27,6 @@ const getSubjectsBySemester = cache(
         await db.listDocuments(DATABASE_ID!, SUBJECT_COLLECTION_ID!, [
           Query.equal("semester", sem),
         ]);
-
       if (response.total > 0) {
         return response.documents.map((doc) => ({
           subjectId: doc.$id,
@@ -61,7 +60,7 @@ const Page = async ({ params }: { params: { sem: string } }) => {
     getSubjectsBySemester(sem),
     getCurrentUser() as Promise<SessionUser | null>,
   ]);
-
+  
   if (!subjects || subjects.length === 0) {
     return <NotFound />;
   }

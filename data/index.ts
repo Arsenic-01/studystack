@@ -147,13 +147,13 @@ export const creators = [
 export const guide = [
   {
     name: "AD. Talole",
-    role: "Lecturer, Computer Department",
+    role: "Lecturer, CM Dept.",
     avatar:
       "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/mentor/adt.jpg",
   },
   {
     name: "GB. Katkade",
-    role: "HOD, Computer Department",
+    role: "Coordinator, CM Dept.",
     avatar:
       "https://cdn.jsdelivr.net/gh/Arsenic-01/studystack/assets/mentor/gbk.jpeg",
   },
