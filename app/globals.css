@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+#sentry-feedback {
+  --inset: auto auto 0 0; 
+}
+
 /* Custom Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 5px; /* Adjust scrollbar width */
