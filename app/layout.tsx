@@ -103,10 +103,7 @@ export default function RootLayout({
           content="BbWKkb9nYRja3XHwtN7JOnQmxh4AQo1Rea5eWW1Zueo"
         />
         <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-        <script
-          src="https://files.bpcontent.cloud/2026/02/20/21/20260220211729-5R65VZTP.js"
-          defer
-        ></script>
+        <script src="https://files.bpcontent.cloud/2026/02/20/21/20260220211729-5R65VZTP.js" defer></script>
       </head>
       <body className={`${dmSans.className} antialiased`}>
         <Providers>
