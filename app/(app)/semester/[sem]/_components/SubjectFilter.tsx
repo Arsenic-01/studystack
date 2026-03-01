@@ -34,7 +34,7 @@ const SubjectList = ({ sem, initialSubjects, user }: SubjectListProps) => {
             "rounded-lg",
             "transition-all",
             "duration-300",
-            "ring-offset-background"
+            "ring-offset-background",
           );
 
           setTimeout(() => {
@@ -43,7 +43,7 @@ const SubjectList = ({ sem, initialSubjects, user }: SubjectListProps) => {
               "ring-offset-2",
               "ring-primary",
               "rounded-lg",
-              "ring-offset-background"
+              "ring-offset-background",
             );
           }, 2000);
         }
@@ -67,7 +67,7 @@ const SubjectList = ({ sem, initialSubjects, user }: SubjectListProps) => {
             </div>
           ))
         ) : (
-          <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg p-10 text-center mb-8 md:my-8">
+          <div className="bg-neutral-50 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-lg px-10 py-16 text-center mb-8 md:my-8 xl:mb-24 2xl:mb-52">
             <div className="flex flex-col items-center justify-center gap-4">
               <Library className="h-8 w-8 text-neutral-500" />
               <h3 className="text-lg font-medium">No Subjects Found</h3>

@@ -4,7 +4,6 @@ import { ChevronDown, Slash } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -15,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function BreadcrumbWithDropdown({ sem }: { sem: string }) {
@@ -23,7 +23,12 @@ export default function BreadcrumbWithDropdown({ sem }: { sem: string }) {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/home">Home</BreadcrumbLink>
+          <Link
+            className="dark:hover:text-white hover:text-black transition-colors"
+            href="/home"
+          >
+            Home
+          </Link>
         </BreadcrumbItem>
         <BreadcrumbSeparator>
           <Slash />
