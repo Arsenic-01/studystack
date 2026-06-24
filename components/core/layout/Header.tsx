@@ -39,7 +39,6 @@ const aboutLinks: { title: string; href: string; description: string }[] = [
 
 const mainNavLinks = [
   { name: "Contact", href: "/contact", requiresAuth: false },
-  { name: "FAQs", href: "/home#faq", requiresAuth: true },
 ];
 
 const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
@@ -52,7 +51,7 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
 
   // Filter links based on auth status
   const visibleMainNavLinks = mainNavLinks.filter(
-    (link) => !link.requiresAuth || user
+    (link) => !link.requiresAuth || user,
   );
 
   return (
@@ -102,9 +101,10 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
                 {visibleMainNavLinks.map((item) => (
                   <NavigationMenuItem key={item.name}>
                     <NavigationMenuLink
+                      target="_blank"
                       className={twMerge(
                         navigationMenuTriggerStyle(),
-                        pathname === item.href && "bg-accent"
+                        pathname === item.href && "bg-accent",
                       )}
                       asChild
                     >
@@ -120,7 +120,7 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
                       <NavigationMenuLink
                         className={twMerge(
                           navigationMenuTriggerStyle(),
-                          pathname.startsWith("/home") && "bg-accent"
+                          pathname.startsWith("/home") && "bg-accent",
                         )}
                         asChild
                       >
@@ -134,7 +134,7 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
                     <NavigationMenuLink
                       className={twMerge(
                         navigationMenuTriggerStyle(),
-                        pathname.startsWith("/home") && "bg-accent"
+                        pathname.startsWith("/home") && "bg-accent",
                       )}
                       asChild
                     >
@@ -185,7 +185,7 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
                   y2="6"
                   className={twMerge(
                     "origin-left transition duration-75",
-                    isOpen && "rotate-45 -translate-y-1"
+                    isOpen && "rotate-45 -translate-y-1",
                   )}
                 ></line>
                 <line
@@ -195,7 +195,7 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
                   y2="12"
                   className={twMerge(
                     "transition duration-75",
-                    isOpen && "opacity-0"
+                    isOpen && "opacity-0",
                   )}
                 ></line>
                 <line
@@ -205,7 +205,7 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
                   y2="18"
                   className={twMerge(
                     "origin-left transition duration-75",
-                    isOpen && "-rotate-45 translate-y-1"
+                    isOpen && "-rotate-45 translate-y-1",
                   )}
                 ></line>
               </svg>
@@ -280,7 +280,7 @@ const ListItem = React.forwardRef<
           href={props.href || "#"}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
+            className,
           )}
         >
           <div className="text-sm font-medium leading-none">{title}</div>

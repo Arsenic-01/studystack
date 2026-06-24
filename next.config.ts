@@ -2,9 +2,6 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -62,8 +59,6 @@ const configToExport = sentryEnabled
       project: "javascript-nextjs",
       silent: !process.env.CI,
       widenClientFileUpload: false,
-      disableLogger: true,
-      automaticVercelMonitors: false,
       telemetry: false,
     })
   : nextConfig; // If not enabled, export the plain config

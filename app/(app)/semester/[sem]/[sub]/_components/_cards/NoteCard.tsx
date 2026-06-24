@@ -69,8 +69,9 @@ const NoteCard = memo(
                 src={note.thumbNail}
                 alt={note.title}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover rounded-md pointer-events-none select-none"
-                loading="lazy"
+                loading="eager"
               />
             ) : (
               <div className="flex flex-col gap-1 items-center justify-center w-full h-full border border-neutral-300 dark:border-neutral-800 rounded-md bg-neutral-100 dark:bg-neutral-900 p-4">
@@ -132,7 +133,7 @@ const NoteCard = memo(
         </CardFooter>
       </Card>
     );
-  }
+  },
 );
 
 NoteCard.displayName = "NoteCard";

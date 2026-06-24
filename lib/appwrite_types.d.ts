@@ -16,6 +16,7 @@ export interface SessionUser {
   prnNo: string;
   name: string;
   email?: string | null;
+  ban: boolean;
 }
 
 export interface updateUserData {

@@ -18,7 +18,7 @@ export function LoginForm({ isSessionLoading }: { isSessionLoading: boolean }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ prnNo?: string; password?: string }>(
-    {}
+    {},
   );
 
   const isFormDisabled = loading || isSessionLoading;
@@ -49,8 +49,7 @@ export function LoginForm({ isSessionLoading }: { isSessionLoading: boolean }) {
       });
 
       if (result?.error) {
-        toast.error("Invalid credentials. Please try again.");
-        console.error("Sign-in failed:", result.error);
+        toast.error(result?.error);
       } else if (result?.ok) {
         toast.success("Logged in successfully! 🎉");
         router.refresh();

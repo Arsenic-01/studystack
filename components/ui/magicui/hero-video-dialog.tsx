@@ -89,6 +89,7 @@ export default function HeroVideoDialog({
           <Image
             src={thumbnailSrc}
             alt={thumbnailAlt}
+            loading="eager"
             width={1920}
             height={1080}
             className="w-full rounded-md border border-neutral-300 shadow-lg transition-all duration-200 ease-out group-hover:brightness-[0.8] dark:border-neutral-800"

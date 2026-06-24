@@ -7,8 +7,9 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { SessionUser } from "@/lib/appwrite_types";
+import { toast } from "sonner";
 
 interface UserContextValue {
   user: SessionUser | null;
@@ -22,6 +23,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SessionUser | null>(null);
 
   useEffect(() => {
+    // Check if the server flagged this session as banned
+    if (session && (session as any).error === "BannedUser") {
+      toast.error("Your account has been banned by an administrator.");
+      setUser(null);
+      // Force log them out and redirect to the sign-in page
+      signOut({ callbackUrl: "/" });
+      return;
+    }
+
+    if (session && (session as any).error === "DeletedUser") {
+      toast.error("Your account no longer exists.");
+      setUser(null);
+      signOut({ callbackUrl: "/" });
+      return;
+    }
+
     if (status === "authenticated" && session?.user) {
       setUser(session.user as SessionUser);
     } else if (status === "unauthenticated") {

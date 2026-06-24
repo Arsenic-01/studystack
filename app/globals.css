@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
 #sentry-feedback {
-  --inset: auto auto 0 0; 
+  --inset: auto auto 0 0;
   --page-margin: 24px;
 }
 
@@ -21,10 +20,6 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #393939; /* Darker color on hover */
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 body {
