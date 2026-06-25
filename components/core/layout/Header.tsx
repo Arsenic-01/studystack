@@ -113,6 +113,20 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
                   </NavigationMenuItem>
                 ))}
 
+                {user && (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      className={twMerge(
+                        navigationMenuTriggerStyle(),
+                        pathname.startsWith("/home") && "bg-accent",
+                      )}
+                      asChild
+                    >
+                      <Link href="/query">Query</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
+
                 {user &&
                   "role" in user &&
                   (user.role === "admin" || user.role === "teacher") && (

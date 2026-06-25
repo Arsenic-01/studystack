@@ -11,7 +11,13 @@ import { Input } from "@/components/ui/input";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { loginSchema } from "@/validation";
 
-export function LoginForm({ isSessionLoading }: { isSessionLoading: boolean }) {
+export function LoginForm({
+  isSessionLoading,
+  callbackUrl,
+}: {
+  isSessionLoading: boolean;
+  callbackUrl: string;
+}) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [prnNo, setPrnNo] = useState("");
@@ -52,6 +58,7 @@ export function LoginForm({ isSessionLoading }: { isSessionLoading: boolean }) {
         toast.error(result?.error);
       } else if (result?.ok) {
         toast.success("Logged in successfully! 🎉");
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch (error) {

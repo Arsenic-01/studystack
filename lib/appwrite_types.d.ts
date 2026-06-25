@@ -15,7 +15,7 @@ export interface SessionUser {
   role: string;
   prnNo: string;
   name: string;
-  email?: string | null;
+  email: string | null;
   ban: boolean;
 }
 

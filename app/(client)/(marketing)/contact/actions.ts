@@ -4,6 +4,9 @@ import { z } from "zod";
 import { Resend } from "resend";
 import ContactFormEmail from "@/emails/ContactFormEmail";
 import { contactFormSchema } from "@/validation";
+import { cacheLife } from "next/cache";
+import { DATABASE_ID, db, Query, USER_COLLECTION_ID } from "@/lib/appwrite";
+import QueryEmail from "@/emails/QueryFormEmail";
 
 // Check if API key exists, otherwise use a placeholder for development
 const resendApiKey = process.env.RESEND_API_KEY || "";
@@ -13,7 +16,7 @@ const resend = (() => {
   try {
     if (!resendApiKey) {
       console.warn(
-        "RESEND_API_KEY is not set. Email functionality will be simulated."
+        "RESEND_API_KEY is not set. Email functionality will be simulated.",
       );
       // Return a mock implementation for development
       return {
@@ -87,7 +90,6 @@ export async function submitContactForm(formData: ContactFormValues) {
       console.log("Email sent successfully:", data);
     } catch (emailError) {
       console.error("Failed to send email:", emailError);
-      // Continue with form submission even if email fails
       console.log("Form processed successfully despite email error");
       return {
         success: true,
@@ -109,5 +111,70 @@ export async function submitContactForm(formData: ContactFormValues) {
     }
 
     return { success: false, message: "Failed to submit contact form" };
+  }
+}
+
+export async function getTeachers() {
+  "use cache";
+  cacheLife("days");
+
+  try {
+    const response = await db.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
+      Query.equal("role", "teacher"),
+      Query.limit(100),
+    ]);
+    return response.documents.map((doc) => ({
+      id: doc.$id,
+      name: doc.name,
+      email: doc.email,
+      prnNo: doc.prnNo,
+    }));
+  } catch (error) {
+    console.error("Failed to fetch teachers from Appwrite:", error);
+    return [];
+  }
+}
+
+export async function sendQueryEmail(payload: {
+  teacherEmail: string;
+  teacherName: string;
+  studentName: string;
+  studentEmail: string;
+  subject: string;
+  message: string;
+}) {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "StudyStack Queries <onboarding@resend.dev>",
+      // to: [payload.teacherEmail],
+      to: "studystack01@gmail.com", // For testing purposes, send to a fixed email
+      replyTo: payload.studentEmail,
+      subject: `[Student Query] ${payload.subject}`,
+      react: QueryEmail({
+        teacherName: payload.teacherName,
+        studentName: payload.studentName,
+        studentEmail: payload.studentEmail,
+        subject: payload.subject,
+        markdownMessage: payload.message,
+      }),
+    });
+
+    if (error) {
+      console.error("Resend API Error:", error);
+      return {
+        success: false,
+        message: "Failed to route the email. Please try again.",
+      };
+    }
+
+    console.log("data sent : ", data);
+
+    return {
+      success: true,
+      message: "Your query has been sent to the professor successfully!",
+    };
+  } catch (error) {
+    console.error("Unexpected error sending query:", error);
+    return { success: false, message: "An unexpected server error occurred." };
   }
 }

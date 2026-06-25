@@ -4,11 +4,11 @@ import { DATABASE_ID, db, Query, SUBJECT_COLLECTION_ID } from "@/lib/appwrite";
 import { SessionUser, Subject } from "@/lib/appwrite_types";
 import { Models } from "node-appwrite";
 import { getCurrentUser } from "@/lib/auth";
-import { unstable_cache as cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import SubjectList from "./_components/SubjectFilter";
 
 type Props = {
-  params: { sem: string };
+  params: Promise<{ sem: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -20,34 +20,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const getSubjectsBySemester = cache(
-  async (sem: string): Promise<Subject[]> => {
-    const response: Models.DocumentList<Models.Document> =
-      await db.listDocuments(DATABASE_ID!, SUBJECT_COLLECTION_ID!, [
-        Query.equal("semester", sem),
-      ]);
+async function getSubjectsBySemester(sem: string): Promise<Subject[]> {
+  "use cache";
+  cacheTag("subjects", `subjects-sem-${sem}`);
+  cacheLife("weeks");
 
-    if (response.total > 0) {
-      return response.documents.map((doc) => ({
-        subjectId: doc.$id,
-        name: doc.name,
-        abbreviation: doc.abbreviation,
-        code: doc.code,
-        semester: doc.semester,
-        unit: doc.unit,
-      }));
-    }
+  const response: Models.DocumentList<Models.Document> = await db.listDocuments(
+    DATABASE_ID!,
+    SUBJECT_COLLECTION_ID!,
+    [Query.equal("semester", sem)],
+  );
 
-    return []; // Return empty array if no subjects found
-  },
-  ["subjects-by-semester"],
-  {
-    tags: ["subjects"],
-    revalidate: 3600, // 1 hour
-  },
-);
+  if (response.total > 0) {
+    return response.documents.map((doc) => ({
+      subjectId: doc.$id,
+      name: doc.name,
+      abbreviation: doc.abbreviation,
+      code: doc.code,
+      semester: doc.semester,
+      unit: doc.unit,
+    }));
+  }
 
-const Page = async ({ params }: { params: { sem: string } }) => {
+  return []; // Return empty array if no subjects found
+}
+
+const Page = async ({ params }: Props) => {
   const { sem } = await params;
 
   const [subjects, user] = await Promise.all([
@@ -55,9 +53,10 @@ const Page = async ({ params }: { params: { sem: string } }) => {
     getCurrentUser() as Promise<SessionUser | null>,
   ]);
 
-  if (!subjects) {
+  if (!subjects || subjects.length === 0) {
     return <NotFound />;
   }
+
   return (
     <div className="flex flex-col gap-8 sm:gap-16 items-center justify-center w-full py-16 md:py-24">
       <div className="flex flex-col gap-4 items-start justify-center w-full max-w-5xl pt-10 lg:pt-5 px-5 xl:px-0">
