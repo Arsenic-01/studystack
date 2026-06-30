@@ -236,6 +236,14 @@ const Header = ({ serverUser }: { serverUser?: SessionUser | null }) => {
               className="overflow-hidden"
             >
               <div className="flex flex-col items-center gap-4 md:hidden pb-5 pt-7">
+                {user && (
+                  <Link
+                    href={"/query"}
+                    className="text-neutral-900/80 hover:text-neutral-900 dark:text-neutral-50 dark:hover:text-neutral-50 w-full text-center rounded-xl py-1 dark:active:bg-neutral-800 dark:hover:bg-neutral-800 active:bg-neutral-200 hover:bg-neutral-200 transition-all ease-in-out"
+                  >
+                    Query
+                  </Link>
+                )}
                 {user &&
                   "role" in user &&
                   (user.role === "admin" || user.role === "teacher") && (

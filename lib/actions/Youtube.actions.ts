@@ -17,7 +17,7 @@ export async function fetchYoutubeLinks({
     const response = await db.listDocuments(
       DATABASE_ID!,
       YOUTUBE_COLLECTION_ID!,
-      [Query.equal("abbreviation", abbreviation)]
+      [Query.equal("abbreviation", abbreviation)],
     );
 
     return response.documents.map((doc) => ({
@@ -56,7 +56,7 @@ export async function fetchPaginatedYoutubeLinks({
         Query.orderDesc("$createdAt"),
         Query.limit(limit),
         Query.offset(offset),
-      ]
+      ],
     );
 
     const documents = response.documents.map((doc) => ({
@@ -81,14 +81,14 @@ export async function fetchPaginatedYoutubeLinks({
 export async function findYoutubePage(
   abbreviation: string,
   noteId: string,
-  pageSize: number
+  pageSize: number,
 ) {
   try {
     // 1. Fetch the target document to get its creation date
     const targetNote = await db.getDocument(
       DATABASE_ID!,
       YOUTUBE_COLLECTION_ID!,
-      noteId
+      noteId,
     );
     if (!targetNote) return 1;
 
@@ -99,7 +99,7 @@ export async function findYoutubePage(
       [
         Query.equal("abbreviation", abbreviation),
         Query.greaterThan("$createdAt", targetNote.$createdAt),
-      ]
+      ],
     );
 
     // The total count from the response is the 0-based index of our note
@@ -160,7 +160,7 @@ export async function getUserYoutubeLinks({
         Query.orderDesc("$createdAt"),
         Query.limit(Number(limit)),
         Query.offset(offset),
-      ]
+      ],
     );
 
     const documents = response.documents.map((doc) => ({
@@ -196,7 +196,7 @@ export async function editYoutubeLink({
       url: youtubeLink,
       title: title,
     });
-    revalidatePath("/admin");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error updating YouTube link:", error);
@@ -207,7 +207,7 @@ export async function editYoutubeLink({
 export async function deleteYoutubeLink({ id }: { id: string }) {
   try {
     await db.deleteDocument(DATABASE_ID!, YOUTUBE_COLLECTION_ID!, id);
-    revalidatePath("/admin");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Error deleting YouTube link:", error);
@@ -220,7 +220,7 @@ export async function fetchAllYoutubeLinks() {
     const response = await db.listDocuments(
       DATABASE_ID!,
       YOUTUBE_COLLECTION_ID!,
-      [Query.orderDesc("$createdAt")]
+      [Query.orderDesc("$createdAt")],
     );
     return response.documents.map((doc) => ({
       id: doc.$id,

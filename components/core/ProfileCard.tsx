@@ -63,12 +63,13 @@ export default function UserProfilePopover({
           </p>
         </div>
 
-        {("prnNo" in user || "role" in user) && (
+        {("prnNo" in user || "role" in user || "class" in user) && (
           <>
             <Separator />
-            <div className="p-3 text-neutral-700 dark:text-neutral-400">
-              {"prnNo" in user && <p className="mb-1">Prn no: {user.prnNo}</p>}
+            <div className="p-3 text-neutral-700 dark:text-neutral-400 space-y-1">
+              {"prnNo" in user && <p>Prn no: {user.prnNo}</p>}
               {"role" in user && <p>Role: {capitalize(String(user.role))}</p>}
+              {"class" in user && <p>Class: {user.class + "-CM"}</p>}
             </div>
           </>
         )}

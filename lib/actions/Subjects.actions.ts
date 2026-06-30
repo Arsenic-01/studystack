@@ -2,6 +2,7 @@
 import { AppwriteException } from "node-appwrite";
 import { DATABASE_ID, db, Query, SUBJECT_COLLECTION_ID } from "../appwrite";
 import { Subject } from "../appwrite_types";
+import { cacheLife, cacheTag } from "next/cache";
 
 export async function fetchSubject({
   abbreviation,
@@ -10,6 +11,11 @@ export async function fetchSubject({
   abbreviation: string;
   semester: string;
 }) {
+  "use cache";
+
+  cacheTag("subjects");
+  cacheLife("weeks");
+
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
@@ -18,8 +24,10 @@ export async function fetchSubject({
         Query.equal("abbreviation", abbreviation),
         Query.equal("semester", semester),
         Query.limit(1),
-      ]
+      ],
     );
+    console.log("Subjects : ", response);
+
     return response.documents[0] as unknown as Subject;
   } catch (error) {
     const err = error as AppwriteException;
@@ -33,13 +41,18 @@ export async function fetchSubject({
 }
 
 export async function fetchAllSubjects() {
+  "use cache";
+
+  cacheTag("subjects");
+  cacheLife("weeks");
+
   try {
     const response = await db.listDocuments(
       DATABASE_ID!,
       SUBJECT_COLLECTION_ID!,
-      [Query.orderAsc("semester"), Query.limit(100)]
+      [Query.orderAsc("semester"), Query.limit(100)],
     );
-    // console.log("response", response);
+
     return response.documents.map((doc) => ({
       subjectId: doc.$id,
       name: doc.name,
@@ -59,7 +72,7 @@ export async function fetchAllSubjectsForSitemap() {
     const response = await db.listDocuments(
       DATABASE_ID!,
       SUBJECT_COLLECTION_ID!,
-      [Query.limit(5000), Query.select(["semester", "abbreviation"])]
+      [Query.limit(5000), Query.select(["semester", "abbreviation"])],
     );
 
     return response.documents.map((doc) => ({

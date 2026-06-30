@@ -19,8 +19,7 @@ export function AlreadyLoggedInCard() {
   return (
     <div className="w-full max-w-md rounded-xl px-6 py-8 shadow-lg bg-neutral-50 dark:bg-neutral-900/60 backdrop-blur-2xl border border-zinc-300 dark:border-zinc-800 text-center">
       <p className="text-neutral-800 dark:text-white/80 mb-4">
-        You are already logged in as{" "}
-        <span className="font-semibold">{user.name}</span>.
+        You are logged in as <span className="font-semibold">{user.name}</span>.
       </p>
       <RainbowButton onClick={handleContinue}>
         Continue to Dashboard

@@ -17,6 +17,7 @@ export interface SessionUser {
   name: string;
   email: string | null;
   ban: boolean;
+  class: "FY" | "SY" | "TY" | "None" | "Blocked" | "NULL";
 }
 
 export interface updateUserData {
@@ -27,6 +28,7 @@ export interface updateUserData {
   role: "admin" | "student" | "teacher";
   teacherSem?: number;
   password?: string;
+  class?: "FY" | "SY" | "TY" | "None" | "Blocked" | "NULL";
 }
 
 export type Note = {
